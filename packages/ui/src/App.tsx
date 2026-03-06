@@ -2,28 +2,28 @@ import { useState } from 'react';
 import { 
   ThemeProvider, 
   useUI, 
-  TestComponent,
+  // TestComponent,
   PageHeader,
-  SegmentedControl,
-  SlideToConfirm,
-  ContextAccordion,
-  CodeBlock,
-  SkillCard,
-  AgentCard,
-  PermissionToggle,
-  QuickActions,
-  SystemVitality,
-  ActivityHeatmap,
-  GitHeatmap,
-  ResourceChart,
-  NetworkRadial,
-  ContainerMonitor,
-  ProjectPulse,
-  CostTracker,
-  DashboardResourceHeader,
-  IntegrationCard,
-  WorkspaceGallery,
-  WorkspaceTabs,
+  // SegmentedControl,
+  // SlideToConfirm,
+  // ContextAccordion,
+  // CodeBlock,
+  // SkillCard,
+  // AgentCard,
+  // PermissionToggle,
+  // QuickActions,
+  // SystemVitality,
+  // ActivityHeatmap,
+  // GitHeatmap,
+  // ResourceChart,
+  // NetworkRadial,
+  // ContainerMonitor,
+  // ProjectPulse,
+  // CostTracker,
+  // DashboardResourceHeader,
+  // IntegrationCard,
+  // WorkspaceGallery,
+  // WorkspaceTabs,
   BottomDock,
   CommandModal,
   CreateAgentModal,
@@ -34,10 +34,11 @@ import {
 } from './index';
 import logo from './assets/clawesome-logo.svg';
 import { 
-  Settings, User as UserIcon, Zap, Code, Shield, Activity, Layers, Briefcase, Globe, HelpCircle, Terminal, Bot, 
-  LayoutDashboard, Layout, MessageSquare, BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, ShieldAlert
+  Settings, /* User as UserIcon, Zap, Code, */ Shield, /* Activity, Layers, Briefcase, Globe, */ HelpCircle, Terminal, Bot, 
+  /* LayoutDashboard, Layout, MessageSquare, */ BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, /* ShieldAlert, */ Sparkles
 } from 'lucide-react';
 
+/*
 const mockIntegration = {
   id: 'slack',
   name: 'Slack',
@@ -72,6 +73,7 @@ const mockTabs = [
   { id: '1', title: 'Local', type: 'system' },
   { id: '2', title: 'Sandbox 1', type: 'app' },
 ];
+*/
 
 const mockCommandResults = [
   { icon: Terminal, label: 'Run: bun run server.ts', category: 'Commands' },
@@ -124,7 +126,7 @@ const mockSidebarCategories = [
 
 function Showcase() {
   const { theme, setTheme } = useUI();
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  // const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [glowIntensity, setGlowIntensity] = useState(60);
   const [isCommandModalOpen, setIsCommandModalOpen] = useState(false);
   const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
@@ -139,6 +141,7 @@ function Showcase() {
   ]);
   const [activeAiTab, setActiveAiTab] = useState(0);
 
+  /*
   const demoSkill = {
     id: 'demo-skill',
     name: 'Neural Refactor',
@@ -147,7 +150,9 @@ function Showcase() {
     content: 'npx clawesome refactor --target ./src',
     isMarketplace: false
   };
+  */
 
+  /*
   const demoAgent = {
     id: 'demo-agent-uuid-001',
     name: 'ELARA-7',
@@ -155,6 +160,7 @@ function Showcase() {
     profilePicture: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&h=200&auto=format&fit=crop',
     createdAt: Date.now()
   };
+  */
 
   const thoughts = [
     { timestamp: '01:25:01', content: 'SCANNING WORKSPACE: /Users/bilolwabona/BiloDev/clawesome' },
@@ -343,7 +349,7 @@ function Showcase() {
             }}
             onSendMessage={(content) => {
                const newTabs = [...aiTabs];
-               newTabs[activeAiTab].messages.push({ role: 'user', content });
+               newTabs[activeAiTab].messages.push({ role: 'user' as any, content });
                setAiTabs(newTabs);
             }}
             thoughts={thoughts}

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function TestComponent() {
   return (
     <div className="p-10 border-4 border-dashed border-indigo-500 rounded-3xl bg-indigo-50/50 backdrop-blur-xl text-center my-10 animate-pulse">

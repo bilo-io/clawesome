@@ -26,7 +26,6 @@ import {
 } from 'lucide-react';
 import { useUI } from '../ThemeContext';
 import { cn } from '../utils';
-import { motion } from 'framer-motion';
 import type { Skill } from '../types';
 
 const iconMap: Record<string, any> = {
