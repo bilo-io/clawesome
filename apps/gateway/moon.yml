@@ -1,0 +1,18 @@
+# apps/gateway/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+project:
+  type: 'application'
+
+dependsOn:
+  - 'core'
+
+tasks:
+  start:
+    command: 'bun run src/index.ts start'
+  dev:
+    command: 'bun run src/index.ts dev'
+  build:
+    command: 'bun build ./src/index.ts --outdir ./dist --target bun'
+    inputs:
+      - 'src/**/*'

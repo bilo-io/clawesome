@@ -1,0 +1,18 @@
+{
+  "name": "@clawesome/monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "cli:install": "bash install-cli.sh",
+    "kill:gateway": "lsof -ti :17871 | xargs kill -9 2>/dev/null || echo 'Gateway not running'",
+    "kill:api": "lsof -ti :8080 | xargs kill -9 2>/dev/null || echo 'API not running'",
+    "kill:dashboard": "lsof -ti :3000 | xargs kill -9 2>/dev/null || echo 'Dashboard not running'",
+    "kill:website": "lsof -ti :3001 | xargs kill -9 2>/dev/null || echo 'Website not running'",
+    "kill:docs": "lsof -ti :3002 | xargs kill -9 2>/dev/null || echo 'Docs not running'",
+    "clean:locks": "rm -f apps/dashboard/.next/dev/lock apps/website/.next/dev/lock apps/docs/.next/dev/lock",
+    "kill:all": "bun run kill:gateway && bun run kill:api && bun run kill:dashboard && bun run kill:website && bun run kill:docs && bun run clean:locks && echo 'All clear.'"
+  }
+}

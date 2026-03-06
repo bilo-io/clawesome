@@ -1,0 +1,9 @@
+{
+  "name": "@clawesome/cli-config",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "picocolors": "^1.0.0"
+  }
+}

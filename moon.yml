@@ -1,0 +1,22 @@
+# moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+project:
+  name: 'clawesome-root'
+  # type: 'library'
+
+tasks:
+  # Install all dependencies using Bun
+  install:
+    command: 'bun install'
+    local: true
+
+  # Build all projects in the workspace
+  build:
+    command: 'moon run :build'
+    deps:
+      - 'core:build'
+
+  # Run all dev tasks
+  dev:
+    command: 'moon run :dev'

@@ -1,0 +1,13 @@
+
+# moon
+.moon/cache
+.moon/docker
+
+# node
+**/*/node_modules
+**/*/dist
+
+.clawesome.json
+.clawesome.pid
+
+.DS_Store

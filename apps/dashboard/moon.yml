@@ -1,0 +1,20 @@
+# apps/dashboard/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+stack: 'frontend'
+
+project:
+  name: 'Clawesome Dashboard'
+  description: 'Clawesome Dashboard to manage your AI swarm'
+dependsOn:
+  - 'core'
+  - 'ui'
+
+
+tasks:
+  dev:
+    command: 'next dev -p 3000'
+  build:
+    command: 'next build'
+    inputs:
+      - 'src/**/*'
+      - 'public/**/*'

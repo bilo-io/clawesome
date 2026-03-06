@@ -1,0 +1,48 @@
+project: 
+  name: 'ui' # Usually best to keep this short for moon commands (e.g., moon run ui:build)
+  description: 'Shared Shadcn/Vite component library'
+
+tags:
+   - 'ui'
+   - 'library'
+   - 'frontend'
+
+tasks:
+  # Development server (Storybook is usually better for UI dev)
+  dev:
+    command: 'bun run dev'
+
+  # Build the library for production (Next.js consumption)
+  build:
+    command: 'bun run build'
+    inputs:
+      - 'src/**/*'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'vite.config.ts'
+      - 'tailwind.config.ts'
+    outputs:
+      - 'dist'
+
+  # Storybook development
+  storybook:
+    command: 'bun run storybook'
+
+  # Chromatic Visual Regression Testing
+  # chromatic:
+  #   command: 'bun run chromatic'
+  #   inputs:
+  #     - 'src/**/*'
+  #   # Requires CHROMATIC_PROJECT_TOKEN in your .env or CI
+  #   env:
+  #     CHROMATIC_PROJECT_TOKEN: '@env(CHROMATIC_PROJECT_TOKEN)'
+
+  # lint:
+  #   command: 'bun run lint'
+  #   inputs:
+  #     - 'src/**/*'
+
+  test:
+    command: 'bun test' # Bun has a native fast test runner!
+    inputs:
+      - 'src/**/*'

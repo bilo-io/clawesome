@@ -1,0 +1,17 @@
+# apps/api/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+project:
+  name: 'api'
+
+tasks:
+  install:
+    command: 'go mod download'
+  build:
+    command: 'go build -o api main.go'
+    inputs:
+      - 'main.go'
+      - 'data/**/*'
+      - 'go.mod'
+  dev:
+    command: 'go run main.go'

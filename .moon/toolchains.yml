@@ -1,0 +1,17 @@
+# .moon/toolchains.yml
+$schema: 'https://moonrepo.dev/schemas/toolchain.json'
+
+javascript:
+  packageManager: 'bun'
+
+bun:
+  version: '1.3.9'
+
+node:
+  version: '25.6.0'
+  packageManager: 'bun'
+  inferTasksFromScripts: true
+
+typescript:
+  syncProjectReferences: true
+  routeOutDirToCache: true

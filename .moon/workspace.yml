@@ -1,0 +1,13 @@
+# .moon/workspace.yml
+$schema: 'https://moonrepo.dev/schemas/workspace.json'
+
+projects:
+  - 'apps/*'
+  - 'packages/*'
+
+vcs:
+  # 'manager' is removed. Use 'client' if you want to force 'git', 
+  # but moon usually auto-detects this.
+  client: 'git'
+  defaultBranch: 'master'
+  provider: 'github'

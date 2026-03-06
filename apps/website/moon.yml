@@ -1,0 +1,21 @@
+# apps/dashboard/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+# type: 'application'
+# stack: 'frontend'
+
+project:
+  name: 'website'
+
+dependsOn:
+  - 'core'
+
+tasks:
+  dev:
+    command: 'next dev -p 3001'
+  build:
+    command: 'next build'
+    inputs:
+      - 'app/**/*'
+      - 'components/**/*'
+      - 'lib/**/*'
+      - 'public/**/*'

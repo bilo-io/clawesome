@@ -1,0 +1,8 @@
+# shared schemas and data types
+# type: 'library'
+language: 'json'
+
+tasks:
+  # Validate JSON schemas used for MCP communication
+  validate:
+    command: 'json-schema-validator ./schemas/*.json'

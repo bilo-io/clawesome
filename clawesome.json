@@ -1,0 +1,57 @@
+{
+    "name": "My clawesome assistant",
+    "version": "2026.3.5",
+    "user": {
+        "name": "Maverick",
+        "role": "User"
+    },
+    "agents:": [
+        {
+            "name": "N.O.V.A.",
+            "role": "Orchestrator Agent"
+        }
+    ],
+    "connections": [
+        {
+            "name": "Whatsapp",
+            "code": "whatsapp",
+            "apiKey": "sk-proj-1234567890"
+        },
+        {
+            "name": "Discord",
+            "code": "discord",
+            "apiKey": "sk-proj-1234567890"
+        }
+    ],
+    "ai": {
+        "providers": [
+            {
+                "name": "OpenAI",
+                "code": "openai",
+                "models": [
+                    "gpt-4o",
+                    "gpt-4o-mini"
+                ],
+                "apiKey": "sk-proj-1234567890"
+            },
+            {
+                "name": "Anthropic",
+                "code": "anthropic",
+                "models": [
+                    "claude-3-5-sonnet",
+                    "claude-3-opus"
+                ],
+                "apiKey": "sk-proj-1234567890"
+            },
+            {
+                "name": "Google",
+                "code": "google",
+                "models": [
+                    "gemini-1.5-pro",
+                    "gemini-1.5-flash"
+                ],
+                "apiKey": "sk-proj-1234567890"
+            }
+        ]
+    }
+}

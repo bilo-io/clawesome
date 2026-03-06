@@ -1,0 +1,21 @@
+{
+    "project_name": "MaverickAI",
+    "agent_directory": "agents",
+    "roles": {
+        "game_arch": "gamedev/architect/instruction.md",
+        "engine_dev": "gamedev/game-engine-dev/instruction.md",
+        "ue5_ui": "gamedev/ui-engineer/instruction.md",
+        "web_arch": "web/architect/instruction.md",
+        "backend": "web/backend-expert/instruction.md",
+        "frontend": "web/ui-engineer/instruction.md"
+    },
+    "mcp_servers": [
+        {
+            "name": "ue5-bridge",
+            "command": "moon",
+            "args": [
+                "mcp-server:run"
+            ]
+        }
+    ]
+}

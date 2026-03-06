@@ -1,0 +1,11 @@
+# packages/core/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+project:
+  type: 'library'
+
+tasks:
+  build:
+    command: 'tsc -b'
+    inputs:
+      - 'src/**/*'

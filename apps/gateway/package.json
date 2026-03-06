@@ -1,0 +1,30 @@
+{
+  "name": "@clawesome/gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "nyte": "./src/index.ts",
+    "clawesome": "./bin/clawesome.ts"
+  },
+  "scripts": {
+    "dev": "bun run src/index.ts dev",
+    "start": "bun run src/index.ts start"
+  },
+  "dependencies": {
+    "@antigravity/core": "workspace:*",
+    "@clack/prompts": "^1.1.0",
+    "@types/inquirer": "^9.0.9",
+    "commander": "^12.0.0",
+    "figlet": "^1.10.0",
+    "gradient-string": "^3.0.0",
+    "inquirer": "^13.3.0",
+    "picocolors": "^1.1.1",
+    "@clawesome/cli-config": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/figlet": "^1.7.0",
+    "@types/gradient-string": "^1.1.6"
+  }
+}

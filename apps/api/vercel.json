@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "functions": {
+    "main.go": {
+      "runtime": "vercel-go@1.x",
+      "includeFiles": "data/marketplace.json"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/v1/marketplace", "destination": "main.go" }
+  ]
+}
