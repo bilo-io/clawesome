@@ -2,10 +2,16 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 project:
-  type: 'application'
+  name: 'wss-gateway'
 
 dependsOn:
   - 'core'
+
+tags:
+  - 'core'
+  - 'gateway'
+  - 'backend'
+  - 'websockets'
 
 tasks:
   start:

@@ -2,7 +2,12 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 project:
-  type: 'library'
+  name: 'core'
+
+tags:
+- 'core'
+- 'library'
+- 'package'
 
 tasks:
   build:

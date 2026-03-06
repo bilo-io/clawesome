@@ -9,6 +9,12 @@ project:
 dependsOn:
   - 'core'
 
+
+tags:
+  - 'ui'
+  - 'frontend'
+  - 'website'
+
 tasks:
   dev:
     command: 'next dev -p 3001'

@@ -4,6 +4,11 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 project:
   name: 'api'
 
+tags:
+  - 'core'
+  - 'api'
+  - 'backend'
+
 tasks:
   install:
     command: 'go mod download'

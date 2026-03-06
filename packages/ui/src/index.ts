@@ -32,3 +32,25 @@ export * from './components/SmartHistorySearch';
 export * from './components/AILab';
 export * from './components/FilesystemSandbox';
 export * from './components/Sidebar';
+
+// Website Components
+export * from './components/website/Hero';
+export * from './components/website/Features';
+export * from './components/website/Faqs';
+export * from './components/website/Testimonials';
+export * from './components/website/Donate';
+export * from './components/website/Footer';
+export * from './components/website/Navbar';
+export * from './components/website/PrimaryButton';
+export * from './components/website/LogoCloud';
+export * from './components/website/BackgroundVideo';
+export * from './components/website/BackgroundAnimated';
+export * from './components/website/AnimatedDownload';
+
+// Docs Components
+export * from './components/docs/CodePreview';
+export * from './components/docs/CommandPreview';
+export * from './components/docs/LanguagePreview';
+export * from './components/docs/LeftSidebar';
+export * from './components/docs/TopBar';
+export * from './components/docs/DocPlaceholder';

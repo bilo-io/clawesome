@@ -30,11 +30,31 @@ import {
   SmartHistorySearch,
   AILab,
   FilesystemSandbox,
-  Sidebar
+  Sidebar,
+  // Website Components
+  Hero as WebsiteHero,
+  Features,
+  Faqs,
+  Testimonials,
+  Donate,
+  Footer as WebsiteFooter,
+  Navbar as WebsiteNavbar,
+  LogoCloud,
+  BackgroundVideo,
+  BackgroundAnimated,
+  AnimatedDownload,
+  // Docs Components
+  CodePreview,
+  CommandPreview,
+  LanguagePreview,
+  DocsLayout,
+  LeftSidebar as DocsSidebar,
+  TopBar,
+  DocPlaceholder
 } from './index';
 import logo from './assets/clawesome-logo.svg';
 import { 
-  Settings, /* User as UserIcon, Zap, Code, */ Shield, /* Activity, Layers, Briefcase, Globe, */ HelpCircle, Terminal, Bot, 
+  Settings, Globe, /* User as UserIcon, Zap, Code, */ Shield, /* Activity, Layers, Briefcase, Globe, */ HelpCircle, Terminal, Bot, 
   /* LayoutDashboard, Layout, MessageSquare, */ BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, /* ShieldAlert, */ Sparkles
 } from 'lucide-react';
 
@@ -120,6 +140,13 @@ const mockSidebarCategories = [
       { icon: Plug, label: 'Integrations', href: '/integrations', status: 'active' as const },
       { icon: Settings, label: 'Settings', href: '/settings' },
       { icon: Shield, label: 'Security', href: '/security' },
+    ]
+  },
+  {
+    title: 'Portal Components',
+    items: [
+      { icon: BrainCircuit, label: 'Docs System', href: '#docs' },
+      { icon: MessageCircle, label: 'Website Landing', href: '#website' },
     ]
   }
 ];
@@ -357,7 +384,88 @@ function Showcase() {
           />
         </section>
 
-        {/* ... (rest of the sections: Content Modules, Workspace, Complex Layouts, Analytics, System Management) ... */}
+        {/* Doc Portal Section */}
+        <section id="docs" className="space-y-12">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <span className="p-2 bg-emerald-500/10 text-emerald-500 rounded-xl"><BrainCircuit size={20} /></span>
+              Doc Portal
+            </h2>
+            <div className="h-1 w-20 bg-emerald-500 rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="space-y-4">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Code Preview</span>
+                <CodePreview 
+                  code={`async function clawesome() {\n  const agents = await swarm.deploy(5);\n  return agents.execute('MISSION_REFACTOR');\n}`}
+                  language="javascript"
+                />
+             </div>
+             <div className="space-y-4">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Command Runner</span>
+                <CommandPreview commands={{
+                  npm: 'npm install @clawesome/cli',
+                  pnpm: 'pnpm add @clawesome/cli',
+                  yarn: 'yarn add @clawesome/cli',
+                  bun: 'bun add @clawesome/cli'
+                }} />
+             </div>
+             <div className="space-y-4">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Language Variants</span>
+                <LanguagePreview 
+                  blocks={[
+                    { label: 'TypeScript', language: 'typescript', code: 'type Agent = { id: string; };' },
+                    { label: 'Rust', language: 'rust', code: 'struct Agent { id: String }' },
+                    { label: 'Python', language: 'python', code: 'class Agent: pass' }
+                  ]}
+                />
+             </div>
+          </div>
+          
+          <div className="p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 overflow-hidden relative">
+             <div className="flex gap-8 items-start">
+                <div className="w-64 shrink-0 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden h-[400px]">
+                   <DocsSidebar />
+                </div>
+                <div className="flex-1 space-y-8">
+                   <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
+                      <TopBar />
+                   </div>
+                   <DocPlaceholder title="Neural Fabric" description="The backbone of autonomous agentic swarms." />
+                </div>
+             </div>
+          </div>
+        </section>
+
+        {/* Website Landing Section */}
+        <section id="website" className="space-y-12">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
+              <span className="p-2 bg-indigo-500/10 text-indigo-500 rounded-xl"><Globe size={20} /></span>
+              Portal Landing
+            </h2>
+            <div className="h-1 w-20 bg-indigo-500 rounded-full" />
+          </div>
+
+          <div className="space-y-24 border border-slate-200 dark:border-slate-800 p-8 rounded-[64px] bg-slate-50/30 dark:bg-black/40 overflow-hidden relative">
+             <BackgroundAnimated />
+             <WebsiteNavbar />
+             <div className="scale-90 origin-top">
+                <WebsiteHero />
+             </div>
+             <LogoCloud />
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <Features />
+                <div className="space-y-12">
+                   <Faqs />
+                   <Donate />
+                </div>
+             </div>
+             <Testimonials />
+             <WebsiteFooter />
+          </div>
+        </section>
 
         {/* Floating Controls */}
         <BottomDock 

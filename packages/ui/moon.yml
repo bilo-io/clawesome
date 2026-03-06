@@ -5,6 +5,7 @@ project:
 tags:
    - 'ui'
    - 'library'
+   - 'package'
    - 'frontend'
 
 tasks:

@@ -1,0 +1,149 @@
+'use client';
+
+const Link = (props: any) => <a {...props} />;
+const usePathname = () => "";
+import { Search, ChevronDown, ChevronRight, Brain, Zap, Globe, Blocks, Sliders, Cpu, MessageSquare } from 'lucide-react';
+import { useUI } from '../../ThemeContext';
+import { useState } from 'react';
+
+interface SidebarLink {
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+  children?: SidebarLink[];
+}
+
+interface SidebarSection {
+  title: string;
+  links: SidebarLink[];
+}
+
+export function LeftSidebar() {
+  const { theme } = useUI();
+  const pathname = usePathname();
+  const [expandedSections, setExpandedSections] = useState<string[]>(['AI', 'Architecture', 'Connect']);
+
+  const sections: SidebarSection[] = [
+    {
+      title: 'GET STARTED',
+      links: [
+        { href: '/', label: 'Introduction' },
+        { href: '/installation', label: 'Installation' },
+        { href: '/cli', label: 'CLI Reference' },
+      ]
+    },
+    {
+      title: 'AI ENGINE',
+      links: [
+        { 
+          href: '/ai', 
+          label: 'Overview',
+          children: [
+            { href: '/ai/neural-network', label: 'Neural Network' },
+            { href: '/ai/llms', label: 'LLMs' },
+            { href: '/ai/agents', label: 'Agents' },
+            { href: '/ai/swarms', label: 'Swarms' },
+          ]
+        },
+      ]
+    },
+    {
+      title: 'CORE SYSTEM',
+      links: [
+        { 
+          href: '/architecture', 
+          label: 'Architecture',
+          children: [
+            { href: '/architecture/layers', label: 'System Layers' },
+            { href: '/architecture/security', label: 'Security' },
+            { href: '/architecture/scalability', label: 'Scalability' },
+          ]
+        },
+        { href: '/components', label: 'UI Components' },
+      ]
+    },
+    {
+      title: 'INTEGRATIONS',
+      links: [
+        { 
+          href: '/connect', 
+          label: 'Connect',
+          children: [
+            { href: '/connect/slack', label: 'Slack' },
+            { href: '/connect/discord', label: 'Discord' },
+            { href: '/connect/telegram', label: 'Telegram' },
+            { href: '/connect/whatsapp', label: 'WhatsApp' },
+          ]
+        },
+        { href: '/resources', label: 'Resources & MCPs' },
+      ]
+    },
+    {
+      title: 'OTHER',
+      links: [
+        { href: '/releases', label: 'Release Notes' },
+      ]
+    }
+  ];
+
+  const isActive = (href: string) => pathname === href;
+
+  return (
+    <aside className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] border-r transition-colors overflow-y-auto hidden md:block no-scrollbar ${theme === 'dark' ? 'border-slate-800 bg-[#020617]' : 'border-slate-200 bg-slate-50'}`}>
+      <div className="p-6 space-y-8">
+        <div className={`relative flex items-center p-2 rounded-xl transition-colors ${theme === 'dark' ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200 shadow-sm'}`}>
+          <Search size={16} className={`ml-2 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`} />
+          <input 
+            type="text" 
+            placeholder="Search docs..." 
+            className={`w-full bg-transparent px-3 py-1 text-sm outline-none ${theme === 'dark' ? 'text-white placeholder:text-slate-600' : 'text-black placeholder:text-slate-400'}`}
+          />
+        </div>
+
+        <nav className="space-y-6 pb-20">
+          {sections.map(section => (
+            <div key={section.title} className="space-y-3">
+              <h4 className="text-[10px] font-black tracking-[0.2em] text-slate-500 uppercase px-4">
+                {section.title}
+              </h4>
+              <div className="space-y-1">
+                {section.links.map(link => (
+                  <div key={link.href} className="space-y-1">
+                    <Link 
+                      href={link.href}
+                      className={`flex items-center px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                        isActive(link.href)
+                          ? (theme === 'dark' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600')
+                          : (theme === 'dark' ? 'text-slate-400 hover:text-white hover:bg-slate-900/50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100')
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                    
+                    {link.children && (
+                      <div className="ml-4 pl-4 border-l border-slate-200 dark:border-slate-800 space-y-1 mt-1">
+                        {link.children.map(child => (
+                          <Link 
+                            key={child.href}
+                            href={child.href}
+                            className={`flex items-center px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+                              isActive(child.href)
+                                ? (theme === 'dark' ? 'text-indigo-400' : 'text-indigo-600 bg-indigo-50/50')
+                                : (theme === 'dark' ? 'text-slate-500 hover:text-white' : 'text-slate-500 hover:text-slate-900')
+                            }`}
+                          >
+                            {child.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+      </div>
+    </aside>
+  );
+}

@@ -9,6 +9,11 @@ dependsOn:
   - 'core'
   - 'ui'
 
+tags:
+  - 'core'
+  - 'ui'
+  - 'frontend'
+  - 'dashboard'
 
 tasks:
   dev:
