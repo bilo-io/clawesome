@@ -7,7 +7,9 @@
     "declaration": true,
     "composite": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "../../.moon/cache/types/packages/cli-config"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }
