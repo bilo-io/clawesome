@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  transpilePackages: ["@clawesome/ui", "@antigravity/core"],
 };
 
 export default nextConfig;

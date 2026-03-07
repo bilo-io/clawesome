@@ -14,11 +14,9 @@ export const metadata: Metadata = {
   description:
     "Official documentation for Clawesome OS — the neural agent orchestration platform. Guides, API references, CLI usage, and component library.",
   icons: {
-    icon: [
-      { url: "/clawesome-icon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/clawesome-icon.svg",
+    icon: "/clawesome-icon.svg",
     shortcut: "/clawesome-icon.svg",
+    apple: "/clawesome-icon.svg",
   },
   openGraph: {
     type: "website",

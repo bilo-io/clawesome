@@ -10,20 +10,18 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "clawesome | Autonomous AI Operating System",
+  title: "Clawesome | Autonomous AI Operating System",
   description:
     "Next-gen AI swarms and agentic workflows for modern operators. Build, deploy, and scale autonomous agent networks with Clawesome OS.",
   icons: {
-    icon: [
-      { url: "/clawesome-icon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/clawesome-icon.svg",
+    icon: "/clawesome-icon.svg",
     shortcut: "/clawesome-icon.svg",
+    apple: "/clawesome-icon.svg",
   },
   openGraph: {
     type: "website",
     url: "https://clawesome.app",
-    title: "clawesome | Autonomous AI Operating System",
+    title: "Clawesome | Autonomous AI Operating System",
     description:
       "Next-gen AI swarms and agentic workflows for modern operators. Build, deploy, and scale autonomous agent networks.",
     siteName: "clawesome",
@@ -38,7 +36,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "clawesome | Autonomous AI Operating System",
+    title: "Clawesome | Autonomous AI Operating System",
     description: "Next-gen AI swarms and agentic workflows for modern operators.",
     images: ["/og-image.png"],
   },

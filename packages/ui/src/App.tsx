@@ -943,7 +943,7 @@ const DocsPortalPage = () => (
         <CommandPreview commands={{
           npm: 'npm install @clawesome/cli',
           pnpm: 'pnpm add @clawesome/cli',
-          yarn: 'yarn add @clawesome/cli',
+          // yarn: 'yarn add @clawesome/cli',
           bun: 'bun add @clawesome/cli'
         }} />
       </DocsWrapper>

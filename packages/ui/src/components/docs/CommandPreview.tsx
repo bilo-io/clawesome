@@ -7,7 +7,8 @@
 
 import React, { useState } from 'react';
 import { CodePreview } from './CodePreview';
-import { useUI, cn } from '@clawesome/ui';
+import { useUI } from '../../ThemeContext';
+import { cn } from '../../utils';
 
 export type PackageManager = 'npm' | 'pnpm' | 'bun';
 
