@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Power,
   PowerOff,
+  Check
 } from 'lucide-react';
 import type { Integration, IntegrationStatus } from '@/store/useIntegrationStore';
 import { useIntegrationStore } from '@/store/useIntegrationStore';
@@ -42,9 +43,11 @@ interface IntegrationCardProps {
   isInstalled?: boolean;
   /** 'installed' = show status and Configure/Enable/Disable; 'marketplace' = show Add or Added */
   source: 'installed' | 'marketplace';
+  selected?: boolean;
+  onToggleSelection?: (e: React.MouseEvent) => void;
 }
 
-export function IntegrationCard({ integration, viewMode, isInstalled, source }: IntegrationCardProps) {
+export function IntegrationCard({ integration, viewMode, isInstalled, source, selected, onToggleSelection }: IntegrationCardProps) {
   const { addIntegration, removeIntegration, setConfigured, updateIntegration } = useIntegrationStore();
   const { theme } = useUIStore();
   const Icon = iconMap[integration.icon] ?? MessageSquare;
@@ -78,11 +81,24 @@ export function IntegrationCard({ integration, viewMode, isInstalled, source }: 
     return (
     <div
       className={cn(
-        'group transition-all border rounded-[32px] p-4 flex items-center justify-between',
-        theme === 'dark' ? 'bg-slate-900 border-slate-800 hover:bg-slate-900/60' : 'bg-white border-slate-100 hover:bg-slate-50/50 shadow-sm'
+        'group transition-all border rounded-[32px] p-4 flex items-center justify-between relative',
+        selected
+          ? (theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/50' : 'bg-indigo-50 border-indigo-500')
+          : (theme === 'dark' ? 'bg-slate-900 border-slate-800 hover:bg-slate-900/60' : 'bg-white border-slate-100 hover:bg-slate-50/50 shadow-sm')
       )}
     >
       <div className="flex items-center gap-6 flex-1">
+        {/* Selection Circle */}
+        <div 
+          onClick={onToggleSelection}
+          className={cn(
+          "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 cursor-pointer",
+          selected 
+            ? "bg-indigo-500 border-indigo-500 text-white" 
+            : (theme === 'dark' ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-white shadow-inner")
+        )}>
+          {selected && <Check size={14} strokeWidth={4} />}
+        </div>
         <div
           className={cn(
             'relative p-3 rounded-full transition-all shadow-inner border group-hover:scale-110 flex items-center justify-center',
@@ -178,12 +194,25 @@ export function IntegrationCard({ integration, viewMode, isInstalled, source }: 
     <div
       className={cn(
         'group relative rounded-[48px] p-10 transition-all border shadow-2xl flex flex-col h-full overflow-hidden',
-        theme === 'dark'
-          ? 'bg-slate-950/40 border-slate-900/60 hover:bg-slate-950/60 hover:border-indigo-500/20'
-          : 'bg-white border-slate-100 hover:border-indigo-100 shadow-slate-200/40 hover:shadow-indigo-500/5'
+        selected
+          ? (theme === 'dark' ? 'bg-indigo-500/10 border-indigo-500/50' : 'bg-indigo-50 border-indigo-500')
+          : (theme === 'dark'
+              ? 'bg-slate-950/40 border-slate-900/60 hover:bg-slate-950/60 hover:border-indigo-500/20'
+              : 'bg-white border-slate-100 hover:border-indigo-100 shadow-slate-200/40 hover:shadow-indigo-500/5')
       )}
     >
-      <div className="flex justify-between items-start mb-6 relative z-10">
+      {/* Selection Indicator */}
+      <div 
+        onClick={onToggleSelection}
+        className={cn(
+        "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
+        selected 
+          ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+          : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+      )}>
+        {selected && <Check size={16} strokeWidth={4} />}
+      </div>
+      <div className="flex justify-between items-start mb-6 relative z-10 pl-6">
         <div
           className={cn(
             'relative p-5 rounded-full transition-all shadow-inner border group-hover:scale-110 flex items-center justify-center',

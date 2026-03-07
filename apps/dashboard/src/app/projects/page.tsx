@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -11,11 +11,16 @@ import {
   Clock,
   CircleDot,
   Search,
-  Plus
+  Plus,
+  Trash2,
+  Copy,
+  Download,
+  Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 interface Project {
   id: string;
@@ -100,13 +105,54 @@ const PROJECTS: Project[] = [
 
 export default function ProjectsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/projects', 'grid') as 'grid' | 'list');
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
 
   const filteredProjects = PROJECTS.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const isAllSelected = filteredProjects.length > 0 && filteredProjects.every(p => selectedIds.includes(p.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredProjects.map(p => p.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Terminate Projects ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Duplicate Blueprint
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Archive Assets
+      </button>
+    </>
+  ) : null;
+
+
 
   return (
     <div className="space-y-10 max-w-[1600px] mx-auto">
@@ -122,6 +168,11 @@ export default function ProjectsPage() {
         searchPlaceholder="SEARCH PROJECT REVERB..."
         viewMode={viewMode}
         onViewModeChange={(mode: any) => setViewMode('/projects', mode)}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
           <button
             onClick={() => {}}
@@ -148,13 +199,36 @@ export default function ProjectsPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <Link href={`/projects/${project.id}`} className="block group">
+              <div className="block group relative">
+                {/* Selection Indicator */}
+                <div 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(project.id);
+                  }}
+                  className={cn(
+                  "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+                  viewMode === 'grid' ? "top-6 left-6" : "left-4 top-1/2 -translate-y-1/2",
+                  selectedIds.includes(project.id)
+                    ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                    : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                )}>
+                  {selectedIds.includes(project.id) && <Check size={16} strokeWidth={4} />}
+                </div>
+
+                <Link href={`/projects/${project.id}`} className={cn(
+                  "block relative transition-all",
+                  viewMode === 'list' && "pl-12"
+                )}>
                 {viewMode === 'grid' ? (
                   <div className={cn(
                     "relative h-full p-8 rounded-[48px] border transition-all overflow-hidden",
-                    theme === 'dark' 
-                      ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
-                      : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40 hover:border-indigo-200"
+                    selectedIds.includes(project.id)
+                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                      : (theme === 'dark' 
+                          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
+                          : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40 hover:border-indigo-200")
                   )}>
                     <div className="flex justify-between items-start mb-10">
                        <div className="flex flex-col gap-1">
@@ -254,9 +328,11 @@ export default function ProjectsPage() {
                 ) : (
                   <div className={cn(
                     "p-4 rounded-[28px] border flex items-center gap-6 transition-all",
-                    theme === 'dark' 
-                      ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
-                      : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200"
+                    selectedIds.includes(project.id)
+                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                      : (theme === 'dark' 
+                          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
+                          : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200")
                   )}>
                      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
                         <CircleDot size={20} />
@@ -294,6 +370,7 @@ export default function ProjectsPage() {
                   </div>
                 )}
               </Link>
+            </div>
             </motion.div>
           ))}
         </AnimatePresence>

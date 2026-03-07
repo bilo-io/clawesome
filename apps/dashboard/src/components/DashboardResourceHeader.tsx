@@ -3,10 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, List, Plus, Filter, LayoutGrid, ChevronLeft, Home, ChevronRight } from 'lucide-react';
+import { Search, List, Plus, Filter, LayoutGrid, ChevronLeft, Home, ChevronRight, CheckCircle2, MinusCircle, Circle } from 'lucide-react';
 import { PageHeader, PageHeaderStatusColor } from './PageHeader';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export interface DashboardResourceHeaderProps {
   // Level 1: Page Identity
@@ -47,6 +48,12 @@ export interface DashboardResourceHeaderProps {
   // Render Props / Slots
   renderRight?: React.ReactNode | (() => React.ReactNode); // Top right slot
   toolbarActions?: React.ReactNode; // Extra things next to View Toggles (Level 2)
+
+  // Level 3: Selection & Bulk Actions
+  allSelected?: boolean;
+  someSelected?: boolean;
+  onSelectAll?: () => void;
+  bulkActions?: React.ReactNode;
 }
 
 export function DashboardResourceHeader({
@@ -68,6 +75,10 @@ export function DashboardResourceHeader({
   showFilter = false,
   renderRight,
   toolbarActions,
+  allSelected = false,
+  someSelected = false,
+  onSelectAll,
+  bulkActions,
 }: DashboardResourceHeaderProps) {
   const { theme } = useUIStore();
   const pathname = usePathname();
@@ -145,114 +156,154 @@ export function DashboardResourceHeader({
 
       {/* Level 2: Toolbar (Only if isCollection is true) */}
       {isCollection && (
-        <div className="flex flex-col md:flex-row gap-6 items-center">
-          {/* Search Bar - Fancy Styled */}
-          <div className="relative flex-1 group w-full perspective-1000">
-            <div className={cn(
-              "relative p-[1px] rounded-full transition-all duration-500 shadow-sm",
-              "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]",
-              "focus-within:scale-[1.01] focus-within:shadow-[0_48px_100px_rgba(140,0,255,0.15)]"
-            )}>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col md:flex-row gap-6 items-center">
+            {/* Selection Toggle - Round Checkmark */}
+            {onSelectAll && (
+              <div className={cn(
+                "relative p-[1px] rounded-full transition-all duration-500 shadow-sm shrink-0",
+                "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]"
+              )}>
+                <button
+                  onClick={onSelectAll}
+                  className={cn(
+                    "relative rounded-full p-4 flex items-center justify-center transition-all duration-700",
+                    theme === 'dark' ? "bg-slate-950/95 text-slate-400 hover:text-indigo-400" : "bg-white/95 text-slate-400 hover:text-indigo-600"
+                  )}
+                >
+                  {allSelected ? (
+                    <CheckCircle2 size={22} className="text-indigo-500 fill-indigo-500/20" />
+                  ) : someSelected ? (
+                    <MinusCircle size={22} className="text-indigo-500" />
+                  ) : (
+                    <Circle size={22} className="opacity-40" />
+                  )}
+                </button>
+              </div>
+            )}
+
+            {/* Search Bar - Fancy Styled */}
+            <div className="relative flex-1 group w-full perspective-1000">
+              <div className={cn(
+                "relative p-[1px] rounded-full transition-all duration-500 shadow-sm",
+                "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]",
+                "focus-within:scale-[1.01] focus-within:shadow-[0_48px_100px_rgba(140,0,255,0.15)]"
+              )}>
                 <div className={cn(
                   "relative rounded-full flex items-center transition-all duration-700 px-4",
                   theme === 'dark' ? "bg-slate-950/95" : "bg-white/95"
                 )}>
-                <div className="flex items-center justify-center p-4 rounded-full transition-colors relative ml-2">
-                   <Search 
-                    size={20} 
-                    className={cn(
-                      "transition-colors",
-                      theme === 'dark' ? "text-slate-600 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
-                    )} 
-                   />
-                </div>
-                 <input
-                  type="text"
-                  placeholder={searchPlaceholder.toUpperCase()}
-                  className={cn(
-                    "w-full py-3 px-4 border-none outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 font-bold text-sm tracking-widest uppercase transition-all bg-transparent",
-                    theme === 'dark'
-                      ? "text-white placeholder:text-slate-500"
-                      : "text-slate-900 placeholder:text-slate-400"
-                  )}
-                  value={searchQuery}
-                  onChange={(e) => onSearchChange?.(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Controls (Filter, View Toggles, Additional Actions) */}
-          <div className="flex items-center gap-4 h-full">
-            {toolbarActions}
-
-            <div className={cn(
-              "relative p-[1px] rounded-full transition-all duration-500 shadow-sm h-full",
-              "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]"
-            )}>
-              <div className={cn(
-                "flex items-center gap-3 p-1 px-2 rounded-full backdrop-blur-2xl transition-all h-full",
-                theme === 'dark' ? "bg-slate-950/95" : "bg-white/95"
-              )}>
-                 {showFilter && (
-                  <button
-                    onClick={onFilterClick}
-                    className={cn(
-                      "flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all group active:scale-95",
-                      theme === 'dark' ? "bg-slate-900 border-white/5 text-slate-500 hover:text-white" : "bg-white border-slate-100 text-slate-400 hover:text-slate-900 shadow-sm"
-                    )}
-                  >
-                    <Filter size={16} className="group-hover:scale-110 transition-transform" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Filter</span>
-                  </button>
-                )}
-
-                {viewMode && onViewModeChange && (
-                  <div className={cn(
-                    "rounded-full flex p-1 transition-all",
-                    theme === 'dark' ? "bg-slate-900/60" : "bg-slate-100/60"
-                  )}>
-                    <button
-                      onClick={() => onViewModeChange('grid')}
+                  <div className="flex items-center justify-center p-4 rounded-full transition-colors relative ml-2">
+                    <Search 
+                      size={20} 
                       className={cn(
-                        "p-2.5 rounded-full transition-all active:scale-95",
-                        viewMode === 'grid'
-                          ? (theme === 'dark' ? "bg-slate-800 shadow-inner" : "bg-white border border-slate-100 shadow-sm")
-                          : "text-slate-500 hover:text-slate-300"
-                      )}
-                    >
-                      <LayoutGrid 
-                        size={18} 
-                        className={cn(
-                          "transition-colors",
-                          viewMode === 'grid' ? "text-indigo-500" : ""
-                        )}
-                        style={viewMode === 'grid' ? { filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.3))' } : {}}
-                      />
-                    </button>
-                    <button
-                      onClick={() => onViewModeChange('list')}
-                      className={cn(
-                        "p-2.5 rounded-full transition-all active:scale-95",
-                        viewMode === 'list'
-                          ? (theme === 'dark' ? "bg-slate-800 shadow-inner" : "bg-white border border-slate-100 shadow-sm")
-                          : "text-slate-500 hover:text-slate-300"
-                      )}
-                    >
-                      <List 
-                        size={20} 
-                        className={cn(
-                          "transition-colors",
-                          viewMode === 'list' ? "text-indigo-500" : ""
-                        )}
-                        style={viewMode === 'list' ? { filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.3))' } : {}}
-                      />
-                    </button>
+                        "transition-colors",
+                        theme === 'dark' ? "text-slate-600 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
+                      )} 
+                    />
                   </div>
-                )}
+                  <input
+                    type="text"
+                    placeholder={searchPlaceholder.toUpperCase()}
+                    className={cn(
+                      "w-full py-3 px-4 border-none outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 font-bold text-sm tracking-widest uppercase transition-all bg-transparent",
+                      theme === 'dark'
+                        ? "text-white placeholder:text-slate-500"
+                        : "text-slate-900 placeholder:text-slate-400"
+                    )}
+                    value={searchQuery}
+                    onChange={(e) => onSearchChange?.(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Controls (Filter, View Toggles, Additional Actions) */}
+            <div className="flex items-center gap-4 h-full">
+              {toolbarActions}
+
+              <div className={cn(
+                "relative p-[1px] rounded-full transition-all duration-500 shadow-sm h-full",
+                "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]"
+              )}>
+                <div className={cn(
+                  "flex items-center gap-3 p-1 px-2 rounded-full backdrop-blur-2xl transition-all h-full",
+                  theme === 'dark' ? "bg-slate-950/95" : "bg-white/95"
+                )}>
+                  {showFilter && (
+                    <button
+                      onClick={onFilterClick}
+                      className={cn(
+                        "flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all group active:scale-95",
+                        theme === 'dark' ? "bg-slate-900 border-white/5 text-slate-500 hover:text-white" : "bg-white border-slate-100 text-slate-400 hover:text-slate-900 shadow-sm"
+                      )}
+                    >
+                      <Filter size={16} className="group-hover:scale-110 transition-transform" />
+                      <span className="text-[9px] font-black uppercase tracking-widest">Filter</span>
+                    </button>
+                  )}
+
+                  {viewMode && onViewModeChange && (
+                    <div className={cn(
+                      "rounded-full flex p-1 transition-all",
+                      theme === 'dark' ? "bg-slate-900/60" : "bg-slate-100/60"
+                    )}>
+                      <button
+                        onClick={() => onViewModeChange('grid')}
+                        className={cn(
+                          "p-2.5 rounded-full transition-all active:scale-95",
+                          viewMode === 'grid'
+                            ? (theme === 'dark' ? "bg-slate-800 shadow-inner" : "bg-white border border-slate-100 shadow-sm")
+                            : "text-slate-500 hover:text-slate-300"
+                        )}
+                      >
+                        <LayoutGrid 
+                          size={18} 
+                          className={cn(
+                            "transition-colors",
+                            viewMode === 'grid' ? "text-indigo-500" : ""
+                          )}
+                          style={viewMode === 'grid' ? { filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.3))' } : {}}
+                        />
+                      </button>
+                      <button
+                        onClick={() => onViewModeChange('list')}
+                        className={cn(
+                          "p-2.5 rounded-full transition-all active:scale-95",
+                          viewMode === 'list'
+                            ? (theme === 'dark' ? "bg-slate-800 shadow-inner" : "bg-white border border-slate-100 shadow-sm")
+                            : "text-slate-500 hover:text-slate-300"
+                        )}
+                      >
+                        <List 
+                          size={20} 
+                          className={cn(
+                            "transition-colors",
+                            viewMode === 'list' ? "text-indigo-500" : ""
+                          )}
+                          style={viewMode === 'list' ? { filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.3))' } : {}}
+                        />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+
+          {/* Bulk Actions - Appears under search if selection exists */}
+          <AnimatePresence>
+            {bulkActions && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2"
+              >
+                {bulkActions}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </div>

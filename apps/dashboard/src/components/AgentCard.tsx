@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { User, Trash2 } from 'lucide-react';
+import { User, Trash2, Check } from 'lucide-react';
 import { Agent } from '@/store/useAgentStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -13,9 +13,11 @@ interface AgentCardProps {
   viewMode: 'grid' | 'table';
   onDelete?: (id: string) => void;
   onClick?: () => void;
+  selected?: boolean;
+  onToggleSelection?: (e: React.MouseEvent) => void;
 }
 
-export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete, onClick }) => {
+export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete, onClick, selected, onToggleSelection }) => {
   const { theme } = useUIStore();
 
   if (viewMode === 'table') {
@@ -23,13 +25,26 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete,
       <div 
         onClick={onClick}
         className={cn(
-          "group p-4 rounded-[28px] border flex items-center justify-between transition-all w-full cursor-pointer",
-          theme === 'dark' 
-            ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30" 
-            : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200"
+          "group p-4 rounded-[28px] border flex items-center justify-between transition-all w-full cursor-pointer relative",
+          selected
+            ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+            : (theme === 'dark' 
+                ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30" 
+                : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200")
         )}
       >
         <div className="flex items-center gap-6">
+          {/* Selection Circle */}
+          <div 
+            onClick={onToggleSelection}
+            className={cn(
+            "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 cursor-pointer",
+            selected 
+              ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+              : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+          )}>
+            {selected && <Check size={12} strokeWidth={4} />}
+          </div>
           <div className={cn(
              "w-12 h-12 rounded-full overflow-hidden border shadow-lg transition-transform group-hover:scale-105",
              theme === 'dark' ? "bg-slate-800 border-slate-700 shadow-black/40" : "bg-white border-slate-200 shadow-sm"
@@ -92,12 +107,24 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete,
       onClick={onClick}
       className={cn(
         "group relative rounded-[40px] p-8 transition-all border shadow-xl flex flex-col h-full cursor-pointer",
-        theme === 'dark' 
-          ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
-          : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"
+        selected
+          ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+          : (theme === 'dark' 
+              ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
+              : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl")
       )}
     >
       <div className="flex justify-between items-start mb-8">
+        <div 
+          onClick={onToggleSelection}
+          className={cn(
+          "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
+          selected 
+            ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+            : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+        )}>
+          {selected && <Check size={14} strokeWidth={4} />}
+        </div>
         <div className={cn(
            "w-20 h-20 rounded-full overflow-hidden border shadow-2xl transition-all group-hover:scale-110 group-hover:rotate-2",
            theme === 'dark' ? "bg-slate-800 border-slate-700 shadow-black/40" : "bg-slate-50 border-white shadow-slate-200/50"

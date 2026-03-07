@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ShoppingCart,
   Plug,
   PackageCheck,
   Cpu,
-  Key
+  Key,
+  Trash2,
+  Copy,
+  Download
 } from 'lucide-react';
 import { useIntegrationStore } from '@/store/useIntegrationStore';
 import { useProviderStore, BUILTIN_PROVIDERS } from '@/store/useProviderStore';
@@ -15,16 +18,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 export default function IntegrationsPage() {
   const { myIntegrations, marketplaceIntegrations, isInstalled } = useIntegrationStore();
   const { providers, setPreferredModel, setApiKey, getApiKey } = useProviderStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const rawMode = getViewMode('/integrations', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
   const setViewMode = (m: 'grid' | 'list') => storeSetView('/integrations', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
 
   const currentIntegrations = activeTab === 'my' ? myIntegrations : marketplaceIntegrations;
   const filteredIntegrations = currentIntegrations.filter(
@@ -32,6 +42,39 @@ export default function IntegrationsPage() {
       i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       i.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const isAllSelected = filteredIntegrations.length > 0 && filteredIntegrations.every(i => selectedIds.includes(i.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredIntegrations.map(i => i.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Uninstall Plugins ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Duplicate Configuration
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export Manifest
+      </button>
+    </>
+  ) : null;
 
   return (
     <div className="max-w-[1600px] mx-auto space-y-10 pb-20">
@@ -47,6 +90,11 @@ export default function IntegrationsPage() {
         searchPlaceholder={`Search ${activeTab === 'my' ? 'installed' : 'marketplace'} integrations...`}
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
         onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
           <div
             className={cn(
@@ -106,6 +154,12 @@ export default function IntegrationsPage() {
                   viewMode={viewMode === 'grid' ? 'grid' : 'table'}
                   isInstalled={isInstalled(integration.name)}
                   source={activeTab === 'my' ? 'installed' : 'marketplace'}
+                  selected={selectedIds.includes(integration.id)}
+                  onToggleSelection={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(integration.id);
+                  }}
                 />
               </motion.div>
             ))}

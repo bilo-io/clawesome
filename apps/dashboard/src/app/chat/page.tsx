@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { MessageSquare, ChevronRight, Plus, LayoutGrid, List, Search, Filter } from 'lucide-react';
+import { MessageSquare, ChevronRight, Plus, LayoutGrid, List, Search, Filter, Trash2, Copy, Download, Check } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 const CHAT_TRANSITION = { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const };
 
@@ -21,11 +22,58 @@ const MOCK_CHATS = [
 export default function ChatsPage() {
   const router = useRouter();
   const { theme, getViewMode, setViewMode } = useUIStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [exitingId, setExitingId] = useState<string | null>(null);
   const viewMode = (getViewMode('/chat', 'grid') as 'grid' | 'list');
 
-  const handleSelectChat = (id: string) => {
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
+
+  const filteredChats = MOCK_CHATS.filter(chat => 
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    chat.preview.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const isAllSelected = filteredChats.length > 0 && filteredChats.every(chat => selectedIds.includes(chat.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredChats.map(chat => chat.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Burn Threads ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Duplicate Logs
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export Transcript
+      </button>
+    </>
+  ) : null;
+
+  const handleSelectChat = (id: string, e?: React.MouseEvent) => {
+    if (e) {
+      // If we are checking the type of the target, but let's just make it simple
+    }
     setExitingId(id);
   };
 
@@ -34,11 +82,6 @@ export default function ChatsPage() {
       router.push(`/chat/${exitingId}`);
     }
   };
-
-  const filteredChats = MOCK_CHATS.filter(chat => 
-    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    chat.preview.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <main className="max-w-[1200px] mx-auto space-y-10 pb-20">
@@ -51,6 +94,11 @@ export default function ChatsPage() {
         statusColor="indigo"
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         viewMode={viewMode}
         onViewModeChange={(mode: any) => setViewMode('/chat', mode)}
         searchPlaceholder="SEARCH THREADS..."
@@ -87,19 +135,37 @@ export default function ChatsPage() {
                   onClick={() => handleSelectChat(chat.id)}
                   className={cn(
                     "group relative border transition-all cursor-pointer overflow-hidden",
-                    theme === 'dark'
-                      ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30"
-                      : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200",
+                    selectedIds.includes(chat.id)
+                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                      : (theme === 'dark'
+                        ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30"
+                        : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200"),
                     viewMode === 'grid'
                       ? "rounded-[32px] p-6 flex flex-col"
-                      : "rounded-[28px] p-4 pr-6 flex items-center gap-5"
+                      : "rounded-[28px] p-4 pr-6 flex items-center gap-5 pl-12"
                   )}
                 >
+                  {/* Selection Indicator */}
+                  <div 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleSelection(chat.id);
+                    }}
+                    className={cn(
+                    "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+                    viewMode === 'grid' ? "top-5 left-5" : "left-4 top-1/2 -translate-y-1/2",
+                    selectedIds.includes(chat.id)
+                      ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                      : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                  )}>
+                    {selectedIds.includes(chat.id) && <Check size={14} strokeWidth={4} />}
+                  </div>
                   {/* Icon */}
                   <div className={cn(
                     "rounded-2xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110",
                     theme === 'dark' ? "bg-slate-800 text-indigo-400" : "bg-slate-100 text-indigo-600",
-                    viewMode === 'grid' ? "w-14 h-14 mb-5" : "w-10 h-10"
+                    viewMode === 'grid' ? "w-14 h-14 mb-5 ml-6" : "w-10 h-10"
                   )}>
                     <MessageSquare size={viewMode === 'grid' ? 26 : 20} />
                   </div>

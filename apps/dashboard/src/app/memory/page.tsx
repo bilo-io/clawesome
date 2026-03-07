@@ -1,12 +1,16 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Brain, 
   Plus, 
   MoreVertical,
   ChevronRight,
-  Database
+  Database,
+  Trash2,
+  Copy,
+  Download,
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
@@ -17,19 +21,24 @@ import { YoutubeIcon, PDFIcon } from './components';
 import { FileCode, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 export default function MemoriesPage() {
   const { theme, setViewMode: storeSetViewMode, getViewMode } = useUIStore();
   const { memories, addMemory } = useMemoryStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const router = useRouter();
 
   const viewMode = getViewMode('/memory', 'grid');
   const setViewMode = (mode: 'grid' | 'list') => storeSetViewMode('/memory', mode as any);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
   
-  const filteredMemories = useMemo(() => {
-    return memories.filter(m => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  }, [memories, searchQuery]);
+  const filteredMemories = memories.filter(m => m.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const handleCreateMemory = () => {
     // For demo purposes, we automatically create a new memory and redirect to its page
@@ -43,6 +52,39 @@ export default function MemoriesPage() {
     }, 100);
   };
 
+  const isAllSelected = filteredMemories.length > 0 && filteredMemories.every(m => selectedIds.includes(m.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredMemories.map(m => m.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Purge Clusters ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Replicate
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Snapshot JSON
+      </button>
+    </>
+  ) : null;
+
   return (
     <main className="space-y-12 pb-20 max-w-[1600px] mx-auto transition-colors duration-300">
       <DashboardResourceHeader
@@ -55,6 +97,11 @@ export default function MemoriesPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search context clusters..."
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         renderRight={
@@ -82,9 +129,27 @@ export default function MemoriesPage() {
               exit={{ opacity: 0, scale: 0.95 }}
             >
               {viewMode === 'grid' ? (
-                <MemoryCard memory={memory} theme={theme} />
+                <MemoryCard 
+                  memory={memory} 
+                  theme={theme} 
+                  selected={selectedIds.includes(memory.id)}
+                  onToggleSelection={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(memory.id);
+                  }}
+                />
               ) : (
-                <MemoryListItem memory={memory} theme={theme} />
+                <MemoryListItem 
+                  memory={memory} 
+                  theme={theme} 
+                  selected={selectedIds.includes(memory.id)}
+                  onToggleSelection={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(memory.id);
+                  }}
+                />
               )}
             </motion.div>
           ))}
@@ -103,16 +168,30 @@ export default function MemoriesPage() {
 }
 
 // Sub-components
-function MemoryCard({ memory, theme }: { memory: any, theme: 'light' | 'dark' }) {
+function MemoryCard({ memory, theme, selected, onToggleSelection }: { memory: any, theme: 'light' | 'dark', selected?: boolean, onToggleSelection?: (e: React.MouseEvent) => void }) {
   return (
-    <Link 
-      href={`/memory/${memory.id}`}
+    <div 
       className={cn(
         "group p-8 rounded-[48px] border shadow-2xl relative overflow-hidden transition-all h-full block cursor-pointer",
-        theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 shadow-black/40 hover:border-indigo-500/50" : "bg-white border-slate-100 shadow-slate-200/50 hover:border-indigo-400"
+        selected 
+          ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+          : (theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 shadow-black/40 hover:border-indigo-500/50" : "bg-white border-slate-100 shadow-slate-200/50 hover:border-indigo-400")
       )}
     >
-      <div className="flex justify-between items-start mb-8 relative z-10">
+      {/* Selection Indicator */}
+      <div 
+        onClick={onToggleSelection}
+        className={cn(
+        "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
+        selected 
+          ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+          : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+      )}>
+        {selected && <Check size={14} strokeWidth={4} />}
+      </div>
+
+      <Link href={`/memory/${memory.id}`} className="block relative z-10 pl-6">
+        <div className="flex justify-between items-start mb-8">
         <div className="p-4 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-500 group-hover:scale-110 transition-transform">
            <Brain size={28} />
         </div>
@@ -171,33 +250,50 @@ function MemoryCard({ memory, theme }: { memory: any, theme: 'light' | 'dark' })
         </div>
       </div>
 
+      </Link>
+
       {/* Background Decor */}
-      <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-colors" />
-    </Link>
+      <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full group-hover:bg-indigo-500/20 transition-colors pointer-events-none" />
+    </div>
   );
 }
 
-function MemoryListItem({ memory, theme }: { memory: any, theme: 'light' | 'dark' }) {
+function MemoryListItem({ memory, theme, selected, onToggleSelection }: { memory: any, theme: 'light' | 'dark', selected?: boolean, onToggleSelection?: (e: React.MouseEvent) => void }) {
   return (
-    <Link
-      href={`/memory/${memory.id}`}
+    <div
       className={cn(
-        "p-6 rounded-[32px] border transition-all flex items-center justify-between group h-full cursor-pointer",
-        theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/50" : "bg-white border-slate-100 hover:shadow-xl shadow-slate-200/50 hover:border-indigo-400"
+        "p-6 rounded-[32px] border transition-all flex items-center justify-between group h-full cursor-pointer relative",
+        selected 
+          ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+          : (theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/50" : "bg-white border-slate-100 hover:shadow-xl shadow-slate-200/50 hover:border-indigo-400")
       )}
     >
       <div className="flex items-center gap-6">
-        <div className="p-3 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-500 group-hover:scale-110 transition-transform">
-           <Brain size={20} />
+        {/* Selection Circle */}
+        <div 
+          onClick={onToggleSelection}
+          className={cn(
+          "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 cursor-pointer",
+          selected 
+            ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+            : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+        )}>
+          {selected && <Check size={12} strokeWidth={4} />}
         </div>
-        <div>
-          <h3 className={cn("text-lg font-black tracking-tight group-hover:text-indigo-500 transition-colors", theme === 'dark' ? "text-white" : "text-slate-900")}>
-            {memory.name}
-          </h3>
-          <p className={cn("text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>
-            {memory.documents.length}/{MAX_DOCUMENTS} Units <span className="text-slate-700">•</span> Updated {memory.lastUpdated}
-          </p>
-        </div>
+
+        <Link href={`/memory/${memory.id}`} className="flex items-center gap-6">
+          <div className="p-3 bg-indigo-500/10 rounded-full border border-indigo-500/20 text-indigo-500 group-hover:scale-110 transition-transform">
+             <Brain size={20} />
+          </div>
+          <div>
+            <h3 className={cn("text-lg font-black tracking-tight group-hover:text-indigo-500 transition-colors", theme === 'dark' ? "text-white" : "text-slate-900")}>
+              {memory.name}
+            </h3>
+            <p className={cn("text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 mt-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>
+              {memory.documents.length}/{MAX_DOCUMENTS} Units <span className="text-slate-700">•</span> Updated {memory.lastUpdated}
+            </p>
+          </div>
+        </Link>
       </div>
 
       <div className="flex items-center gap-4">
@@ -229,6 +325,6 @@ function MemoryListItem({ memory, theme }: { memory: any, theme: 'light' | 'dark
           <ChevronRight size={18} />
         </button>
       </div>
-    </Link>
-  );
+      </div>
+    );
 }

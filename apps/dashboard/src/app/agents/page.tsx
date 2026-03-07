@@ -1,9 +1,10 @@
 // apps/dashboard/src/app/agents/page.tsx
 'use client';
 
-import React, { useState } from 'react';
-import { Users, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Users, Plus, Trash2, Copy, Download } from 'lucide-react';
 import { useAgentStore } from '@/store/useAgentStore';
+import { useSelectionStore } from '@/store/useSelectionStore';
 import { AgentCard } from '@/components/AgentCard';
 import { CreateAgentModal } from '@/components/CreateAgentModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +17,8 @@ export default function AgentsPage() {
   const router = useRouter();
   const { agents, deleteAgent } = useAgentStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const { selectedIds, toggleSelection, setSelection, clearSelection, isSelected } = useSelectionStore();
+  
   // agents page uses 'grid' | 'table'; UIStore uses 'grid' | 'list' | 'table'
   const rawMode = getViewMode('/agents', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
@@ -23,10 +26,62 @@ export default function AgentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
+
   const filteredAgents = agents.filter(agent => 
     agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     agent.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const allFilteredIds = filteredAgents.map(a => a.id);
+  const isAllSelected = allFilteredIds.length > 0 && allFilteredIds.every(id => selectedIds.includes(id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(allFilteredIds);
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <div className="flex items-center gap-2">
+      <button 
+        onClick={() => {
+          selectedIds.forEach(id => deleteAgent(id));
+          clearSelection();
+        }}
+        className={cn(
+          "flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
+          theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-400 hover:bg-rose-500/20" : "bg-rose-50 border-rose-100 text-rose-600 hover:bg-rose-100 shadow-sm"
+        )}
+      >
+        <Trash2 size={12} />
+        Delete ({selectedIds.length})
+      </button>
+      <button 
+        className={cn(
+          "flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
+          theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-200 text-slate-600 hover:text-slate-950 shadow-sm"
+        )}
+      >
+        <Copy size={12} />
+        Clone
+      </button>
+      <button 
+        className={cn(
+          "flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all",
+          theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-200 text-slate-600 hover:text-slate-950 shadow-sm"
+        )}
+      >
+        <Download size={12} />
+        Export
+      </button>
+    </div>
+  ) : null;
 
   return (
     <div className="max-w-[1600px] mx-auto space-y-10 pb-20">
@@ -42,6 +97,11 @@ export default function AgentsPage() {
         searchPlaceholder="Search agents by name or title..."
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
         onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
           <button
             onClick={() => setIsModalOpen(true)}
@@ -78,6 +138,11 @@ export default function AgentsPage() {
                   viewMode={viewMode === 'grid' ? 'grid' : 'table'}
                   onDelete={deleteAgent}
                   onClick={() => router.push(`/agents/${agent.id}`)}
+                  selected={isSelected(agent.id)}
+                  onToggleSelection={(e) => {
+                    e.stopPropagation();
+                    toggleSelection(agent.id);
+                  }}
                 />
               </motion.div>
             ))}

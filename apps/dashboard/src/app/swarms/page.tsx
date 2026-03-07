@@ -1,13 +1,14 @@
 // apps/dashboard/src/app/workspaces/page.tsx
 'use client';
 
-import React from 'react';
-import { Briefcase, Globe, Plus, Search, ChevronRight, Activity, LayoutGrid, List } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Briefcase, Globe, Plus, Search, ChevronRight, Activity, LayoutGrid, List, Trash2, Copy, Download } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { WorkspaceGallery } from '@/components/WorkspaceGallery';
+import { WorkspaceGallery, workspaces } from '@/components/WorkspaceGallery';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 const HeaderExternalSync = () => {
   const { theme } = useUIStore();
@@ -44,8 +45,52 @@ const HeaderExternalSync = () => {
 
 export default function SwarmsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
+  const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/swarms', 'grid') as 'grid' | 'list');
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
+
+  const filteredWorkspaces = workspaces.filter(ws => 
+    ws.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ws.path.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const isAllSelected = filteredWorkspaces.length > 0 && filteredWorkspaces.every(ws => selectedIds.includes(ws.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredWorkspaces.map(ws => ws.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Delete Swarms ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Clone
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export Manifest
+      </button>
+    </>
+  ) : null;
 
   return (
     <main className="space-y-10 pb-20 max-w-[1600px] mx-auto">
@@ -63,6 +108,10 @@ export default function SwarmsPage() {
         onViewModeChange={(mode: any) => setViewMode('/swarms', mode)}
         searchPlaceholder="SEARCH SWARM PROTOCOL..."
         renderRight={<HeaderExternalSync />}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
       />
 
       <section className="space-y-6">
@@ -72,7 +121,11 @@ export default function SwarmsPage() {
             </div>
             <h2 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", theme === 'dark' ? "text-slate-500" : "text-slate-600")}>Active Swarm Nodes</h2>
         </div>
-        <WorkspaceGallery viewMode={viewMode} />
+        <WorkspaceGallery 
+          viewMode={viewMode} 
+          selectedIds={selectedIds}
+          onToggleSelection={(id) => toggleSelection(id)}
+        />
       </section>
     </main>
   );

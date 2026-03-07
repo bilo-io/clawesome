@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Terminal, Activity, Bell, Filter, ChevronRight, LayoutGrid, List, Search, ChevronDown, Clock, ShieldCheck, Box } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Terminal, Activity, Bell, Filter, ChevronRight, LayoutGrid, List, Search, ChevronDown, Clock, ShieldCheck, Box, Trash2, Copy, Download, Check } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 interface LogEntry {
   id: string;
@@ -136,14 +137,55 @@ const getLevelBg = (level: string) => {
 
 export default function LogsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/logs', 'list') as 'grid' | 'list');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
 
   const filteredLogs = MOCK_LOGS.filter(log => 
-    log.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    log.module.toLowerCase().includes(searchQuery.toLowerCase())
+    log.module.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    log.message.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const isAllSelected = filteredLogs.length > 0 && filteredLogs.every(log => selectedIds.includes(log.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredLogs.map(log => log.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Purge Logs ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Copy Sequence
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export CSV
+      </button>
+    </>
+  ) : null;
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id);
@@ -162,6 +204,11 @@ export default function LogsPage() {
         onSearchChange={setSearchQuery}
         viewMode={viewMode}
         onViewModeChange={(mode: any) => setViewMode('/logs', mode)}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
           <div className="flex items-center gap-4 h-[56px]">
             <button className={cn(
@@ -196,14 +243,33 @@ export default function LogsPage() {
                 className={cn(
                   "transition-all cursor-pointer group relative overflow-hidden transition-all border shadow-xl flex flex-col",
                   viewMode === 'list' ? "p-4 px-8 rounded-[24px]" : "p-8 rounded-[40px] h-full",
-                  theme === 'dark' 
-                    ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
-                    : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"
+                  selectedIds.includes(log.id)
+                    ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                    : (theme === 'dark' 
+                        ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
+                        : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl")
                 )}
               >
+                {/* Selection Indicator */}
+                <div 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(log.id);
+                  }}
+                  className={cn(
+                  "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+                  viewMode === 'grid' ? "top-5 left-5" : "left-4 top-1/2 -translate-y-1/2",
+                  selectedIds.includes(log.id)
+                    ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                    : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                )}>
+                  {selectedIds.includes(log.id) && <Check size={14} strokeWidth={4} />}
+                </div>
+
                 <div className={cn(
                   "flex justify-between items-center relative z-10",
-                  viewMode === 'list' ? "flex-row" : "flex-col items-start gap-4"
+                  viewMode === 'list' ? "flex-row pl-10" : "flex-col items-start gap-4 pl-6"
                 )}>
                 {viewMode === 'list' ? (
                   <>

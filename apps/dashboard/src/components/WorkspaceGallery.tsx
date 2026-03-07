@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { Briefcase, User, GraduationCap, Globe, Plus, MapPin, ChevronRight, Zap } from 'lucide-react';
+import { Briefcase, User, GraduationCap, Globe, Plus, MapPin, ChevronRight, Zap, Check } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -84,7 +84,15 @@ const getColorClasses = (color: string, theme: 'light' | 'dark') => {
   }
 };
 
-export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'list' }) => {
+export const WorkspaceGallery = ({ 
+  viewMode = 'grid',
+  selectedIds = [],
+  onToggleSelection
+}: { 
+  viewMode?: 'grid' | 'list',
+  selectedIds?: string[],
+  onToggleSelection?: (id: string, e: React.MouseEvent) => void
+}) => {
   const { theme } = useUIStore();
   const router = useRouter();
 
@@ -109,12 +117,33 @@ export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'l
             className={cn(
               "group transition-all cursor-pointer relative overflow-hidden border shadow-xl flex flex-col",
               viewMode === 'grid' ? "p-8 rounded-[40px]" : "p-4 pr-8 rounded-[28px] flex-row items-center justify-between",
-              theme === 'dark' 
-                ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
-                : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"
+              selectedIds.includes(ws.id)
+                ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                : (theme === 'dark' 
+                    ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
+                    : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl")
             )}
           >
-            <div className={cn("flex items-center", viewMode === 'grid' ? "flex-col items-start" : "gap-6")}>
+            {/* Selection Indicator */}
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSelection?.(ws.id, e);
+              }}
+              className={cn(
+              "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+              viewMode === 'grid' ? "top-6 right-6" : "left-4 top-1/2 -translate-y-1/2",
+              selectedIds.includes(ws.id)
+                ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+            )}>
+              {selectedIds.includes(ws.id) && <Check size={16} strokeWidth={4} />}
+            </div>
+
+            <div 
+              className={cn("flex items-center", viewMode === 'grid' ? "flex-col items-start" : "gap-6 pl-12")}
+              onClick={() => router.push(`/swarms/${ws.id}`)}
+            >
               <div className={cn(
                 "rounded-2xl shadow-inner border transition-transform group-hover:scale-110", 
                 getColorClasses(ws.color, theme),

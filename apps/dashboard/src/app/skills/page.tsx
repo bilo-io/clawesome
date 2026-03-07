@@ -1,11 +1,14 @@
 // apps/dashboard/src/app/skills/page.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShoppingCart,
   Cpu,
-  PackageCheck
+  PackageCheck,
+  Trash2,
+  Copy,
+  Download
 } from 'lucide-react';
 import { useSkillStore } from '@/store/useSkillStore';
 import { SkillCard } from '@/components/SkillCard';
@@ -13,15 +16,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 export default function SkillsPage() {
   const { mySkills, marketplaceSkills } = useSkillStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const rawMode = getViewMode('/skills', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
   const setViewMode = (m: 'grid' | 'list') => storeSetView('/skills', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
 
   const currentSkills = activeTab === 'my' ? mySkills : marketplaceSkills;
   
@@ -33,6 +43,39 @@ export default function SkillsPage() {
   const isSkillImported = (skillName: string) => {
     return mySkills.some(s => s.name === skillName);
   };
+
+  const isAllSelected = filteredSkills.length > 0 && filteredSkills.every(s => selectedIds.includes(s.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredSkills.map(s => s.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Uninstall Skills ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Duplicate
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export Logic
+      </button>
+    </>
+  ) : null;
 
   return (
     <div className="max-w-[1600px] mx-auto space-y-10 pb-20">
@@ -49,6 +92,10 @@ export default function SkillsPage() {
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
         onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
         showFilter
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
           <div className={cn(
             "flex items-center gap-2 p-1.5 rounded-full border transition-all shadow-xl",
@@ -105,6 +152,12 @@ export default function SkillsPage() {
                   skill={skill} 
                   viewMode={viewMode === 'grid' ? 'grid' : 'table'} 
                   isImported={isSkillImported(skill.name)}
+                  selected={selectedIds.includes(skill.id)}
+                  onToggleSelection={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSelection(skill.id);
+                  }}
                 />
               </motion.div>
             ))}
