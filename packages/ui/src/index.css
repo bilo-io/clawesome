@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Use app theme (html class) for dark mode, not OS preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
