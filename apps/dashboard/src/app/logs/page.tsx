@@ -179,7 +179,7 @@ export default function LogsPage() {
 
       <div className={cn(
         "transition-all duration-500",
-        viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"
+        viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-2"
       )}>
         <AnimatePresence mode="popLayout">
           {filteredLogs.map((log) => (

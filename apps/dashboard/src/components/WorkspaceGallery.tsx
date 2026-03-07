@@ -6,8 +6,9 @@ import { Briefcase, User, GraduationCap, Globe, Plus, MapPin, ChevronRight, Zap 
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
-const workspaces = [
+export const workspaces = [
   { 
     id: '1', 
     icon: Briefcase, 
@@ -85,6 +86,7 @@ const getColorClasses = (color: string, theme: 'light' | 'dark') => {
 
 export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'list' }) => {
   const { theme } = useUIStore();
+  const router = useRouter();
 
   return (
     <div className={cn(
@@ -103,6 +105,7 @@ export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'l
               layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
               opacity: { duration: 0.3 }
             }}
+            onClick={() => router.push(`/swarms/${ws.id}`)}
             className={cn(
               "group transition-all cursor-pointer relative overflow-hidden border shadow-xl flex flex-col",
               viewMode === 'grid' ? "p-8 rounded-[40px]" : "p-4 pr-8 rounded-[28px] flex-row items-center justify-between",

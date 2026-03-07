@@ -208,7 +208,7 @@ export const GroupedBarChart = ({ data, series, xKey, className, height = 280, s
               fill={s.color}
               stackId={stacked ? 'stacked' : undefined}
               radius={i === series.length - 1 || !stacked ? [4, 4, 0, 0] : [0, 0, 0, 0]}
-              maxBarSize={48}
+              maxBarSize={8}
             />
           ))}
         </BarChart>

@@ -212,11 +212,11 @@ export default function ConfigPage() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12"
+            className="grid grid-cols-1 xl:grid-cols-2 gap-8"
           >
             {/* Basic Info */}
-            <div className="space-y-12">
-               <section className={cn("p-10 rounded-[40px] border shadow-2xl space-y-8", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
+            <div className="space-y-8">
+               <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
                   <div className="flex items-center gap-4 mb-2">
                      <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-indigo-500">
                         <User size={20} />
@@ -231,7 +231,7 @@ export default function ConfigPage() {
                          type="text"
                          value={config?.name}
                          onChange={(e) => setConfig(prev => prev ? { ...prev, name: e.target.value } : null)}
-                         className={cn("w-full px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-100")}
+                         className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")}
                        />
                     </div>
                     <div className="space-y-3">
@@ -240,7 +240,7 @@ export default function ConfigPage() {
                          type="text"
                          value={config?.version}
                          onChange={(e) => setConfig(prev => prev ? { ...prev, version: e.target.value } : null)}
-                         className={cn("w-full px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-100")}
+                         className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")}
                        />
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export default function ConfigPage() {
                          type="text"
                          value={config?.user.role}
                          onChange={(e) => setConfig(prev => prev ? { ...prev, user: { ...prev.user, role: e.target.value } } : null)}
-                         className={cn("w-full px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-100")}
+                         className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")}
                        />
                     </div>
                     <div className="space-y-3">
@@ -261,119 +261,119 @@ export default function ConfigPage() {
                          type="text"
                          value={config?.user.name}
                          onChange={(e) => setConfig(prev => prev ? { ...prev, user: { ...prev.user, name: e.target.value } } : null)}
-                         className={cn("w-full px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-100")}
+                         className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")}
                        />
                     </div>
                   </div>
                </section>
 
-               <section className={cn("p-10 rounded-[40px] border shadow-2xl space-y-8", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                       <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-500">
-                          <Bot size={20} />
-                       </div>
-                       <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Neural Swarm</h2>
+              <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-500">
+                      <Shield size={20} />
                     </div>
-                    <button 
-                      onClick={() => setConfig(prev => prev ? { ...prev, 'agents:': [...prev['agents:'], { name: '', role: '' }] } : null)}
-                      className={cn("p-2 rounded-xl transition-all", theme === 'dark' ? "hover:bg-slate-800 text-slate-600 hover:text-white" : "hover:bg-slate-50 text-slate-300 hover:text-black")}
-                    >
-                       <Plus size={18} />
-                    </button>
+                    <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Gateways</h2>
                   </div>
+                  <button
+                    onClick={() => setConfig(prev => prev ? { ...prev, connections: [...prev.connections, { name: '', code: '', apiKey: '' }] } : null)}
+                    className={cn("p-2 rounded-xl transition-all", theme === 'dark' ? "hover:bg-slate-800 text-slate-600 hover:text-white" : "hover:bg-slate-50 text-slate-300 hover:text-black")}
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
 
-                  <div className="space-y-4">
-                     {config?.['agents:'].map((agent, i) => (
-                       <div key={i} className="flex gap-4 group">
-                          <input 
-                            placeholder="Name"
-                            value={agent.name}
-                            onChange={(e) => {
-                               const newAgents = [...config['agents:']];
-                               newAgents[i].name = e.target.value;
-                               setConfig({ ...config, 'agents:': newAgents });
-                            }}
-                            className={cn("flex-[2] px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-black/50 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100")}
-                          />
-                          <input 
-                            placeholder="Role"
-                            value={agent.role}
-                            onChange={(e) => {
-                               const newAgents = [...config['agents:']];
-                               newAgents[i].role = e.target.value;
-                               setConfig({ ...config, 'agents:': newAgents });
-                            }}
-                            className={cn("flex-[3] px-6 py-4 rounded-2xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-black/50 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100")}
-                          />
-                          <button 
-                            onClick={() => {
-                               const newAgents = [...config['agents:']].filter((_, idx) => idx !== i);
-                               setConfig({ ...config, 'agents:': newAgents });
-                            }}
-                            className="p-4 rounded-2xl text-slate-700 hover:bg-rose-500/10 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all shrink-0"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                       </div>
-                     ))}
-                  </div>
-               </section>
+                <div className="space-y-4">
+                  {config?.connections.map((conn, i) => (
+                    <div key={i} className={cn("p-5 rounded-3xl border space-y-4 relative group", theme === 'dark' ? "bg-black/40 border-slate-800/50" : "bg-slate-50 border-slate-100 shadow-sm")}>
+                      <div className="grid grid-cols-2 gap-4">
+                        <input value={conn.name} placeholder="Name" onChange={(e) => {
+                          const newC = [...config.connections];
+                          newC[i].name = e.target.value;
+                          setConfig({ ...config, connections: newC });
+                        }} className={cn("px-4 py-2 bg-transparent border-b outline-none font-black text-xs uppercase tracking-widest", theme === 'dark' ? "border-slate-800 text-white" : "border-slate-200 text-slate-900")} />
+                        <input value={conn.code} placeholder="Code" onChange={(e) => {
+                          const newC = [...config.connections];
+                          newC[i].code = e.target.value;
+                          setConfig({ ...config, connections: newC });
+                        }} className={cn("px-4 py-2 bg-transparent border-b outline-none font-black text-xs uppercase tracking-widest", theme === 'dark' ? "border-slate-800 text-slate-400" : "border-slate-200 text-slate-500")} />
+                      </div>
+                      <input value={conn.apiKey} placeholder="Neural Secret Key" type="password" onChange={(e) => {
+                        const newC = [...config.connections];
+                        newC[i].apiKey = e.target.value;
+                        setConfig({ ...config, connections: newC });
+                      }} className={cn("w-full px-5 py-3 rounded-xl border outline-none font-mono text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-indigo-400" : "bg-white border-slate-200 text-indigo-600")} />
+                      <button
+                        onClick={() => {
+                          const newC = [...config.connections].filter((_, idx) => idx !== i);
+                          setConfig({ ...config, connections: newC });
+                        }}
+                        className="absolute -top-3 -right-3 p-2 rounded-lg bg-rose-500 text-white opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-110 active:scale-95"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
             </div>
 
             {/* AI Providers & Connections */}
-            <div className="space-y-12">
-               <section className={cn("p-10 rounded-[40px] border shadow-2xl space-y-8", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                       <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-500">
-                          <Shield size={20} />
-                       </div>
-                       <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Gateways</h2>
+            <div className="space-y-8">
+              <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-amber-500">
+                      <Bot size={20} />
                     </div>
-                    <button 
-                      onClick={() => setConfig(prev => prev ? { ...prev, connections: [...prev.connections, { name: '', code: '', apiKey: '' }] } : null)}
-                      className={cn("p-2 rounded-xl transition-all", theme === 'dark' ? "hover:bg-slate-800 text-slate-600 hover:text-white" : "hover:bg-slate-50 text-slate-300 hover:text-black")}
-                    >
-                       <Plus size={18} />
-                    </button>
+                    <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Neural Swarm</h2>
                   </div>
+                  <button
+                    onClick={() => setConfig(prev => prev ? { ...prev, 'agents:': [...prev['agents:'], { name: '', role: '' }] } : null)}
+                    className={cn("p-2 rounded-xl transition-all", theme === 'dark' ? "hover:bg-slate-800 text-slate-600 hover:text-white" : "hover:bg-slate-50 text-slate-300 hover:text-black")}
+                  >
+                    <Plus size={18} />
+                  </button>
+                </div>
 
-                  <div className="space-y-6">
-                     {config?.connections.map((conn, i) => (
-                       <div key={i} className={cn("p-6 rounded-3xl border space-y-4 relative group", theme === 'dark' ? "bg-black/40 border-slate-800/50" : "bg-slate-50 border-slate-100 shadow-sm")}>
-                          <div className="grid grid-cols-2 gap-4">
-                             <input value={conn.name} placeholder="Name" onChange={(e) => {
-                               const newC = [...config.connections];
-                               newC[i].name = e.target.value;
-                               setConfig({ ...config, connections: newC });
-                             }} className={cn("px-4 py-2 bg-transparent border-b outline-none font-black text-xs uppercase tracking-widest", theme === 'dark' ? "border-slate-800 text-white" : "border-slate-200 text-slate-900")} />
-                             <input value={conn.code} placeholder="Code" onChange={(e) => {
-                               const newC = [...config.connections];
-                               newC[i].code = e.target.value;
-                               setConfig({ ...config, connections: newC });
-                             }} className={cn("px-4 py-2 bg-transparent border-b outline-none font-black text-xs uppercase tracking-widest", theme === 'dark' ? "border-slate-800 text-slate-400" : "border-slate-200 text-slate-500")} />
-                          </div>
-                          <input value={conn.apiKey} placeholder="Neural Secret Key" type="password" onChange={(e) => {
-                               const newC = [...config.connections];
-                               newC[i].apiKey = e.target.value;
-                               setConfig({ ...config, connections: newC });
-                             }} className={cn("w-full px-5 py-3 rounded-xl border outline-none font-mono text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-indigo-400" : "bg-white border-slate-200 text-indigo-600")} />
-                          <button 
-                            onClick={() => {
-                               const newC = [...config.connections].filter((_, idx) => idx !== i);
-                               setConfig({ ...config, connections: newC });
-                            }}
-                            className="absolute -top-3 -right-3 p-2 rounded-lg bg-rose-500 text-white opacity-0 group-hover:opacity-100 transition-all shadow-xl hover:scale-110 active:scale-95"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                       </div>
-                     ))}
-                  </div>
-               </section>
+                <div className="space-y-4">
+                  {config?.['agents:'].map((agent, i) => (
+                    <div key={i} className="flex gap-4 group">
+                      <input
+                        placeholder="Name"
+                        value={agent.name}
+                        onChange={(e) => {
+                          const newAgents = [...config['agents:']];
+                          newAgents[i].name = e.target.value;
+                          setConfig({ ...config, 'agents:': newAgents });
+                        }}
+                        className={cn("flex-[2] px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-black/50 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100")}
+                      />
+                      <input
+                        placeholder="Role"
+                        value={agent.role}
+                        onChange={(e) => {
+                          const newAgents = [...config['agents:']];
+                          newAgents[i].role = e.target.value;
+                          setConfig({ ...config, 'agents:': newAgents });
+                        }}
+                        className={cn("flex-[3] px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-black/50 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100")}
+                      />
+                      <button
+                        onClick={() => {
+                          const newAgents = [...config['agents:']].filter((_, idx) => idx !== i);
+                          setConfig({ ...config, 'agents:': newAgents });
+                        }}
+                        className="p-3 rounded-xl text-slate-700 hover:bg-rose-500/10 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
-               <section className={cn("p-10 rounded-[40px] border shadow-2xl space-y-8", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
+               <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                        <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-500">
@@ -389,10 +389,10 @@ export default function ConfigPage() {
                     </button>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                      {config?.ai.providers.map((provider, i) => (
-                       <div key={i} className={cn("p-8 rounded-[32px] border space-y-6 relative group transition-all", theme === 'dark' ? "bg-black/20 border-slate-800/80 hover:bg-black/30" : "bg-slate-50/50 border-slate-100")}>
-                          <div className="flex justify-between items-center bg-black/40 p-4 rounded-2xl mb-4 border border-white/5">
+                       <div key={i} className={cn("p-6 rounded-3xl border space-y-4 relative group transition-all", theme === 'dark' ? "bg-black/20 border-slate-800/80 hover:bg-black/30" : "bg-slate-50/50 border-slate-100")}>
+                          <div className="flex justify-between items-center bg-black/40 p-3 rounded-2xl mb-2 border border-white/5">
                              <div className="flex gap-4 items-center">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500 italic ml-2">Provider_{i+1}</span>
                                 <input value={provider.name} onChange={(ev) => {
@@ -431,7 +431,7 @@ export default function ConfigPage() {
                                    newP[i].models = ev.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
                                    setConfig({ ...config, ai: { providers: newP } });
                                  }} 
-                                 className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-300" : "bg-white border-slate-200 text-slate-600")} 
+                                 className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-300 focus:border-indigo-500/50" : "bg-white border-slate-200 text-slate-600 focus:border-indigo-500/50")} 
                                />
                              </div>
                           </div>

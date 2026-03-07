@@ -1,4 +1,9 @@
-# /install
+---
+title: Install
+description: Installs the CLI and tests it.
+---
+
+# Workflow: /install
 Run the following installation command in the terminal:
 `bun run cli:install`
 

@@ -10,8 +10,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useRouter } from 'next/navigation';
 
 export default function AgentsPage() {
+  const router = useRouter();
   const { agents, deleteAgent } = useAgentStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
   // agents page uses 'grid' | 'table'; UIStore uses 'grid' | 'list' | 'table'
@@ -75,6 +77,7 @@ export default function AgentsPage() {
                   agent={agent} 
                   viewMode={viewMode === 'grid' ? 'grid' : 'table'}
                   onDelete={deleteAgent}
+                  onClick={() => router.push(`/agents/${agent.id}`)}
                 />
               </motion.div>
             ))}

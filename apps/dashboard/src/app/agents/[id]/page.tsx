@@ -20,14 +20,20 @@ import ReactMarkdown from 'react-markdown';
 import { useAgentStore } from '@/store/useAgentStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useUIStore } from '@/store/useUIStore';
 
 export default function AgentSoulEditor({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
   const { getAgentById, updateAgent } = useAgentStore();
+  const { theme } = useUIStore();
   
   const agent = getAgentById(id);
   const [content, setContent] = useState(agent?.soulMarkdown || '');
+  const [name, setName] = useState(agent?.name || '');
+  const [title, setTitle] = useState(agent?.title || '');
+  
   const [isSaving, setIsSaving] = useState(false);
   const [viewMode, setViewMode] = useState<'split' | 'editor' | 'preview'>('split');
   const [activeTab, setActiveTab] = useState<'soul' | 'logs' | 'config'>('soul');
@@ -44,78 +50,43 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
     setIsSaving(true);
     // Simulate network delay for effect
     await new Promise(resolve => setTimeout(resolve, 800));
-    updateAgent(id, { soulMarkdown: content });
+    updateAgent(id, { soulMarkdown: content, name, title });
     setIsSaving(false);
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] max-w-[1600px] mx-auto">
-      {/* Top Header */}
-      <div className="flex items-center justify-between mb-6 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => router.push('/agents')}
-            className="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-all"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <div className="flex items-center gap-3 border-l border-slate-800 pl-4">
-            <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-800 border border-slate-700">
-              {agent.profilePicture ? (
-                <img src={agent.profilePicture} alt={agent.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-500">
-                  <Terminal size={20} />
-                </div>
+    <div className="flex flex-col h-[calc(100vh-140px)] max-w-[1600px] mx-auto space-y-6">
+      <DashboardResourceHeader
+        title={`Agent: ${name}`}
+        description={`Detailed configurations, cognitive prompts, and core purpose for agent #${agent.id.slice(0, 8)}.`}
+        badge="NC-PROFILE"
+        statusLabel="Status:"
+        statusValue="Active Soul"
+        statusColor="indigo"
+        isCollection={false}
+        renderRight={
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => router.push('/agents')}
+              className={cn(
+                 "flex items-center gap-2 p-3 px-6 rounded-2xl transition-all border",
+                 theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-200 text-slate-500 hover:text-slate-900"
               )}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-white tracking-tight">{agent.name}</h1>
-                <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-[10px] font-bold text-indigo-400 uppercase tracking-widest border border-indigo-500/20">
-                  Active Lifecycle
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 font-medium">SOUL.md • Agent ID: {agent.id.slice(0, 8)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-1 flex mr-4">
-            <button 
-              onClick={() => setViewMode('editor')}
-              className={cn("p-2 rounded-lg transition-all", viewMode === 'editor' ? "bg-slate-800 text-indigo-400" : "text-slate-500 hover:text-slate-300")}
             >
-              <Code2 size={16} />
+              <ArrowLeft size={16} />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Back</span>
             </button>
             <button 
-              onClick={() => setViewMode('split')}
-              className={cn("p-2 rounded-lg transition-all", viewMode === 'split' ? "bg-slate-800 text-indigo-400" : "text-slate-500 hover:text-slate-300")}
+              onClick={handleSave}
+              disabled={isSaving}
+              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-2xl font-bold transition-all shadow-lg shadow-indigo-500/20"
             >
-              <div className="flex gap-0.5">
-                <div className="w-1.5 h-3 bg-current rounded-sm opacity-50" />
-                <div className="w-1.5 h-3 bg-current rounded-sm" />
-              </div>
-            </button>
-            <button 
-              onClick={() => setViewMode('preview')}
-              className={cn("p-2 rounded-lg transition-all", viewMode === 'preview' ? "bg-slate-800 text-indigo-400" : "text-slate-500 hover:text-slate-300")}
-            >
-              <Eye size={16} />
+              {isSaving ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
+              <span className="text-[10px] uppercase tracking-widest">{isSaving ? 'Compiling Soul...' : 'Save Changes'}</span>
             </button>
           </div>
-
-          <button 
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20"
-          >
-            {isSaving ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
-            <span>{isSaving ? 'Compiling Soul...' : 'Save Changes'}</span>
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Main Workspace */}
       <div className="flex-1 flex gap-4 overflow-hidden mb-4">
@@ -141,9 +112,91 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
            </button>
         </div>
 
-        {/* Editor Area */}
-        <div className="flex-1 flex gap-4 overflow-hidden">
-          {(viewMode === 'editor' || viewMode === 'split') && (
+        {/* View Mode Controls (only for soul tab) */}
+        {activeTab === 'soul' && (
+          <div className="absolute right-8 top-12 z-10 flex gap-2">
+            <div className={cn("border rounded-xl p-1 flex shadow-sm", theme === 'dark' ? "bg-slate-950 border-slate-800" : "bg-white border-slate-200")}>
+              <button 
+                onClick={() => setViewMode('editor')}
+                className={cn("p-2 rounded-lg transition-all", viewMode === 'editor' ? (theme === 'dark' ? "bg-slate-800 text-indigo-400" : "bg-slate-100 text-indigo-600") : "text-slate-500 hover:text-slate-300")}
+              >
+                <Code2 size={16} />
+              </button>
+              <button 
+                onClick={() => setViewMode('split')}
+                className={cn("p-2 rounded-lg transition-all", viewMode === 'split' ? (theme === 'dark' ? "bg-slate-800 text-indigo-400" : "bg-slate-100 text-indigo-600") : "text-slate-500 hover:text-slate-300")}
+              >
+                <div className="flex gap-0.5 items-center justify-center">
+                  <div className="w-1.5 h-3 bg-current rounded-sm opacity-50" />
+                  <div className="w-1.5 h-3 bg-current rounded-sm" />
+                </div>
+              </button>
+              <button 
+                onClick={() => setViewMode('preview')}
+                className={cn("p-2 rounded-lg transition-all", viewMode === 'preview' ? (theme === 'dark' ? "bg-slate-800 text-indigo-400" : "bg-slate-100 text-indigo-600") : "text-slate-500 hover:text-slate-300")}
+              >
+                <Eye size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Editor / Config Area */}
+        <div className="flex-1 flex gap-4 overflow-hidden relative">
+          {activeTab === 'config' && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={cn(
+                "w-full h-full p-10 rounded-2xl border shadow-xl flex flex-col items-center",
+                theme === 'dark' ? "bg-slate-900/40 border-slate-800" : "bg-white border-slate-100"
+              )}
+            >
+              <div className="w-full max-w-2xl space-y-8">
+                <div className="space-y-4">
+                  <label className={cn("block text-[10px] font-black uppercase tracking-widest", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>
+                    Agent Name
+                  </label>
+                  <input 
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={cn(
+                      "w-full p-4 rounded-2xl font-black text-xl outline-none border-2 transition-all",
+                      theme === 'dark' 
+                        ? "bg-slate-900 border-slate-800 text-white focus:border-indigo-500" 
+                        : "bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500"
+                    )}
+                  />
+                </div>
+
+                <div className="space-y-4 text-left">
+                  <label className={cn("block text-[10px] font-black uppercase tracking-widest", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>
+                    Directive / Purpose
+                  </label>
+                  <input 
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className={cn(
+                      "w-full p-4 rounded-2xl font-medium outline-none border-2 transition-all",
+                      theme === 'dark' 
+                        ? "bg-slate-900 border-slate-800 text-slate-300 focus:border-indigo-500" 
+                        : "bg-slate-50 border-slate-200 text-slate-600 focus:border-indigo-500"
+                    )}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'logs' && (
+             <motion.div className="flex w-full items-center justify-center p-20">
+               <p className="text-slate-500">No logs available for this session.</p>
+             </motion.div>
+          )}
+
+          {activeTab === 'soul' && (
+            <>
+              {(viewMode === 'editor' || viewMode === 'split') && (
             <motion.div 
               layout
               className={cn(
@@ -212,6 +265,8 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
               </div>
             </motion.div>
           )}
+          </>
+        )}
         </div>
       </div>
       

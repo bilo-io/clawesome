@@ -2,8 +2,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { User, Edit2, Trash2 } from 'lucide-react';
+import { User, Trash2 } from 'lucide-react';
 import { Agent } from '@/store/useAgentStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -13,16 +12,18 @@ interface AgentCardProps {
   agent: Agent;
   viewMode: 'grid' | 'table';
   onDelete?: (id: string) => void;
+  onClick?: () => void;
 }
 
-export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete }) => {
+export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete, onClick }) => {
   const { theme } = useUIStore();
 
   if (viewMode === 'table') {
     return (
       <div 
+        onClick={onClick}
         className={cn(
-          "group p-4 rounded-[28px] border flex items-center justify-between transition-all w-full",
+          "group p-4 rounded-[28px] border flex items-center justify-between transition-all w-full cursor-pointer",
           theme === 'dark' 
             ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30" 
             : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200"
@@ -68,17 +69,11 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete 
           </div>
 
           <div className="flex items-center gap-3">
-            <Link 
-              href={`/agents/${agent.id}`}
-              className={cn(
-                "p-3 rounded-2xl transition-all border",
-                theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-500 hover:text-indigo-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-indigo-600 shadow-sm"
-              )}
-            >
-              <Edit2 size={18} />
-            </Link>
             <button 
-              onClick={() => onDelete?.(agent.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(agent.id);
+              }}
               className={cn(
                 "p-3 rounded-2xl transition-all border",
                 theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-500 hover:text-rose-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-rose-600 shadow-sm"
@@ -94,8 +89,9 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete 
 
   return (
     <div
+      onClick={onClick}
       className={cn(
-        "group relative rounded-[40px] p-8 transition-all border shadow-xl flex flex-col h-full",
+        "group relative rounded-[40px] p-8 transition-all border shadow-xl flex flex-col h-full cursor-pointer",
         theme === 'dark' 
           ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
           : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"
@@ -115,17 +111,11 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete 
           )}
         </div>
         <div className="flex gap-2.5">
-           <Link 
-            href={`/agents/${agent.id}`}
-            className={cn(
-              "p-3 rounded-2xl transition-all border",
-              theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-500 hover:text-indigo-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-indigo-600 shadow-sm"
-            )}
-          >
-            <Edit2 size={18} />
-          </Link>
           <button 
-            onClick={() => onDelete?.(agent.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.(agent.id);
+            }}
             className={cn(
               "p-3 rounded-full transition-all border",
               theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-500 hover:text-rose-400" : "bg-slate-50 border-slate-100 text-slate-400 hover:text-rose-600 shadow-sm"
