@@ -190,9 +190,9 @@ export function LeftSidebar({
       </AnimatePresence>
 
       <aside className={cn(
-        "fixed top-0 md:top-16 left-0 z-40 w-72 h-full md:h-[calc(100vh-4rem)] border-r transition-all duration-300 overflow-y-auto no-scrollbar",
+        "fixed top-0 md:top-16 left-0 z-[60] md:z-40 w-72 h-[100dvh] md:h-[calc(100vh-4rem)] shrink-0 border-r transition-transform duration-300 overflow-y-auto no-scrollbar",
         theme === 'dark' ? 'border-slate-800 bg-[#020617]' : 'border-slate-200 bg-slate-50',
-        isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
+        isOpen ? 'translate-x-0 shadow-2xl md:shadow-none' : '-translate-x-full md:translate-x-0'
       )}>
         {/* Mobile Header */}
         <div className="flex items-center justify-between p-6 md:hidden border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 z-10 bg-inherit">

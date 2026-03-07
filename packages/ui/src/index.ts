@@ -23,6 +23,7 @@ export * from './components/ProjectPulse';
 export * from './components/CostTracker';
 export * from './components/DashboardResourceHeader';
 export * from './components/IntegrationCard';
+export * from './components/MasonryGrid';
 export * from './components/WorkspaceGallery';
 export * from './components/WorkspaceTabs';
 export * from './components/BottomDock';

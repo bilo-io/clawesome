@@ -63,7 +63,8 @@ import {
   ProfileCard,
   ProfileActionCard,
   ProfileInfoRow,
-  Carousel
+  Carousel,
+  MasonryGrid
 } from './index';
 
 import logo from './assets/clawesome-logo.svg';
@@ -1545,9 +1546,9 @@ const LayoutsPage = () => {
   const filteredResources = resources.filter(r => r.name.toLowerCase().includes(search.toLowerCase()));
 
   // masonry
-  const masonryImgs = Array.from({ length: 20 }, (_, i) => ({
-    url: `https://picsum.photos/seed/${i + 150}/400/${[300, 450, 600, 400][i % 4]}`,
-    h: [300, 450, 600, 400][i % 4]
+  const masonryImgs = Array.from({ length: 20 }, (_, i) => ({ 
+    id: `masonry-${i}`,
+    url: `https://picsum.photos/seed/${i * 42}/400/${300 + Math.floor(Math.random() * 400)}` 
   }));
 
   // carousel items
@@ -1674,42 +1675,37 @@ const LayoutsPage = () => {
          </div>
       </DocsWrapper>
 
-      {/* 3. Masonry Layout */}
-      <TwoColumnGrid>
-        <DocsWrapper label="Masonry Grid" description="Fluid column distribution for varied aspect ratio image assets.">
-           <div className="columns-2 md:columns-3 gap-4 space-y-4">
-              {masonryImgs.map((img, i) => (
-                <div key={i} className="break-inside-avoid rounded-2xl overflow-hidden border border-slate-800/10 dark:border-slate-800/50 group bg-slate-100 dark:bg-slate-900 shadow-sm relative">
-                   <div className="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none" />
-                   <img src={img.url} alt="" className="w-full h-auto grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
-                </div>
-              ))}
-           </div>
+      {/* 3. Carousel Layout */}
+      <DocsWrapper label="Interactive Carousel" description="Motion-driven hero slider with peek-ahead depth effects.">
+        <Carousel
+          items={carouselItems}
+          peekCount={1}
+          renderItem={(item: any, isActive: boolean) => (
+            <div className={cn(
+              "w-[260px] h-[360px] sm:w-[320px] sm:h-[420px] rounded-[3.5rem] p-10 flex flex-col justify-end text-white overflow-hidden relative transition-all duration-700",
+              "bg-gradient-to-br", item.color,
+              isActive ? "shadow-2xl shadow-indigo-500/30 scale-100" : "scale-90 opacity-30 blur-sm grayscale-[0.8]"
+            )}>
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Zap size={140} />
+              </div>
+              <div className="relative z-10">
+                <h5 className="text-2xl font-black italic tracking-tighter mb-2">{item.title}</h5>
+                <p className="text-[11px] font-medium opacity-80 leading-relaxed uppercase tracking-widest">{item.desc}</p>
+              </div>
+            </div>
+          )}
+        />
+      </DocsWrapper>
+
+      {/* 4. Masonry Layout */}
+      {/* <TwoColumnGrid> */}
+        <DocsWrapper label="Masonry Grid" description="Fluid column distribution with interactive column selectors, hover-zoom, and lightbox navigation for varied aspect ratio image assets.">
+           <MasonryGrid images={masonryImgs} />
         </DocsWrapper>
 
-        {/* 4. Carousel Layout */}
-        <DocsWrapper label="Interactive Carousel" description="Motion-driven hero slider with peek-ahead depth effects.">
-           <Carousel 
-             items={carouselItems}
-             peekCount={1}
-             renderItem={(item: any, isActive: boolean) => (
-                <div className={cn(
-                  "w-[260px] h-[360px] sm:w-[320px] sm:h-[420px] rounded-[3.5rem] p-10 flex flex-col justify-end text-white overflow-hidden relative transition-all duration-700",
-                  "bg-gradient-to-br", item.color,
-                  isActive ? "shadow-2xl shadow-indigo-500/30 scale-100" : "scale-90 opacity-30 blur-sm grayscale-[0.8]"
-                )}>
-                   <div className="absolute top-0 right-0 p-8 opacity-10">
-                      <Zap size={140} />
-                   </div>
-                   <div className="relative z-10">
-                      <h5 className="text-2xl font-black italic tracking-tighter mb-2">{item.title}</h5>
-                      <p className="text-[11px] font-medium opacity-80 leading-relaxed uppercase tracking-widest">{item.desc}</p>
-                   </div>
-                </div>
-             )}
-           />
-        </DocsWrapper>
-      </TwoColumnGrid>
+       
+      {/* </TwoColumnGrid> */}
     </PageWrapper>
   );
 };
