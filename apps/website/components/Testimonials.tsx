@@ -129,10 +129,7 @@ export const Testimonials = () => {
                     isActive ? "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6] shadow-[0_0_80px_rgba(140,0,255,0.3)]" : "bg-transparent"
                   )}
                 >
-                  <div className={cn(
-                    "w-full h-full p-8 md:p-10 rounded-2xl flex flex-col items-center text-center transition-colors duration-700",
-                    theme === 'dark' ? "bg-slate-900/95" : "bg-white"
-                  )}>
+                  <div className="w-full h-full p-8 md:p-10 rounded-2xl flex flex-col items-center text-center transition-colors duration-700 bg-white dark:bg-slate-900/95">
                     <Quote className="text-indigo-500 mb-6 opacity-20" size={32} />
                     
                     <div className="flex items-center gap-1 mb-4">
@@ -145,10 +142,7 @@ export const Testimonials = () => {
                       ))}
                     </div>
 
-                    <p className={cn(
-                      "text-sm md:text-base font-bold leading-relaxed mb-8 italic flex-1",
-                      theme === 'dark' ? "text-slate-200" : "text-slate-700"
-                    )}>
+                    <p className="text-sm md:text-base font-bold leading-relaxed mb-8 italic flex-1 text-slate-700 dark:text-slate-200">
                       "{testimonial.text}"
                     </p>
 

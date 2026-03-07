@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 export const Donate = () => {
   return (
-    <section id="donate" className="py-24 px-8 bg-slate-900 dark:bg-black transition-colors flex flex-col items-center overflow-hidden relative">
+    <section id="donate" className="py-24 px-8 bg-slate-50 dark:bg-black transition-colors flex flex-col items-center overflow-hidden relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/10 blur-[150px] rounded-full -z-10" />
       
       <div className="max-w-4xl w-full text-center flex flex-col items-center">
@@ -21,13 +21,13 @@ export const Donate = () => {
         </motion.div>
 
         <h2 
-          className="text-4xl md:text-5xl lg:text-6xl font-black text-white md:max-w-2xl mb-8 leading-[1.3] overflow-visible px-12"
+          className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white md:max-w-2xl mb-8 leading-[1.3] overflow-visible px-12"
           style={{ fontFamily: "'Newton Howard Font', sans-serif" }}
         >
           <span className="not-italic">Support our</span> <span className="gradient-text">Open Source</span> mission
         </h2>
         
-        <p className="text-xl text-slate-400 max-w-2xl mb-16 font-medium leading-relaxed">
+        <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-16 font-medium leading-relaxed">
           Clawesome is built by a small team of engineers dedicated to the future of autonomous agents. Every contribution helps us maintain the core OS and keep it free for everyone.
         </p>
 
@@ -44,16 +44,16 @@ export const Donate = () => {
               icon: Star,
               title: "Github Sponsor",
               amount: "Monthly",
-              color: "text-indigo-400",
-              bgColor: "bg-indigo-400/10",
+              color: "text-indigo-600 dark:text-indigo-400",
+              bgColor: "bg-indigo-500/10 dark:bg-indigo-400/10",
               link: "https://github.com/sponsors/clawesome",
             },
             {
               icon: Github,
               title: "Star our Repo",
               amount: "Free",
-              color: "text-white",
-              bgColor: "bg-white/10",
+              color: "text-slate-900 dark:text-white",
+              bgColor: "bg-slate-200 dark:bg-white/10",
               link: "https://github.com/clawesome/clawesome",
             }
           ].map((item, idx) => (
@@ -66,13 +66,13 @@ export const Donate = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group p-8 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all flex flex-col items-center gap-4 card-glow"
+                className="group p-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-all flex flex-col items-center gap-4 card-glow shadow-sm dark:shadow-none"
             >
               <div className={cn("p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-transform", item.bgColor)}>
                 <item.icon size={24} className={item.color} />
               </div>
               <div className="flex flex-col gap-1 items-center">
-                 <span className="text-white font-black text-lg tracking-tight">{item.title}</span>
+                 <span className="text-slate-900 dark:text-white font-black text-lg tracking-tight">{item.title}</span>
                  <span className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em]">{item.amount}</span>
               </div>
             </motion.a>

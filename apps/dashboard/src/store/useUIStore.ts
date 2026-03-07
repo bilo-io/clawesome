@@ -3,12 +3,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type ViewMode = 'grid' | 'list' | 'table';
+export type ThemePreference = 'light' | 'dark' | 'system';
 
 interface UIState {
   isSidebarExpanded: boolean;
   glowIntensity: number;
   isFocusMode: boolean;
   activeWorkspaceId: string;
+  themePreference: ThemePreference;
   theme: 'light' | 'dark';
   /** Per-route view mode map, keyed by pathname e.g. '/agents' */
   viewModes: Record<string, ViewMode>;
@@ -19,6 +21,7 @@ interface UIState {
   setGlowIntensity: (intensity: number) => void;
   toggleFocusMode: () => void;
   setActiveWorkspace: (id: string) => void;
+  setThemePreference: (pref: ThemePreference) => void;
   setTheme: (theme: 'light' | 'dark') => void;
   setViewMode: (route: string, mode: ViewMode) => void;
   getViewMode: (route: string, defaultMode?: ViewMode) => ViewMode;
@@ -31,6 +34,7 @@ export const useUIStore = create<UIState>()(
       glowIntensity: 50,
       isFocusMode: false,
       activeWorkspaceId: 'default',
+      themePreference: 'system',
       theme: 'dark',
       viewModes: {},
       isMobileSidebarOpen: false,
@@ -43,6 +47,7 @@ export const useUIStore = create<UIState>()(
       toggleFocusMode: () =>
         set((state) => ({ isFocusMode: !state.isFocusMode })),
       setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
+      setThemePreference: (pref) => set({ themePreference: pref }),
       setTheme: (theme) => set({ theme }),
       setViewMode: (route, mode) =>
         set((state) => ({
@@ -55,7 +60,7 @@ export const useUIStore = create<UIState>()(
       name: 'clawesome:ui',
       // Only persist the user-preference fields, not transient UI state
       partialize: (state) => ({
-        theme: state.theme,
+        themePreference: state.themePreference,
         glowIntensity: state.glowIntensity,
         viewModes: state.viewModes,
         isSidebarExpanded: state.isSidebarExpanded,

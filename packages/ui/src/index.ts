@@ -80,3 +80,4 @@ export * from './components/docs/LanguagePreview';
 export * from './components/docs/LeftSidebar';
 export * from './components/docs/TopBar';
 export * from './components/docs/DocPlaceholder';
+export * from './components/IntegrationIcon';

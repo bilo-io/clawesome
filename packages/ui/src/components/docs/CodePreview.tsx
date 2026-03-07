@@ -35,7 +35,7 @@ export function CodePreview({ code, language = 'bash', showLineNumbers = false }
 
   return (
     <div className={cn(
-      "relative group rounded-[24px] overflow-hidden border transition-all my-8 shadow-2xl",
+      "relative group rounded-2xl overflow-hidden border transition-all my-8 shadow-2xl",
       isDarkBase ? "bg-slate-950 border-slate-800" : "bg-white border-slate-200"
     )}>
       <div className={cn(

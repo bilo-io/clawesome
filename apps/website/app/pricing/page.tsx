@@ -6,6 +6,7 @@ import { Check, Zap, Sparkles, Building, ChevronRight, HelpCircle } from 'lucide
 import Link from 'next/link';
 import BackgroundVideo from '@/components/BackgroundVideo';
 import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
 
 export default function PricingPage() {
   const { theme } = useTheme();
@@ -110,7 +111,14 @@ export default function PricingPage() {
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`p-10 rounded-2xl border transition-all flex flex-col relative ${plan.featured ? 'border-indigo-500/40 bg-white dark:bg-indigo-500/5 shadow-2xl shadow-indigo-500/20 dark:shadow-none neon-glow py-16' : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950/20 shadow-sm'}`}
+                className={cn(
+                  "p-10 rounded-2xl border transition-all flex flex-col relative",
+                  plan.featured 
+                    ? 'border-indigo-500/40 bg-gradient-to-br from-[#8C00FF]/10 via-purple-500/10 to-[#008FD6]/10 dark:from-indigo-500/10 dark:via-purple-500/10 dark:to-blue-500/10 shadow-2xl shadow-indigo-500/20 neon-glow py-16' 
+                    : i === 0 
+                      ? 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl' 
+                      : 'glass-panel bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-white/20 dark:border-slate-800 shadow-2xl'
+                )}
               >
                  {plan.tag && (
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1.5 bg-indigo-600 text-white text-[10px] font-black tracking-[0.2em] rounded-full shadow-lg">

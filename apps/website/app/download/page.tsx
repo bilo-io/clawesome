@@ -109,7 +109,9 @@ export default function DownloadPage() {
                 transition={{ delay: i * 0.1 }}
                 className={cn(
                   "p-10 rounded-2xl border transition-all flex flex-col items-center text-center",
-                  v.featured ? 'border-indigo-500/30 bg-indigo-50/20 dark:bg-indigo-500/5 neon-glow' : 'border-slate-200 dark:border-slate-800'
+                  v.featured 
+                    ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl z-10 scale-105' 
+                    : 'glass-panel bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-white/20 dark:border-slate-800 shadow-2xl scale-95 opacity-80 hover:opacity-100 hover:scale-100'
                 )}
               >
                  <div className="relative group">

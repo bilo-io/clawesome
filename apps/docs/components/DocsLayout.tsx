@@ -18,14 +18,14 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
         LinkComponent={Link} 
         ImageComponent={Image}
       />
-      <div className="flex max-w-[90rem] mx-auto w-full flex-1">
+      <div className="flex w-full flex-1 relative">
         <LeftSidebar 
           isOpen={isSidebarOpen} 
           onClose={() => setIsSidebarOpen(false)} 
           pathname={pathname}
           LinkComponent={Link}
         />
-        <main className="flex-1 w-full min-w-0 pb-16 pt-8 md:pl-64">
+        <main className="flex-1 w-full min-w-0 pb-16 pt-8 md:pl-72">
           <article className="max-w-4xl mx-auto px-4 sm:px-8 xl:px-16 w-full pt-16 md:pt-0">
              {children}
           </article>

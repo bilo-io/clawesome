@@ -55,6 +55,7 @@ import {
   LeftSidebar as DocsSidebar,
   SegmentedControl, SlideToConfirm, QuickActions,
   Select, Checkbox, RadioGroup, Breadcrumbs, Chip,
+  Slider, FileUpload, DateTimePicker,
   TopBar,
   DocPlaceholder
 } from './index';
@@ -131,7 +132,7 @@ const PageWrapper = ({ title, icon: Icon, children }: any) => (
 );
 
 const IntroductionPage = () => {
-  const { theme, setTheme } = useUI();
+  const { theme, themePreference, setTheme } = useUI();
   return (
     <div className="relative min-h-[80vh] flex flex-col items-center justify-center space-y-12 overflow-hidden rounded-[40px] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-8 md:p-16">
       <div className="absolute inset-0 z-0">
@@ -142,11 +143,12 @@ const IntroductionPage = () => {
       <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-10">
         <div className="flex items-center gap-4">
           <img src={logo} alt="Clawesome Logo" className="w-auto h-8 animate-pulse" />
-          <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white">/ui</span>
+          <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white -ml-4">/ui</span>
         </div>
         <div className={`flex items-center gap-2 p-1.5 rounded-full border backdrop-blur-md transition-colors ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800' : 'bg-white/40 border-slate-200'}`}>
-          <button onClick={() => setTheme('light')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-black shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}>Light</button>
-          <button onClick={() => setTheme('dark')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-slate-600'}`}>Dark</button>
+          <button onClick={() => setTheme('light')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${themePreference === 'light' ? 'bg-white text-black shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}>Light</button>
+          <button onClick={() => setTheme('dark')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${themePreference === 'dark' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-slate-600'}`}>Dark</button>
+          <button onClick={() => setTheme('system')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${themePreference === 'system' ? 'bg-slate-800 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>System</button>
         </div>
       </div>
 
@@ -170,7 +172,7 @@ const IntroductionPage = () => {
         <div className="absolute -inset-[1px] rounded-[32px] bg-gradient-to-r from-indigo-500/30 to-emerald-500/30 blur-md pointer-events-none -z-10" />
         <div className="p-6 md:p-8 rounded-[28px] bg-slate-50/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-indigo-500/10 text-indigo-500 rounded-xl">
+            <div className="p-2.5 pb-0 bg-indigo-500/10 text-indigo-500 rounded-xl">
               <Terminal size={20} />
             </div>
             <div>
@@ -560,23 +562,62 @@ const FoundationPage = () => {
         </div>
       </DocsWrapper>
 
-      {/* ── Form Inputs ───────────────────────────────────────── */}
+      {/* ── Form Elements ───────────────────────────────────────── */}
       <DocsWrapper
-        label="Form Inputs"
-        description="Text input, textarea, and search input with label, icon, error, and clear button support."
+        label="Form Elements"
+        description="A complete suite of form primitives. Fully functional with keyboard navigation, error states, and high-contrast accessibility."
         previewHeight="min-h-[260px]"
         code={`<Input label="Agent Name" placeholder="NC-01" />
-<Input label="With Icon" icon={<Search size={14}/>} placeholder="Search..." />
-<Input label="Error State" error="Invalid identifier format" value="!bad" />
-<Textarea label="Description" placeholder="What is this agent's role?" />
-<SearchInput value={q} onChange={setQ} placeholder="Search agents..." />`}
+<Select label="Model" options={...} value={...} />
+<ImageUpload label="Avatar" onChange={...} />
+<Slider label="Temperature" value={temp} onChange={...} />
+<RadioGroup options={...} value={mode} />
+<Checkbox label="Enable Web Search" checked={...} />
+<DateTimePicker label="Schedule Tasks" value={...} />`}
       >
-        <div className="w-full max-w-lg space-y-4">
-          <Input label="Agent Name" placeholder="e.g. NC-01" />
-          <Input label="With Icon" icon={<Database size={14} />} placeholder="Search store..." />
-          <Input label="Error State" error="Invalid identifier format" defaultValue="!bad-id" />
-          <Textarea label="Mission Briefing" placeholder="What is this agent's objective?" rows={3} />
-          <SearchInput value="" onChange={() => { }} placeholder="Search agents, tools, skills..." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+          {/* Column 1: Standard Inputs */}
+          <div className="space-y-4">
+            <Input label="Agent Name" placeholder="e.g. NC-01" />
+            <Input label="With Icon" icon={<Database size={14} />} placeholder="Search store..." />
+            <Input label="Error State" error="Invalid identifier format" defaultValue="!bad-id" />
+            <Textarea label="Mission Briefing" placeholder="What is this agent's objective?" rows={3} />
+            <SearchInput value="" onChange={() => { }} placeholder="Search agents, tools, skills..." />
+          </div>
+
+          {/* Column 2: Advanced Controls */}
+          <div className="space-y-6">
+            <Select 
+              label="Brain Model" 
+              options={[
+                { value: 'gpt-4o', label: 'GPT-4o (OpenAI)' },
+                { value: 'claude-3.5', label: 'Claude 3.5 Sonnet' },
+                { value: 'llama-3', label: 'Llama 3 70B' }
+              ]} 
+              value={'claude-3.5'}
+              onChange={() => {}}
+            />
+            
+            <Slider label="Temperature" value={75} onChange={() => {}} />
+
+            <div className="grid grid-cols-2 gap-4">
+              <RadioGroup 
+                options={[
+                  { value: 'fast', label: 'Fast mode' },
+                  { value: 'accurate', label: 'Accurate mode' }
+                ]}
+                value="fast"
+                onChange={() => {}}
+              />
+              <div className="space-y-3 pt-1">
+                <Checkbox label="Allow Tool Ops" checked={true} onChange={() => {}} />
+                <Checkbox label="Silent Execution" checked={false} onChange={() => {}} />
+              </div>
+            </div>
+
+            <DateTimePicker label="Scheduled Wake" value="2026-03-07T14:30" onChange={() => {}} />
+            <FileUpload label="Agent Avatar Override" onChange={() => {}} />
+          </div>
         </div>
       </DocsWrapper>
 

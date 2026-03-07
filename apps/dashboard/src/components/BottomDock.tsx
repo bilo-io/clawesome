@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useUIStore } from '@/store/useUIStore';
-import { Sun, Moon, Maximize2, Palette, Sliders } from 'lucide-react';
+import { Sun, Moon, Monitor, Maximize2, Palette, Sliders } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,7 +14,8 @@ export const BottomDock = () => {
     toggleFocusMode, 
     isFocusMode,
     theme,
-    setTheme,
+    themePreference,
+    setThemePreference,
     isSidebarExpanded
   } = useUIStore();
 
@@ -79,24 +80,37 @@ export const BottomDock = () => {
                 theme === 'dark' ? "border-slate-800 bg-slate-950" : "border-slate-100 bg-slate-50"
               )}>
                 <button 
-                  onClick={() => setTheme('light')}
+                  onClick={() => setThemePreference('light')}
                   className={cn(
                     "p-2 rounded-xl transition-all flex items-center gap-2",
-                    theme === 'light' ? "bg-white text-amber-500 shadow-xl border border-slate-100" : "text-slate-500 hover:text-slate-400"
+                    themePreference === 'light' ? "bg-white text-amber-500 shadow-xl border border-slate-100" : "text-slate-500 hover:text-slate-400"
                   )}
+                  title="Light Mode"
                 >
                   <Sun size={14} />
-                  {theme === 'light' && <span className="text-[9px] font-black uppercase tracking-widest px-1">Light</span>}
+                  {themePreference === 'light' && <span className="text-[9px] font-black uppercase tracking-widest px-1">Light</span>}
                 </button>
                 <button 
-                  onClick={() => setTheme('dark')}
+                  onClick={() => setThemePreference('dark')}
                   className={cn(
                     "p-2 rounded-xl transition-all flex items-center gap-2",
-                    theme === 'dark' ? "bg-slate-800 text-indigo-400 shadow-inner border border-slate-700" : "text-slate-500 hover:text-slate-400"
+                    themePreference === 'dark' ? "bg-slate-800 text-indigo-400 shadow-inner border border-slate-700" : "text-slate-500 hover:text-slate-400"
                   )}
+                  title="Dark Mode"
                 >
                   <Moon size={14} />
-                  {theme === 'dark' && <span className="text-[9px] font-black uppercase tracking-widest px-1">Dark</span>}
+                  {themePreference === 'dark' && <span className="text-[9px] font-black uppercase tracking-widest px-1">Dark</span>}
+                </button>
+                <button 
+                  onClick={() => setThemePreference('system')}
+                  className={cn(
+                    "p-2 rounded-xl transition-all flex items-center gap-2",
+                    themePreference === 'system' ? (theme === 'dark' ? "bg-slate-800 text-emerald-400 shadow-inner border border-slate-700" : "bg-white text-emerald-500 shadow-xl border border-slate-100") : "text-slate-500 hover:text-slate-400"
+                  )}
+                  title="System Preference"
+                >
+                  <Monitor size={14} />
+                  {themePreference === 'system' && <span className="text-[9px] font-black uppercase tracking-widest px-1">Auto</span>}
                 </button>
               </div>
 

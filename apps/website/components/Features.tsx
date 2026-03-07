@@ -83,9 +83,9 @@ export const Features = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="group p-8 glass-panel card-glow rounded-full hover:border-[#8C00FF]/50 hover:bg-white dark:hover:bg-slate-900/50 transition-all flex flex-col gap-6 shadow-sm hover:shadow-xl shadow-slate-200/50 dark:shadow-none"
+              className="group p-8 glass-panel card-glow rounded-3xl hover:border-[#8C00FF]/50 hover:bg-white dark:hover:bg-slate-900/50 transition-all flex flex-col gap-6 shadow-sm hover:shadow-xl shadow-slate-200/50 dark:shadow-none"
             >
-              <div className={cn("w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl shadow-indigo-500/10 transition-transform group-hover:scale-110 group-hover:rotate-3", feature.color)}>
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/10 transition-transform group-hover:scale-110 group-hover:rotate-3", feature.color)}>
                 <feature.icon size={28} />
               </div>
               <div className="flex flex-col gap-2">

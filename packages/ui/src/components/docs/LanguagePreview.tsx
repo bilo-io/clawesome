@@ -36,10 +36,10 @@ export function LanguagePreview({ blocks }: LanguagePreviewProps) {
             key={b.label}
             onClick={() => setActiveIdx(idx)}
             className={cn(
-              "px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+              "px-5 py-2.5 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all",
               activeIdx === idx 
-                ? (theme === 'dark' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-emerald-50 text-emerald-600 border border-emerald-200")
-                : (theme === 'dark' ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-700")
+                ? (theme === 'dark' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-lg shadow-emerald-500/10" : "bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-sm")
+                : (theme === 'dark' ? "text-slate-500 hover:text-slate-300 hover:bg-slate-800/30" : "text-slate-400 hover:text-slate-700 hover:bg-slate-100")
             )}
           >
             {b.label}

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Zap, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { IntegrationIcon } from '@clawesome/ui';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -39,7 +40,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="w-full bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 transition-colors py-20 px-8">
+    <footer className="w-full bg-slate-50 dark:bg-black border-t border-slate-200 dark:border-white/10 transition-colors py-20 px-8">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-8 justify-between">
         {/* Brand Info */}
         <div className="flex flex-col gap-6 md:max-w-xs">
@@ -65,19 +66,9 @@ export const Footer = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <div 
-                  className="w-5 h-5 bg-slate-400 dark:bg-slate-600 group-hover:bg-gradient-to-tr group-hover:from-[#8C00FF] group-hover:to-[#008FD6] transition-colors"
-                  style={{
-                    maskImage: `url(/images/org/icon-${social.id}.svg)`,
-                    WebkitMaskImage: `url(/images/org/icon-${social.id}.svg)`,
-                    maskSize: 'contain',
-                    WebkitMaskSize: 'contain',
-                    maskRepeat: 'no-repeat',
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskPosition: 'center',
-                    WebkitMaskPosition: 'center'
-                  }}
-                />
+                <div className="w-5 h-5 bg-slate-400 dark:bg-slate-600 group-hover:bg-gradient-to-tr group-hover:from-[#8C00FF] group-hover:to-[#008FD6] transition-colors relative overflow-hidden flex justify-center items-center">
+                   <IntegrationIcon name={social.id} size={20} className="w-full h-full text-current bg-current" />
+                </div>
               </a>
             ))}
           </div>

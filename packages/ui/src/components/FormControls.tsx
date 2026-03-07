@@ -180,3 +180,99 @@ export const RadioGroup = ({ options, value, onChange, className }: RadioGroupPr
     </div>
   );
 };
+
+export interface SliderProps {
+  value: number;
+  min?: number;
+  max?: number;
+  onChange: (value: number) => void;
+  label?: string;
+  className?: string;
+}
+
+export const Slider = ({ value, min = 0, max = 100, onChange, label, className }: SliderProps) => {
+  const { theme } = useUI();
+  const isDark = theme === 'dark';
+  const percentage = ((value - min) / (max - min)) * 100;
+
+  return (
+    <div className={cn('w-full', className)}>
+      {label && (
+        <div className="flex justify-between items-center mb-2">
+          <label className={cn('block text-[10px] font-black uppercase tracking-widest', isDark ? 'text-slate-500' : 'text-slate-400')}>{label}</label>
+          <span className={cn('text-xs font-mono font-bold', isDark ? 'text-indigo-400' : 'text-indigo-600')}>{value}</span>
+        </div>
+      )}
+      <div className="relative h-2 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800">
+        <div 
+          className="absolute top-0 left-0 h-full bg-indigo-500"
+          style={{ width: `${percentage}%` }}
+        />
+        <input 
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+      </div>
+    </div>
+  );
+};
+
+export interface FileUploadProps {
+  label?: string;
+  onChange: (file: File | null) => void;
+  className?: string;
+}
+
+export const FileUpload = ({ label, onChange, className }: FileUploadProps) => {
+  const { theme } = useUI();
+  const isDark = theme === 'dark';
+  return (
+    <div className={cn('w-full', className)}>
+      {label && <label className={cn('block text-[10px] font-black uppercase tracking-widest mb-1.5', isDark ? 'text-slate-500' : 'text-slate-400')}>{label}</label>}
+      <div className={cn(
+        'w-full border-2 border-dashed rounded-2xl p-6 text-center transition-all',
+        isDark ? 'border-slate-800 hover:border-indigo-500/50 bg-slate-900/40' : 'border-slate-200 hover:border-indigo-400/50 bg-slate-50'
+      )}>
+        <input 
+          type="file" 
+          onChange={(e) => onChange(e.target.files?.[0] || null)}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        />
+        <p className={cn('text-sm font-semibold', isDark ? 'text-slate-300' : 'text-slate-600')}>Upload Image</p>
+        <p className={cn('text-xs mt-1', isDark ? 'text-slate-500' : 'text-slate-400')}>Drag & drop or click to browse</p>
+      </div>
+    </div>
+  );
+};
+
+export interface DateTimePickerProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}
+
+export const DateTimePicker = ({ label, value, onChange, className }: DateTimePickerProps) => {
+  const { theme } = useUI();
+  const isDark = theme === 'dark';
+  return (
+    <div className={cn('w-full', className)}>
+      {label && <label className={cn('block text-[10px] font-black uppercase tracking-widest mb-1.5', isDark ? 'text-slate-500' : 'text-slate-400')}>{label}</label>}
+      <input 
+        type="datetime-local"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn(
+          'w-full px-4 py-2.5 rounded-2xl border text-sm transition-all text-left outline-none',
+          isDark 
+            ? 'bg-slate-900/60 border-slate-800 text-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50' 
+            : 'bg-white border-slate-200 text-slate-900 focus:ring-2 focus:ring-indigo-500/20 shadow-sm focus:border-indigo-500/50'
+        )}
+      />
+    </div>
+  );
+};

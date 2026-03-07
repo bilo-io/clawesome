@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body className={cn(inter.variable, "min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-300")}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
           <Navbar />
           <main className="flex-1 relative">
             <div className="absolute inset-0 hero-gradient pointer-events-none -z-10" />

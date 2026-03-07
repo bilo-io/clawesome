@@ -1,5 +1,6 @@
 // apps/dashboard/src/app/layout.tsx
 'use client';
+import React from 'react';
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -26,7 +27,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { theme, glowIntensity } = useUIStore();
+  const { theme, themePreference, setTheme, glowIntensity } = useUIStore();
+
+  React.useEffect(() => {
+    const handleSystemChange = () => {
+      if (themePreference === 'system') {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(isDark ? 'dark' : 'light');
+      }
+    };
+
+    if (themePreference === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', handleSystemChange);
+      handleSystemChange();
+      return () => mediaQuery.removeEventListener('change', handleSystemChange);
+    } else {
+      setTheme(themePreference);
+    }
+  }, [themePreference, setTheme]);
 
   return (
     <html 

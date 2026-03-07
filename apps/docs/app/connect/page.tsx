@@ -1,4 +1,5 @@
-import { MessageSquare, Globe, Target, Send, Zap } from 'lucide-react';
+import { IntegrationIcon } from '@clawesome/ui';
+import { Zap } from 'lucide-react';
 
 export default function ConnectPage() {
   return (
@@ -12,16 +13,16 @@ export default function ConnectPage() {
 
       <nav className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {[
-          { icon: <MessageSquare />, name: 'Slack', color: 'bg-emerald-500', link: '/connect/slack' },
-          { icon: <Globe />, name: 'Discord', color: 'bg-indigo-500', link: '/connect/discord' },
-          { icon: <Target />, name: 'Telegram', color: 'bg-blue-500', link: '/connect/telegram' },
-          { icon: <Send />, name: 'WhatsApp', color: 'bg-green-500', link: '/connect/whatsapp' }
+          { icon: <IntegrationIcon name="slack" size={24} />, name: 'Slack', color: 'bg-emerald-500', link: '/connect/slack' },
+          { icon: <IntegrationIcon name="discord" size={24} />, name: 'Discord', color: 'bg-indigo-500', link: '/connect/discord' },
+          { icon: <IntegrationIcon name="telegram" size={24} />, name: 'Telegram', color: 'bg-blue-500', link: '/connect/telegram' },
+          { icon: <IntegrationIcon name="whatsapp" size={24} />, name: 'WhatsApp', color: 'bg-green-500', link: '/connect/whatsapp' }
         ].map(platform => (
           <div key={platform.name} className="p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950 flex flex-col items-center group cursor-pointer transition-all hover:-translate-y-2 hover:shadow-2xl hover:border-indigo-500/30">
-            <div className={`p-4 rounded-3xl ${platform.color} bg-opacity-10 text-white mb-4 group-hover:scale-110 transition-transform`}>
+            <div className={`p-4 rounded-[1.4rem] ${platform.color} bg-opacity-10 text-slate-900 dark:text-white mb-4 group-hover:scale-110 transition-transform`}>
                {platform.icon}
             </div>
-            <span className="text-xs font-black uppercase tracking-widest">{platform.name}</span>
+            <span className="text-xs text-slate-900 dark:text-slate-100 font-black uppercase tracking-widest">{platform.name}</span>
           </div>
         ))}
       </nav>
