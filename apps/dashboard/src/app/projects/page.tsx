@@ -99,9 +99,9 @@ const PROJECTS: Project[] = [
 ];
 
 export default function ProjectsPage() {
-  const { theme } = useUIStore();
+  const { theme, getViewMode, setViewMode } = useUIStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const viewMode = (getViewMode('/projects', 'grid') as 'grid' | 'list');
 
   const filteredProjects = PROJECTS.filter(p => 
     p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -121,7 +121,7 @@ export default function ProjectsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="SEARCH PROJECT REVERB..."
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={(mode: any) => setViewMode('/projects', mode)}
         renderRight={
           <button
             onClick={() => {}}

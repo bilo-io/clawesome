@@ -88,8 +88,8 @@ export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'l
 
   return (
     <div className={cn(
-      "grid gap-8 transition-all duration-500",
-      viewMode === 'grid' ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+      "transition-all duration-500",
+      viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-3"
     )}>
       <AnimatePresence mode="popLayout">
         {workspaces.map((ws) => (
@@ -104,8 +104,8 @@ export const WorkspaceGallery = ({ viewMode = 'grid' }: { viewMode?: 'grid' | 'l
               opacity: { duration: 0.3 }
             }}
             className={cn(
-              "group transition-all cursor-pointer relative overflow-hidden transition-all border shadow-xl flex flex-col",
-              viewMode === 'grid' ? "p-8 rounded-[40px]" : "p-4 pr-8 rounded-[24px] flex-row items-center justify-between",
+              "group transition-all cursor-pointer relative overflow-hidden border shadow-xl flex flex-col",
+              viewMode === 'grid' ? "p-8 rounded-[40px]" : "p-4 pr-8 rounded-[28px] flex-row items-center justify-between",
               theme === 'dark' 
                 ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
                 : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"

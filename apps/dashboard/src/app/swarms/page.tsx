@@ -43,9 +43,9 @@ const HeaderExternalSync = () => {
 };
 
 export default function SwarmsPage() {
-  const { theme } = useUIStore();
+  const { theme, getViewMode, setViewMode } = useUIStore();
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
+  const viewMode = (getViewMode('/swarms', 'grid') as 'grid' | 'list');
 
   return (
     <main className="space-y-10 pb-20 max-w-[1600px] mx-auto">
@@ -60,7 +60,7 @@ export default function SwarmsPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={(mode: any) => setViewMode('/swarms', mode)}
         searchPlaceholder="SEARCH SWARM PROTOCOL..."
         renderRight={<HeaderExternalSync />}
       />

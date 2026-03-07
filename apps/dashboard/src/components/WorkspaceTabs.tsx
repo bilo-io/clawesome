@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useUIStore } from '@/store/useUIStore';
-import { Plus, X, Command as CommandIcon } from 'lucide-react';
+import { Plus, X, Command as CommandIcon, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const workspaces = [
@@ -13,7 +13,7 @@ const workspaces = [
 ];
 
 export const WorkspaceTabs = () => {
-  const { activeWorkspaceId, setActiveWorkspace, isFocusMode, theme } = useUIStore();
+  const { activeWorkspaceId, setActiveWorkspace, isFocusMode, theme, toggleMobileSidebar } = useUIStore();
 
   if (isFocusMode) return null;
 
@@ -22,6 +22,16 @@ export const WorkspaceTabs = () => {
       "flex items-center gap-1 border-b transition-colors px-4 pb-0 items-end overflow-x-auto no-scrollbar min-h-[56px]",
       theme === 'dark' ? "bg-slate-950 border-slate-900 shadow-xl" : "bg-slate-50/50 border-slate-200 shadow-sm"
     )}>
+      <button 
+        onClick={() => toggleMobileSidebar()}
+        className={cn(
+          "md:hidden p-2 -ml-2 mb-3 rounded-lg transition-colors",
+          theme === 'dark' ? "text-slate-500 hover:text-white hover:bg-slate-900" : "text-slate-400 hover:text-slate-900 hover:bg-slate-100"
+        )}
+      >
+        <Menu size={20} />
+      </button>
+
       <div className={cn(
         "flex h-full items-end",
         theme === 'dark' ? "text-slate-500" : "text-slate-400"

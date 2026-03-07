@@ -13,8 +13,11 @@ import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 
 export default function AgentsPage() {
   const { agents, deleteAgent } = useAgentStore();
-  const { theme } = useUIStore();
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  // agents page uses 'grid' | 'table'; UIStore uses 'grid' | 'list' | 'table'
+  const rawMode = getViewMode('/agents', 'grid');
+  const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/agents', m === 'list' ? 'table' : 'grid');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -36,7 +39,7 @@ export default function AgentsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search agents by name or title..."
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
-        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode === 'list' ? 'table' : 'grid')}
+        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
         renderRight={
           <button
             onClick={() => setIsModalOpen(true)}
@@ -70,7 +73,7 @@ export default function AgentsPage() {
               >
                 <AgentCard 
                   agent={agent} 
-                  viewMode={viewMode === 'grid' ? 'grid' : 'table'} 
+                  viewMode={viewMode === 'grid' ? 'grid' : 'table'}
                   onDelete={deleteAgent}
                 />
               </motion.div>

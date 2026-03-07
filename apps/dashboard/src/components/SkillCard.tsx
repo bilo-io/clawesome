@@ -85,8 +85,8 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill, viewMode, isImporte
     return (
     <div 
         className={cn(
-          "group transition-all border rounded-[32px] p-4 flex items-center justify-between",
-          theme === 'dark' ? "bg-slate-900 border-slate-800 hover:bg-slate-900/60" : "bg-white border-slate-100 hover:bg-slate-50/50 shadow-sm"
+          "group transition-all border rounded-[28px] p-4 flex items-center justify-between",
+          theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30" : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200"
         )}
       >
         <div className="flex items-center gap-6 flex-1">
@@ -159,8 +159,8 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill, viewMode, isImporte
       className={cn(
         "group relative rounded-[48px] p-10 transition-all border shadow-2xl flex flex-col h-full overflow-hidden",
         theme === 'dark' 
-          ? "bg-slate-950/40 border-slate-900/60 hover:bg-slate-950/60 hover:border-indigo-500/20" 
-          : "bg-white border-slate-100 hover:border-indigo-100 shadow-slate-200/40 hover:shadow-indigo-500/5"
+          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30" 
+          : "bg-white border-slate-100 hover:border-indigo-100 shadow-slate-200/40 hover:shadow-2xl hover:shadow-indigo-500/5"
       )}
     >
       <div className="flex justify-between items-start mb-10 relative z-10">

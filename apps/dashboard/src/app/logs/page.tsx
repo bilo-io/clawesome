@@ -135,9 +135,9 @@ const getLevelBg = (level: string) => {
 };
 
 export default function LogsPage() {
-  const { theme } = useUIStore();
+  const { theme, getViewMode, setViewMode } = useUIStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
+  const viewMode = (getViewMode('/logs', 'list') as 'grid' | 'list');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const filteredLogs = MOCK_LOGS.filter(log => 
@@ -161,7 +161,7 @@ export default function LogsPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={(mode: any) => setViewMode('/logs', mode)}
         renderRight={
           <div className="flex items-center gap-4 h-[56px]">
             <button className={cn(

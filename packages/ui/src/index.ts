@@ -33,6 +33,31 @@ export * from './components/AILab';
 export * from './components/FilesystemSandbox';
 export * from './components/Sidebar';
 
+// Primitives
+export * from './components/Button';
+export * from './components/Badge';
+export * from './components/Card';
+export * from './components/Input';
+export * from './components/Tabs';
+export * from './components/Toggle';
+export * from './components/Modal';
+export * from './components/Table';
+export * from './components/DataDisplay';
+export * from './components/Alert';
+export * from './components/FormControls';
+export * from './components/Surface';
+export * from './components/DocsWrapper';
+
+// Communication
+export * from './components/ChatInterface';
+
+// Charts & Data Visualization
+export * from './components/Charts';
+
+// Layout
+export * from './components/Carousel';
+
+
 // Website Components
 export * from './components/website/Hero';
 export * from './components/website/Features';

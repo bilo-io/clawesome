@@ -27,6 +27,10 @@ export interface SidebarProps {
   currentPath: string;
   isExpanded: boolean;
   onToggle: () => void;
+  /** Mobile drawer open state */
+  isMobileOpen?: boolean;
+  /** Toggle mobile drawer */
+  onMobileToggle?: () => void;
   logoFull?: string;
   logoMini?: string;
   user?: {
@@ -42,6 +46,8 @@ export const Sidebar = ({
   currentPath,
   isExpanded,
   onToggle,
+  isMobileOpen = false,
+  onMobileToggle,
   logoFull,
   logoMini,
   user,
@@ -61,13 +67,33 @@ export const Sidebar = ({
   const Link = LinkComponent;
 
   return (
-    <aside 
-      className={cn(
-        "h-screen transition-all duration-300 flex flex-col z-50 border-r shadow-2xl shrink-0 overflow-hidden",
-        theme === 'dark' ? "bg-slate-950 border-slate-900" : "bg-white border-slate-200",
-        isExpanded ? "w-64" : "w-20"
-      )}
-    >
+    <>
+      {/* ── Mobile backdrop ─────────────────────────────────────── */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            key="mobile-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            onClick={onMobileToggle}
+          />
+        )}
+      </AnimatePresence>
+
+      <aside 
+        className={cn(
+          "h-screen transition-all duration-300 flex flex-col z-50 border-r shadow-2xl shrink-0 overflow-hidden",
+          // Mobile: fixed drawer sliding in from left
+          "fixed md:relative",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+          theme === 'dark' ? "bg-slate-950 border-slate-900" : "bg-white border-slate-200",
+          isExpanded ? "w-64" : "w-20",
+          // On mobile always full‑width sidebar when open
+          "md:w-auto",
+        )}
+      >
       <div className={cn(
         "p-6 border-b shrink-0",
         theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50/50"
@@ -231,5 +257,6 @@ export const Sidebar = ({
         </button>
       </div>
     </aside>
+    </>
   );
 };

@@ -3,15 +3,21 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUI } from '@clawesome/ui';
-import { Github, Moon, Sun } from 'lucide-react';
+import { Github, Moon, Sun, Menu } from 'lucide-react';
 
-export function TopBar() {
+export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
   const { theme, setTheme } = useUI();
 
   return (
     <header className={`sticky top-0 z-50 w-full border-b backdrop-blur transition-colors ${theme === 'dark' ? 'bg-[#020617]/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
       <div className="flex h-16 items-center px-6 gap-4 justify-between">
         <div className="flex items-center gap-3">
+          <button 
+            onClick={onMenuClick}
+            className={`p-2 -ml-2 md:hidden ${theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
+          >
+            <Menu size={24} />
+          </button>
           <Link href="/" className="flex items-center gap-3">
             <Image src="/clawesome-logo.svg" alt="Clawesome" width={160} height={32} className="dark:invert-0" />
             <span className={`font-black text-xl tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}

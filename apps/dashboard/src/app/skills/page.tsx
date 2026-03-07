@@ -16,9 +16,11 @@ import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 
 export default function SkillsPage() {
   const { mySkills, marketplaceSkills } = useSkillStore();
-  const { theme } = useUIStore();
+  const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const rawMode = getViewMode('/skills', 'grid');
+  const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/skills', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
 
   const currentSkills = activeTab === 'my' ? mySkills : marketplaceSkills;
@@ -45,7 +47,7 @@ export default function SkillsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder={`Search ${activeTab === 'my' ? 'installed' : 'marketplace'} skills...`}
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
-        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode === 'list' ? 'table' : 'grid')}
+        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
         showFilter
         renderRight={
           <div className={cn(
@@ -86,8 +88,8 @@ export default function SkillsPage() {
             key={`${activeTab}-list`}
             className={cn(
               viewMode === 'grid' 
-                ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10" 
-                : "space-y-4"
+                ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
+                : "space-y-3"
             )}
           >
             {filteredSkills.map((skill, i) => (

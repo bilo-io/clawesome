@@ -18,7 +18,7 @@ interface SidebarSection {
   links: SidebarLink[];
 }
 
-export function LeftSidebar() {
+export function LeftSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { theme } = useUI();
   const pathname = usePathname();
   const [expandedSections, setExpandedSections] = useState<string[]>(['AI', 'Architecture', 'Connect']);
@@ -89,7 +89,27 @@ export function LeftSidebar() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <aside className={`fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] border-r transition-colors overflow-y-auto hidden md:block no-scrollbar ${theme === 'dark' ? 'border-slate-800 bg-[#020617]' : 'border-slate-200 bg-slate-50'}`}>
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={`fixed top-0 md:top-16 left-0 z-40 w-64 h-full md:h-[calc(100vh-4rem)] border-r transition-all duration-300 overflow-y-auto no-scrollbar ${
+        theme === 'dark' ? 'border-slate-800 bg-[#020617]' : 'border-slate-200 bg-slate-50'
+      } ${
+        isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
+      }`}>
+        {/* Mobile Header (only inside drawer) */}
+        <div className="flex items-center justify-between p-6 md:hidden border-b border-slate-200 dark:border-slate-800 mb-4">
+          <span className="font-black tracking-tighter uppercase text-sm">Navigation</span>
+          <button onClick={onClose} className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg">
+             <ChevronDown className="rotate-90" size={20} />
+          </button>
+        </div>
       <div className="p-6 space-y-8">
         <div className={`relative flex items-center p-2 rounded-xl transition-colors ${theme === 'dark' ? 'bg-slate-900 border border-slate-800' : 'bg-white border border-slate-200 shadow-sm'}`}>
           <Search size={16} className={`ml-2 ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`} />
@@ -145,5 +165,6 @@ export function LeftSidebar() {
         </nav>
       </div>
     </aside>
+    </>
   );
 }

@@ -46,7 +46,9 @@ export const Sidebar = () => {
     isSidebarExpanded, 
     toggleSidebar, 
     glowIntensity,
-    theme
+    theme,
+    isMobileSidebarOpen,
+    toggleMobileSidebar
   } = useUIStore();
 
   const [openCategories, setOpenCategories] = useState<string[]>(['AI', 'OPS', 'Sys']);
@@ -91,13 +93,29 @@ export const Sidebar = () => {
   ];
 
   return (
-    <aside 
-      className={cn(
-        "h-screen transition-all duration-300 flex flex-col z-50 border-r shadow-2xl",
-        theme === 'dark' ? "bg-slate-950 border-slate-900" : "bg-white border-slate-200",
-        isSidebarExpanded ? "w-64" : "w-20"
-      )}
-    >
+    <>
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isMobileSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            onClick={() => toggleMobileSidebar(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <aside 
+        className={cn(
+          "h-screen transition-all duration-300 flex flex-col z-50 border-r shadow-2xl",
+          "fixed md:relative",
+          isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+          theme === 'dark' ? "bg-slate-950 border-slate-900" : "bg-white border-slate-200",
+          isSidebarExpanded ? "w-64" : "w-20"
+        )}
+      >
       <div className={cn(
         "p-6 border-b",
         theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50/50"
@@ -302,5 +320,6 @@ export const Sidebar = () => {
         </button>
       </div>
     </aside>
+    </>
   );
 };

@@ -19,9 +19,11 @@ import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 export default function IntegrationsPage() {
   const { myIntegrations, marketplaceIntegrations, isInstalled } = useIntegrationStore();
   const { providers, setPreferredModel, setApiKey, getApiKey } = useProviderStore();
-  const { theme } = useUIStore();
+  const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const rawMode = getViewMode('/integrations', 'grid');
+  const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/integrations', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
 
   const currentIntegrations = activeTab === 'my' ? myIntegrations : marketplaceIntegrations;
@@ -44,7 +46,7 @@ export default function IntegrationsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder={`Search ${activeTab === 'my' ? 'installed' : 'marketplace'} integrations...`}
         viewMode={viewMode === 'table' ? 'list' : 'grid'}
-        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode === 'list' ? 'table' : 'grid')}
+        onViewModeChange={(mode: 'grid' | 'list') => setViewMode(mode)}
         renderRight={
           <div
             className={cn(
