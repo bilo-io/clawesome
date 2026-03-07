@@ -25,3 +25,9 @@ tasks:
       - 'components/**/*'
       - 'lib/**/*'
       - 'public/**/*'
+
+  storybook:
+    command: 'bun run storybook'
+
+  chromatic:
+    command: 'bun run chromatic'

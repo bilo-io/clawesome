@@ -1393,38 +1393,60 @@ const SystemPage = ({ mode }: { mode: 'terminal' | 'identity' }) => {
   return (
     <PageWrapper title={mode === 'terminal' ? "Neural Terminal" : "Identity Matrix"} icon={mode === 'terminal' ? TerminalIcon : User}>
       {mode === 'terminal' ? (
-        <Surface className="p-0 border-none bg-transparent">
-          <Terminal 
-            title="Showcase Gateway"
-            subtitle="Demonstration of the neural terminal component logic."
-            initialHistory={[
-              { type: 'output', text: 'Clawesome UI Showcase // Terminal v2.0' },
-              { type: 'success', text: 'SYSTEM: All modules nominal.' }
-            ]}
-          />
-        </Surface>
+        <DocsWrapper
+          label="Neural Terminal"
+          description="Low-level gateway for neural fabric synchronization and command execution."
+          code={`<Terminal 
+  title="Neural Terminal"
+  initialHistory={[...]}
+/>`}
+        >
+          <div className="w-full">
+            <Terminal 
+              title="Showcase Gateway"
+              subtitle="Demonstration of the neural terminal component logic."
+              initialHistory={[
+                { type: 'output', text: 'Clawesome UI Showcase // Terminal v2.0' },
+                { type: 'success', text: 'SYSTEM: All modules nominal.' }
+              ]}
+            />
+          </div>
+        </DocsWrapper>
       ) : (
         <div className="space-y-12">
-          <ProfileHeader 
-            name="Showcase User" 
-            clearanceLevel="OP_CLEARANCE: S9 [GOD_MODE]"
-            email="showcase@clawesome.io"
-            onEdit={() => alert('Edit triggered')}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <ProfileCard title="Identity Configuration" icon={<Settings size={18} />}>
-                <div className="space-y-4">
-                   <p className="text-slate-500 italic font-medium">"This is how the profile card looks in the showcase environment."</p>
-                   <ProfileInfoRow label="Access Level" value="Unlimited" />
-                   <ProfileInfoRow label="Node Region" value="Localhost" />
-                </div>
-             </ProfileCard>
-             <ProfileActionCard 
-                title="Secure Uplink" 
-                description="This demonstrates the action card style used for security and connection notices."
-                icon={<Shield size={100} />}
-             />
-          </div>
+          <DocsWrapper
+            label="Identity Header"
+            description="Premium user profile header with clearance levels and actions."
+            code={`<ProfileHeader name="User" ... />`}
+          >
+            <ProfileHeader 
+              name="Showcase User" 
+              clearanceLevel="OP_CLEARANCE: S9 [GOD_MODE]"
+              email="showcase@clawesome.io"
+              onEdit={() => alert('Edit triggered')}
+            />
+          </DocsWrapper>
+
+          <DocsWrapper
+            label="Profile Information"
+            description="Detail cards and action surfaces for user management."
+            code={`<ProfileCard title="Identity">...</ProfileCard>`}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <ProfileCard title="Identity Configuration" icon={<Settings size={18} />}>
+                  <div className="space-y-4">
+                     <p className="text-slate-500 italic font-medium">"This is how the profile card looks in the showcase environment."</p>
+                     <ProfileInfoRow label="Access Level" value="Unlimited" />
+                     <ProfileInfoRow label="Node Region" value="Localhost" />
+                  </div>
+               </ProfileCard>
+               <ProfileActionCard 
+                  title="Secure Uplink" 
+                  description="This demonstrates the action card style used for security and connection notices."
+                  icon={<Shield size={100} />}
+               />
+            </div>
+          </DocsWrapper>
         </div>
       )}
     </PageWrapper>

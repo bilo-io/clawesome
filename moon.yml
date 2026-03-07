@@ -24,3 +24,7 @@ tasks:
   # Run all dev tasks
   dev:
     command: 'moon run :dev'
+
+  # Run all storybook instances
+  storybook:
+    command: 'moon run :storybook'

@@ -30,13 +30,13 @@ tasks:
     command: 'bun run storybook'
 
   # Chromatic Visual Regression Testing
-  # chromatic:
-  #   command: 'bun run chromatic'
-  #   inputs:
-  #     - 'src/**/*'
-  #   # Requires CHROMATIC_PROJECT_TOKEN in your .env or CI
-  #   env:
-  #     CHROMATIC_PROJECT_TOKEN: '@env(CHROMATIC_PROJECT_TOKEN)'
+  chromatic:
+    command: 'bun run chromatic'
+    inputs:
+      - 'src/**/*'
+    # Requires CHROMATIC_PROJECT_TOKEN in your .env or CI
+    # env:
+    #   CHROMATIC_PROJECT_TOKEN: '@env(CHROMATIC_PROJECT_TOKEN)'
 
   # lint:
   #   command: 'bun run lint'
