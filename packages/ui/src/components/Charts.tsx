@@ -56,6 +56,7 @@ export interface RadarChartProps {
   series: { key: string; color: string; label?: string }[];
   className?: string;
   size?: number;
+  dataKey?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -88,24 +89,31 @@ export const TimeframePicker = ({
   value,
   onChange,
   className,
-}: TimeframePickerProps) => (
-  <div className={cn('flex items-center gap-1 p-1 bg-slate-900/60 rounded-full border border-slate-800', className)}>
-    {options.map(opt => (
-      <button
-        key={opt}
-        onClick={() => onChange(opt)}
-        className={cn(
-          'px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all',
-          value === opt
-            ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-            : 'text-slate-500 hover:text-slate-300'
-        )}
-      >
-        {opt}
-      </button>
-    ))}
-  </div>
-);
+}: TimeframePickerProps) => {
+  const { theme } = useUI();
+  return (
+    <div className={cn(
+      'flex items-center gap-1 p-1 rounded-full border transition-colors',
+      theme === 'dark' ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-100 border-slate-200',
+      className
+    )}>
+      {options.map(opt => (
+        <button
+          key={opt}
+          onClick={() => onChange(opt)}
+          className={cn(
+            'px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all',
+            value === opt
+              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
+              : (theme === 'dark' ? 'text-slate-500 hover:text-slate-300' : 'text-slate-400 hover:text-slate-600')
+          )}
+        >
+          {opt}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 // ─── StackedAreaChart ─────────────────────────────────────────────────────────
 
@@ -212,6 +220,7 @@ export const GroupedBarChart = ({ data, series, xKey, className, height = 280, s
 // ─── DonutChart ───────────────────────────────────────────────────────────────
 
 export const DonutChart = ({ data, className, size = 240, innerRadius = 60 }: DonutChartProps) => {
+  const { theme } = useUI();
   const { tooltipStyle } = useChartTheme();
   const total = data.reduce((s, d) => s + d.value, 0);
 
@@ -238,7 +247,9 @@ export const DonutChart = ({ data, className, size = 240, innerRadius = 60 }: Do
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-2xl font-black text-white">{total.toLocaleString()}</span>
+          <span className={cn("text-2xl font-black", theme === 'dark' ? "text-white" : "text-slate-900")}>
+            {total.toLocaleString()}
+          </span>
           <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Total</span>
         </div>
       </div>
@@ -249,9 +260,13 @@ export const DonutChart = ({ data, className, size = 240, innerRadius = 60 }: Do
           <div key={d.name} className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: d.color }} />
-              <span className="text-xs font-black text-slate-400 uppercase tracking-wider">{d.name}</span>
+              <span className={cn("text-xs font-black uppercase tracking-wider", theme === 'dark' ? "text-slate-400" : "text-slate-500")}>
+                {d.name}
+              </span>
             </div>
-            <span className="text-xs font-black text-white">{((d.value / total) * 100).toFixed(1)}%</span>
+            <span className={cn("text-xs font-black", theme === 'dark' ? "text-white" : "text-slate-900")}>
+              {((d.value / total) * 100).toFixed(1)}%
+            </span>
           </div>
         ))}
       </div>
@@ -262,15 +277,16 @@ export const DonutChart = ({ data, className, size = 240, innerRadius = 60 }: Do
 // ─── SpiderRadarChart ─────────────────────────────────────────────────────────
 
 export const SpiderRadarChart = ({ data, series, className, size = 300 }: RadarChartProps) => {
+  const { theme } = useUI();
   const { tooltipStyle } = useChartTheme();
   return (
     <div className={cn('w-full flex justify-center', className)} style={{ height: size }}>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid stroke="#1e293b" />
+          <PolarGrid stroke={theme === 'dark' ? "#1e293b" : "#e2e8f0"} />
           <PolarAngleAxis
             dataKey="subject"
-            tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }}
+            tick={{ fontSize: 10, fontWeight: 700, fill: theme === 'dark' ? '#64748b' : '#94a3b8' }}
           />
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }} />

@@ -11,7 +11,7 @@ export interface DocsWrapperProps {
   /** The live component preview */
   children: React.ReactNode;
   /** The source code string to display in the code panel */
-  code: string;
+  code?: string;
   /** Display label for the component name / section */
   label: string;
   /** Optional sub-description shown under the label */
@@ -92,12 +92,13 @@ export const DocsWrapper: React.FC<DocsWrapperProps> = ({
   const isDark = theme === 'dark';
 
   const handleCopy = async () => {
+    if (!code) return;
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const tokens = tokenise(code);
+  const tokens = code ? tokenise(code) : [];
   const colorMap = isDark ? TOKEN_COLORS : TOKEN_COLORS_LIGHT;
 
   return (
@@ -137,12 +138,12 @@ export const DocsWrapper: React.FC<DocsWrapperProps> = ({
           isDark ? 'bg-slate-800/60 border-slate-700' : 'bg-slate-100 border-slate-200',
         )}>
           {([
-            { id: 'preview', icon: Eye,   label: 'Preview' },
-            { id: 'code',    icon: Code2, label: 'Code'    },
-          ] as const).map(({ id, icon: Icon, label: lbl }) => (
+            { id: 'preview', icon: Eye,   label: 'Preview', show: true },
+            { id: 'code',    icon: Code2, label: 'Code', show: !!code },
+          ] as const).filter(t => t.show).map(({ id, icon: Icon, label: lbl }) => (
             <button
               key={id}
-              onClick={() => setTab(id)}
+              onClick={() => setTab(id as any)}
               title={lbl}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all text-[10px] font-black uppercase tracking-widest',

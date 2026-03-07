@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { CodePreview } from './CodePreview';
 import { useUI, cn } from '@clawesome/ui';
 
-export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+export type PackageManager = 'npm' | 'pnpm' | 'bun';
 
 interface CommandPreviewProps {
   commands: Record<PackageManager, string>;
@@ -19,7 +19,7 @@ export function CommandPreview({ commands }: CommandPreviewProps) {
   const [pm, setPm] = useState<PackageManager>('pnpm');
   const { theme } = useUI();
 
-  const managers: PackageManager[] = ['npm', 'pnpm', 'yarn', 'bun'];
+  const managers: PackageManager[] = ['npm', 'pnpm', 'bun'];
 
   return (
     <div className="my-10 animate-in fade-in duration-500">

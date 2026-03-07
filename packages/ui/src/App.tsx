@@ -10,9 +10,9 @@ import {
 import { cn } from './utils';
 
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  ThemeProvider, 
-  useUI, 
+import {
+  ThemeProvider,
+  useUI,
   PageHeader,
   BottomDock,
   CommandModal,
@@ -53,15 +53,17 @@ import {
   CommandPreview,
   LanguagePreview,
   LeftSidebar as DocsSidebar,
+  SegmentedControl, SlideToConfirm, QuickActions,
+  Select, Checkbox, RadioGroup, Breadcrumbs, Chip,
   TopBar,
   DocPlaceholder
 } from './index';
 
 import logo from './assets/clawesome-logo.svg';
-import { 
-  Settings, Globe, Shield, HelpCircle, Terminal, Bot, 
+import {
+  Settings, Globe, Shield, HelpCircle, Terminal, Bot,
   BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, Sparkles, Home, Layout,
-  ChartPieIcon, Zap, Layers, Activity, Lock, Star, Database, Server, Code2, LayoutGrid, TrendingUp, GitBranch, MessageSquare, Search, Plus, List
+  ChartPieIcon, Zap, Layers, Activity, Lock, Star, Database, Server, Code2, LayoutGrid, TrendingUp, GitBranch, MessageSquare, Search, Plus, List, Mail
 } from 'lucide-react';
 
 const mockCommandResults = [
@@ -111,13 +113,6 @@ const categories = [
     items: [
       { icon: ChartPieIcon, label: 'Charts', href: '/charts' }
     ]
-  },
-  {
-    title: 'OPERATIONS',
-    items: [
-      { icon: MessageCircle, label: 'Communication', href: '/ops/chat' },
-      { icon: BarChart3, label: 'Analytics', href: '/ops/analytics' },
-    ]
   }
 ];
 
@@ -151,7 +146,7 @@ const IntroductionPage = () => {
             Shared Component Infrastructure for clawesome OS
           </p>
         </div>
-        
+
         <div className={`flex items-center gap-4 p-2 rounded-full border transition-colors ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
           <button onClick={() => setTheme('light')} className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-black shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>Light</button>
           <button onClick={() => setTheme('dark')} className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-600/20' : 'text-slate-400 hover:text-slate-600'}`}>Dark</button>
@@ -194,9 +189,9 @@ const ModalAlertShowcase = () => {
       <Alert variant="info">Deployment queued for NC-01. Estimated wait: 30s.</Alert>
       <Alert variant="success" title="Deployed!">Agent NC-01 is now running on the prod cluster.</Alert>
       <Alert variant="warning" title="Heads Up">CPU threshold at 80%. Consider scaling the mesh.</Alert>
-      <Alert variant="error" title="Build Failed" onClose={() => {}} >Pipeline error on step 3: module resolution failed.</Alert>
+      <Alert variant="error" title="Build Failed" onClose={() => { }} >Pipeline error on step 3: module resolution failed.</Alert>
       <div className="pt-2">
-        <Button variant="primary" icon={<Layers size={14}/>} onClick={() => setOpen(true)}>Open Modal</Button>
+        <Button variant="primary" icon={<Layers size={14} />} onClick={() => setOpen(true)}>Open Modal</Button>
       </div>
       <Modal
         isOpen={open}
@@ -250,16 +245,16 @@ const TypographyShowcase = () => {
 };
 
 const PALETTE = [
-  { name: 'Indigo — Primary',  tw: 'bg-indigo-600',  hex: '#4f46e5', token: 'indigo-600'  },
-  { name: 'Indigo Light',      tw: 'bg-indigo-400',  hex: '#818cf8', token: 'indigo-400'  },
+  { name: 'Indigo — Primary', tw: 'bg-indigo-600', hex: '#4f46e5', token: 'indigo-600' },
+  { name: 'Indigo Light', tw: 'bg-indigo-400', hex: '#818cf8', token: 'indigo-400' },
   { name: 'Emerald — Success', tw: 'bg-emerald-500', hex: '#10b981', token: 'emerald-500' },
-  { name: 'Rose — Error',      tw: 'bg-rose-500',    hex: '#f43f5e', token: 'rose-500'    },
-  { name: 'Amber — Warning',   tw: 'bg-amber-500',   hex: '#f59e0b', token: 'amber-500'   },
-  { name: 'Cyan — Accent',     tw: 'bg-cyan-400',    hex: '#22d3ee', token: 'cyan-400'    },
-  { name: 'Violet — AI',       tw: 'bg-violet-500',  hex: '#8b5cf6', token: 'violet-500'  },
-  { name: 'Fuchsia — Prime',   tw: 'bg-fuchsia-500', hex: '#d946ef', token: 'fuchsia-500' },
-  { name: 'Slate 900 (Dark)',  tw: 'bg-slate-900',   hex: '#0f172a', token: 'slate-900'   },
-  { name: 'Slate 100 (Light)', tw: 'bg-slate-100',   hex: '#f1f5f9', token: 'slate-100'   },
+  { name: 'Rose — Error', tw: 'bg-rose-500', hex: '#f43f5e', token: 'rose-500' },
+  { name: 'Amber — Warning', tw: 'bg-amber-500', hex: '#f59e0b', token: 'amber-500' },
+  { name: 'Cyan — Accent', tw: 'bg-cyan-400', hex: '#22d3ee', token: 'cyan-400' },
+  { name: 'Violet — AI', tw: 'bg-violet-500', hex: '#8b5cf6', token: 'violet-500' },
+  { name: 'Fuchsia — Prime', tw: 'bg-fuchsia-500', hex: '#d946ef', token: 'fuchsia-500' },
+  { name: 'Slate 900 (Dark)', tw: 'bg-slate-900', hex: '#0f172a', token: 'slate-900' },
+  { name: 'Slate 100 (Light)', tw: 'bg-slate-100', hex: '#f1f5f9', token: 'slate-100' },
 ];
 
 const ColorPaletteShowcase = () => {
@@ -286,10 +281,10 @@ const ICON_SET = [
   BarChart3, FolderKanban, Blocks, Brain,
 ];
 const ICON_LABELS = [
-  'Bot','Server','Database','Zap','Activity','Shield','Lock','Star',
-  'Code2','Cpu','GitBranch','MessageSquare','LayoutGrid','Settings',
-  'Layers','Search','Database','Globe','Sparkles','BrainCircuit',
-  'BarChart3','FolderKanban','Blocks','Brain',
+  'Bot', 'Server', 'Database', 'Zap', 'Activity', 'Shield', 'Lock', 'Star',
+  'Code2', 'Cpu', 'GitBranch', 'MessageSquare', 'LayoutGrid', 'Settings',
+  'Layers', 'Search', 'Database', 'Globe', 'Sparkles', 'BrainCircuit',
+  'BarChart3', 'FolderKanban', 'Blocks', 'Brain',
 ];
 
 const IconShowcase = () => {
@@ -365,9 +360,9 @@ const FoundationPage = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           {[
-            { icon: Server,   label: 'Neural Node', desc: 'Primary infrastructure layer for orchestration pipelines.', tag: 'ONLINE' },
+            { icon: Server, label: 'Neural Node', desc: 'Primary infrastructure layer for orchestration pipelines.', tag: 'ONLINE' },
             { icon: Database, label: 'Vector Store', desc: 'High-density embedding cache, 99.98% retrieval accuracy.', tag: 'SYNCED' },
-            { icon: Code2,    label: 'Skill Module',  desc: 'Composable capability block ready for agent deployment.',  tag: 'READY' },
+            { icon: Code2, label: 'Skill Module', desc: 'Composable capability block ready for agent deployment.', tag: 'READY' },
           ].map((item) => (
             <Surface key={item.label} material="paper" animate>
               <div className="flex items-start justify-between mb-6">
@@ -404,8 +399,8 @@ const FoundationPage = () => {
         )}>
           {[
             { icon: Lock, label: 'Secure Vault', desc: 'End-to-end encrypted key-value store for agent secrets.' },
-            { icon: Zap,  label: 'Edge Runtime', desc: 'Ultra-low-latency compute layer at the network boundary.' },
-            { icon: Star, label: 'Core Memory',  desc: 'Persistent long-term memory with semantic recall.' },
+            { icon: Zap, label: 'Edge Runtime', desc: 'Ultra-low-latency compute layer at the network boundary.' },
+            { icon: Star, label: 'Core Memory', desc: 'Persistent long-term memory with semantic recall.' },
           ].map((item) => (
             <Surface key={item.label} material="glass" animate>
               <div className={cn('inline-flex p-3 rounded-2xl mb-6', theme === 'dark' ? 'bg-white/5 text-cyan-300' : 'bg-white/60 text-cyan-600')}>
@@ -431,21 +426,21 @@ const FoundationPage = () => {
       >
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
           {([
-            { color: 'indigo',  icon: Cpu,      label: 'Agent',   value: '12' },
-            { color: 'emerald', icon: Activity, label: 'Uptime',  value: '99.9%' },
-            { color: 'rose',    icon: Zap,      label: 'Errors',  value: '0' },
-            { color: 'amber',   icon: Server,   label: 'Latency', value: '4ms' },
-            { color: 'cyan',    icon: Database, label: 'Vectors', value: '1.4M' },
-            { color: 'fuchsia', icon: Star,     label: 'Score',   value: '98.6' },
+            { color: 'indigo', icon: Cpu, label: 'Agent', value: '12' },
+            { color: 'emerald', icon: Activity, label: 'Uptime', value: '99.9%' },
+            { color: 'rose', icon: Zap, label: 'Errors', value: '0' },
+            { color: 'amber', icon: Server, label: 'Latency', value: '4ms' },
+            { color: 'cyan', icon: Database, label: 'Vectors', value: '1.4M' },
+            { color: 'fuchsia', icon: Star, label: 'Score', value: '98.6' },
           ] as const).map(({ color, icon: Icon, label, value }) => (
             <Surface key={label} material="status" color={color} animate padding="p-6">
               <Icon size={20} className={cn(
                 'mb-4 transition-colors',
-                color === 'indigo'  && 'text-indigo-500',
+                color === 'indigo' && 'text-indigo-500',
                 color === 'emerald' && 'text-emerald-500',
-                color === 'rose'    && 'text-rose-500',
-                color === 'amber'   && 'text-amber-500',
-                color === 'cyan'    && 'text-cyan-500',
+                color === 'rose' && 'text-rose-500',
+                color === 'amber' && 'text-amber-500',
+                color === 'cyan' && 'text-cyan-500',
                 color === 'fuchsia' && 'text-fuchsia-500',
               )} />
               <p className={cn('text-2xl font-black tracking-tighter mb-0.5', theme === 'dark' ? 'text-white' : 'text-slate-900')}>{value}</p>
@@ -470,17 +465,17 @@ const FoundationPage = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           {([
-            { color: 'indigo',  icon: Cpu,    label: 'Agent Core',  desc: 'Primary reasoning engine for autonomous neural operations.' },
-            { color: 'violet',  icon: Layers, label: 'Layer Stack', desc: 'Hierarchical abstraction model spanning reasoning depth.' },
-            { color: 'cyan',    icon: Zap,    label: 'Fast Path',   desc: 'Low-latency execution lane with hardware acceleration.' },
-            { color: 'fuchsia', icon: Star,   label: 'Prime Module',desc: 'Highest-clearance tool module for critical mission ops.' },
+            { color: 'indigo', icon: Cpu, label: 'Agent Core', desc: 'Primary reasoning engine for autonomous neural operations.' },
+            { color: 'violet', icon: Layers, label: 'Layer Stack', desc: 'Hierarchical abstraction model spanning reasoning depth.' },
+            { color: 'cyan', icon: Zap, label: 'Fast Path', desc: 'Low-latency execution lane with hardware acceleration.' },
+            { color: 'fuchsia', icon: Star, label: 'Prime Module', desc: 'Highest-clearance tool module for critical mission ops.' },
           ] as const).map(({ color, icon: Icon, label, desc }) => (
             <Surface key={label} material="neon" color={color} animate>
               <div className={cn(
                 'inline-flex p-3 rounded-2xl mb-6',
-                color === 'indigo'  && (theme === 'dark' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'),
-                color === 'violet'  && (theme === 'dark' ? 'bg-violet-500/10 text-violet-400' : 'bg-violet-50 text-violet-600'),
-                color === 'cyan'    && (theme === 'dark' ? 'bg-cyan-500/10 text-cyan-400' : 'bg-cyan-50 text-cyan-600'),
+                color === 'indigo' && (theme === 'dark' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'),
+                color === 'violet' && (theme === 'dark' ? 'bg-violet-500/10 text-violet-400' : 'bg-violet-50 text-violet-600'),
+                color === 'cyan' && (theme === 'dark' ? 'bg-cyan-500/10 text-cyan-400' : 'bg-cyan-50 text-cyan-600'),
                 color === 'fuchsia' && (theme === 'dark' ? 'bg-fuchsia-500/10 text-fuchsia-400' : 'bg-fuchsia-50 text-fuchsia-600'),
               )}>
                 <Icon size={22} />
@@ -509,13 +504,13 @@ const FoundationPage = () => {
         <div className="w-full space-y-6">
           {/* Variants */}
           <div className="flex flex-wrap gap-3 items-center">
-            {(['primary','secondary','ghost','danger','success','outline'] as const).map(v => (
-              <Button key={v} variant={v}>{v.charAt(0).toUpperCase()+v.slice(1)}</Button>
+            {(['primary', 'secondary', 'ghost', 'danger', 'success', 'outline'] as const).map(v => (
+              <Button key={v} variant={v}>{v.charAt(0).toUpperCase() + v.slice(1)}</Button>
             ))}
           </div>
           {/* Sizes */}
           <div className="flex flex-wrap gap-3 items-center">
-            {(['xs','sm','md','lg'] as const).map(s => (
+            {(['xs', 'sm', 'md', 'lg'] as const).map(s => (
               <Button key={s} variant="primary" size={s} icon={<Zap size={s === 'xs' ? 10 : s === 'sm' ? 12 : 14} />}>{s.toUpperCase()}</Button>
             ))}
           </div>
@@ -523,7 +518,7 @@ const FoundationPage = () => {
           <div className="flex flex-wrap gap-3 items-center">
             <Button variant="primary" isLoading>Processing</Button>
             <Button variant="primary" disabled>Disabled</Button>
-            <Button variant="outline" icon={<Star size={14}/>} iconPosition="right">With Icon</Button>
+            <Button variant="outline" icon={<Star size={14} />} iconPosition="right">With Icon</Button>
           </div>
         </div>
       </DocsWrapper>
@@ -542,11 +537,11 @@ const FoundationPage = () => {
       >
         <div className="flex flex-wrap gap-3 items-center">
           {([
-            { v: 'indigo'  as const, label: 'Active',  dot: true  },
-            { v: 'emerald' as const, label: 'Online',  dot: true  },
-            { v: 'rose'    as const, label: 'Error',   dot: true  },
-            { v: 'amber'   as const, label: 'Warning', dot: false },
-            { v: 'slate'   as const, label: 'Idle',    dot: false },
+            { v: 'indigo' as const, label: 'Active', dot: true },
+            { v: 'emerald' as const, label: 'Online', dot: true },
+            { v: 'rose' as const, label: 'Error', dot: true },
+            { v: 'amber' as const, label: 'Warning', dot: false },
+            { v: 'slate' as const, label: 'Idle', dot: false },
             { v: 'default' as const, label: 'Unknown', dot: false },
           ]).map(({ v, label, dot }) => (
             <Badge key={v} variant={v} dot={dot}>{label}</Badge>
@@ -567,10 +562,10 @@ const FoundationPage = () => {
       >
         <div className="w-full max-w-lg space-y-4">
           <Input label="Agent Name" placeholder="e.g. NC-01" />
-          <Input label="With Icon" icon={<Database size={14}/>} placeholder="Search store..." />
+          <Input label="With Icon" icon={<Database size={14} />} placeholder="Search store..." />
           <Input label="Error State" error="Invalid identifier format" defaultValue="!bad-id" />
           <Textarea label="Mission Briefing" placeholder="What is this agent's objective?" rows={3} />
-          <SearchInput value="" onChange={() => {}} placeholder="Search agents, tools, skills..." />
+          <SearchInput value="" onChange={() => { }} placeholder="Search agents, tools, skills..." />
         </div>
       </DocsWrapper>
 
@@ -651,6 +646,75 @@ bg-white        // Surface base (light)`}
       >
         <IconShowcase />
       </DocsWrapper>
+
+      {/* ── Form Controls & Navigation ────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+        <DocsWrapper
+          label="Selection Controls"
+          description="Customized Select, Checkbox, and RadioGroup for high-density AI interfaces."
+          code={`<Select options={options} value={v} onChange={setV} />
+<Checkbox label="Auto-deploy" checked={c} onChange={setC} />
+<RadioGroup options={opts} value={r} onChange={setR} />`}
+        >
+          <div className="w-full space-y-6">
+            <Select
+              label="Model Selection"
+              value="claude-3-5"
+              onChange={() => { }}
+              options={[
+                { value: 'claude-3-5', label: 'Claude 3.5 Sonnet', icon: <Sparkles size={14} />, description: 'Fastest & most capable model' },
+                { value: 'gpt-4o', label: 'GPT-4o', icon: <Bot size={14} />, description: 'High-reasoning multimodality' },
+                { value: 'deepseek-v3', label: 'DeepSeek V3', icon: <Cpu size={14} />, description: 'Optimized open-source reasoning' },
+              ]}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Checkbox checked={true} onChange={() => { }} label="Secure Shell" description="Enable SSH access" />
+                <Checkbox checked={false} onChange={() => { }} label="Web Scraper" description="Allow browser access" />
+                <Checkbox checked={true} onChange={() => { }} label="Vector Store" description="Persistent memory" disabled />
+              </div>
+              <RadioGroup
+                value="prod"
+                onChange={() => { }}
+                options={[
+                  { value: 'dev', label: 'Development', description: 'Local sandbox' },
+                  { value: 'staging', label: 'Staging', description: 'Pre-flight cluster' },
+                  { value: 'prod', label: 'Production', description: 'Mission critical' },
+                ]}
+              />
+            </div>
+          </div>
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Navigation & Chips"
+          description="Breadcrumbs for hierarchy and Chips for tags or deletable metadata."
+          code={`<Breadcrumbs items={[{ label: 'Home' }, { label: 'Agents' }]} />
+<Chip label="v2.0" onDelete={() => {}} />`}
+        >
+          <div className="w-full space-y-8">
+            <div className="space-y-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Breadcrumbs</span>
+              <Breadcrumbs items={[
+                { label: 'Workspaces', icon: <LayoutGrid size={12} />, href: '#' },
+                { label: 'Cloud Infra', icon: <Server size={12} />, href: '#' },
+                { label: 'Agent Clusters' }
+              ]} />
+            </div>
+            <div className="space-y-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Chips & Tags</span>
+              <div className="flex flex-wrap gap-2">
+                <Chip label="v3.5" variant="indigo" icon={<Sparkles size={10} />} />
+                <Chip label="Running" variant="emerald" onDelete={() => { }} />
+                <Chip label="Critial" variant="rose" icon={<Activity size={10} />} />
+                <Chip label="Pending" variant="amber" />
+                <Chip label="Legacy" variant="slate" />
+                <Chip label="Small Tag" variant="indigo" size="sm" />
+              </div>
+            </div>
+          </div>
+        </DocsWrapper>
+      </div>
     </PageWrapper>
   );
 };
@@ -659,24 +723,41 @@ bg-white        // Surface base (light)`}
 
 
 
-const AILabPage = ({ historySearch, setHistorySearch }: any) => (
-  <PageWrapper title="Intelligence Sandbox" icon={Sparkles}>
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-       <div className="max-w-xl">
-         <FilesystemSandbox tree={mockSandbox} mountedCount={3} totalCount={4} />
-       </div>
-       <div className="space-y-8">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Neural History</span>
-          <SmartHistorySearch items={mockHistory} search={historySearch} onSearchChange={setHistorySearch} />
-       </div>
-    </div>
-  </PageWrapper>
-);
+const AILabPage = ({ historySearch, setHistorySearch }: any) => {
+  const { theme } = useUI();
+  return (
+    <PageWrapper title="Intelligence Sandbox" icon={Sparkles}>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+        <DocsWrapper
+          label="Filesystem Sandbox"
+          description="Simulated file system for agent workspace testing."
+          code={`<FilesystemSandbox tree={mockSandbox} />`}
+        >
+          <div className="w-full max-w-xl">
+            <FilesystemSandbox tree={mockSandbox} mountedCount={3} totalCount={4} />
+          </div>
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Neural History"
+          description="Trace and search agent decision logs and memory hits."
+          code={`<SmartHistorySearch items={mockHistory} search={search} />`}
+        >
+          <div className="w-full space-y-8">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Neural History</span>
+            <SmartHistorySearch items={mockHistory} search={historySearch} onSearchChange={setHistorySearch} />
+          </div>
+        </DocsWrapper>
+      </div>
+    </PageWrapper>
+  );
+};
 
 const MOCK_SKILLS = [
   { id: 's1', name: 'Filesystem Access', description: 'Read, write, and manage local files and directories.', icon: FolderKanban, color: 'indigo', code: 'import { fs } from "@clawesome/core";\n\n// Read context\nconst content = await fs.readFile("src/main.ts");\n\n// Write update\nawait fs.writeFile("src/main.ts", content.replace("v1", "v2"));' },
   { id: 's2', name: 'Web Browser', description: 'Navigate, click, and scrape content from any website.', icon: Globe, color: 'cyan', code: 'import { browser } from "@clawesome/core";\n\nawait browser.goto("https://clawesome.io");\nconst text = await browser.innerText("main");' },
   { id: 's3', name: 'Shell Execution', description: 'Run secure shell commands in a sandbox environment.', icon: Terminal, color: 'emerald', code: '# Run build\nnpm run build --incremental\n\n# Check process\nps aux | grep node' },
+  { id: 's4', name: 'Email Communication', description: 'Automate inbox management, drafting, and complex email thread reasoning.', icon: Mail, color: 'sky', code: 'import { mail } from "@clawesome/core";\n\n// Search for urgent items\nconst urgent = await mail.search("label:urgent");\n\n// Draft response with AI context\nawait mail.draft({\n  to: urgent[0].from,\n  subject: `Re: ${urgent[0].subject}`,\n  body: "Synchronizing with the neural fabric..."\n});' },
 ];
 
 const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
@@ -703,15 +784,15 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
     <PageWrapper title="Agent Orchestration" icon={Bot}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div className="flex flex-wrap items-center gap-3">
-          <button 
-            onClick={() => setIsCreateAgentModalOpen(true)} 
+          <button
+            onClick={() => setIsCreateAgentModalOpen(true)}
             className="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-600/20 hover:bg-indigo-500 transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus size={16} />
             Deploy Agent
           </button>
-          <button 
-            onClick={() => setIsAILabOpen(true)} 
+          <button
+            onClick={() => setIsAILabOpen(true)}
             className={cn(
               "px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all active:scale-95 flex items-center gap-2 border",
               theme === 'dark' ? "bg-slate-800 border-slate-700 text-white hover:bg-slate-700" : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
@@ -723,32 +804,32 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <SearchInput 
-            value={search} 
-            onChange={setSearch} 
-            placeholder="Search agents..." 
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search agents..."
             className="w-full md:w-64"
           />
           <div className={cn(
             "p-1 rounded-xl flex gap-1 border",
             theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
           )}>
-            <button 
+            <button
               onClick={() => setView('grid')}
               className={cn(
                 "p-1.5 rounded-lg transition-all",
-                view === 'grid' 
+                view === 'grid'
                   ? (theme === 'dark' ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-600")
                   : (theme === 'dark' ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600")
               )}
             >
               <LayoutGrid size={16} />
             </button>
-            <button 
+            <button
               onClick={() => setView('table')}
               className={cn(
                 "p-1.5 rounded-lg transition-all",
-                view === 'table' 
+                view === 'table'
                   ? (theme === 'dark' ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-600")
                   : (theme === 'dark' ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600")
               )}
@@ -763,17 +844,17 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
       <div className="mb-16">
         {sectionLabel("Active Nodes", Activity)}
         <div className={cn(
-          view === 'grid' 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" 
+          view === 'grid'
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             : "space-y-3"
         )}>
           {MOCK_AGENTS
             .filter(a => a.name.toLowerCase().includes(search.toLowerCase()))
             .map(agent => (
-              <AgentCard 
-                key={agent.id} 
-                agent={agent as any} 
-                viewMode={view === 'grid' ? 'grid' : 'table'} 
+              <AgentCard
+                key={agent.id}
+                agent={agent as any}
+                viewMode={view === 'grid' ? 'grid' : 'table'}
               />
             ))
           }
@@ -839,7 +920,7 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
                   {selectedSkill.name}
                 </h3>
                 <p className={cn("max-w-md text-sm leading-relaxed", theme === 'dark' ? "text-slate-400" : "text-slate-500")}>
-                   {selectedSkill.description} This skill is ready to be utilized by any active agent in your swarm for complex automated task execution.
+                  {selectedSkill.description} This skill is ready to be utilized by any active agent in your swarm for complex automated task execution.
                 </p>
               </div>
             </DocsWrapper>
@@ -853,48 +934,79 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
 
 const DocsPortalPage = () => (
   <PageWrapper title="Documentation Hub" icon={BrainCircuit}>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-       <div className="space-y-4">
-          <CodePreview code={`async function clawesome() {\n  const agents = await swarm.deploy(5);\n  return agents.execute('MISSION_REFACTOR');\n}`} language="javascript" />
-       </div>
-       <div className="space-y-4">
-          <CommandPreview commands={{ npm: 'npm install @clawesome/cli', pnpm: 'pnpm add @clawesome/cli', yarn: 'yarn add @clawesome/cli', bun: 'bun add @clawesome/cli' }} />
-       </div>
-       <div className="col-span-full">
-          <LanguagePreview blocks={[
-            { label: 'TypeScript', language: 'typescript', code: 'type Agent = { id: string; };' },
-            { label: 'Rust', language: 'rust', code: 'struct Agent { id: String }' },
-            { label: 'Python', language: 'python', code: 'class Agent: pass' }
-          ]} />
-       </div>
-    </div>
-    <div className="p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20 overflow-hidden relative h-[500px]">
-       <div className="flex gap-8 items-start h-full">
-          <div className="w-64 shrink-0 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden h-full">
-             <DocsSidebar />
-          </div>
-          <div className="flex-1 space-y-8">
-             <div className="border-b border-slate-200 dark:border-slate-800 pb-4"><TopBar /></div>
-             <DocPlaceholder title="Neural Fabric" description="The backbone of autonomous agentic swarms." />
-          </div>
-       </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      <DocsWrapper
+        label="CLI Usage"
+        description="Interactive CommandPreview with package manager switching."
+        code="<CommandPreview commands={...} />"
+      >
+        <CommandPreview commands={{
+          npm: 'npm install @clawesome/cli',
+          pnpm: 'pnpm add @clawesome/cli',
+          yarn: 'yarn add @clawesome/cli',
+          bun: 'bun add @clawesome/cli'
+        }} />
+      </DocsWrapper>
+
+      <DocsWrapper
+        label="Syntax Highlighting"
+        description="Integrated CodePreview for technical walkthroughs."
+        code="<CodePreview code={...} language='javascript' />"
+      >
+        <CodePreview code={`async function clawesome() {\n  const agents = await swarm.deploy(5);\n  return agents.execute('MISSION_REFACTOR');\n}`} language="javascript" />
+      </DocsWrapper>
+
+      <DocsWrapper
+        label="Multi-Language"
+        description="LanguagePreview for cross-platform API docs."
+        code="<LanguagePreview blocks={...} />"
+      >
+        <LanguagePreview blocks={[
+          { label: 'TypeScript', language: 'typescript', code: 'type Agent = { id: string; };' },
+          { label: 'Rust', language: 'rust', code: 'struct Agent { id: String }' },
+          { label: 'Python', language: 'python', code: 'class Agent: pass' }
+        ]} />
+      </DocsWrapper>
     </div>
   </PageWrapper>
 );
 
 const WebsitePage = () => (
   <PageWrapper title="Portal Landing" icon={Globe}>
-    <div className="space-y-24 overflow-hidden relative">
-       <BackgroundAnimated />
-       <WebsiteNavbar />
-       <div className="scale-90 origin-top"><WebsiteHero /></div>
-       <LogoCloud />
-       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <Features />
-          <div className="space-y-12"><Faqs /><Donate /></div>
-       </div>
-       <Testimonials />
-       <WebsiteFooter />
+    <DocsWrapper
+      label="Hero & Navigation"
+      description="Marketing navigation and hero section with animated background."
+      previewHeight="min-h-[600px]"
+    >
+      <div className="w-full relative rounded-3xl overflow-hidden border border-slate-800">
+        <BackgroundAnimated />
+        <div className="relative z-10 scale-[0.85] origin-top">
+          <WebsiteNavbar />
+          <div className="mt-12"><WebsiteHero /></div>
+          <LogoCloud />
+        </div>
+      </div>
+    </DocsWrapper>
+
+    <div className="flex flex-col gap-12 mt-12 pb-24">
+      <DocsWrapper label="Features" description="Exhaustive feature grid.">
+        <Features />
+      </DocsWrapper>
+      <DocsWrapper label="Social Proof" description="Testimonials and trust markers.">
+        <Testimonials />
+      </DocsWrapper>
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+      <DocsWrapper label="Contextual Info" description="FAQs and conversion points.">
+        <Faqs />
+      </DocsWrapper>
+      <DocsWrapper label="Conversion" description="Call to action and footer.">
+        <div className="space-y-12">
+          <Donate />
+          <WebsiteFooter />
+        </div>
+      </DocsWrapper>
     </div>
   </PageWrapper>
 );
@@ -903,9 +1015,9 @@ const WebsitePage = () => (
 
 const MOCK_AGENTS = [
   { id: 'a1', name: 'Senior Dev', title: 'Full-Stack Engineer', createdAt: 1705276800000, profilePicture: '' },
-  { id: 'a2', name: 'QA Agent',   title: 'Test Automation',    createdAt: 1706918400000, profilePicture: '' },
-  { id: 'a3', name: 'Ops Node',   title: 'DevOps Orchestrator', createdAt: 1710979200000, profilePicture: '' },
-  { id: 'a4', name: 'Doc Writer', title: 'Technical Scribe',   createdAt: 1712620800000, profilePicture: '' },
+  { id: 'a2', name: 'QA Agent', title: 'Test Automation', createdAt: 1706918400000, profilePicture: '' },
+  { id: 'a3', name: 'Ops Node', title: 'DevOps Orchestrator', createdAt: 1710979200000, profilePicture: '' },
+  { id: 'a4', name: 'Doc Writer', title: 'Technical Scribe', createdAt: 1712620800000, profilePicture: '' },
 ];
 
 const DashboardPage = () => {
@@ -931,10 +1043,14 @@ const DashboardPage = () => {
       />
 
       {/* ── Resource Header ───────────────────────────────────── */}
-      <section>
-        {sectionLabel('Resource Header', <LayoutGrid size={14} />)}
+      <DocsWrapper
+        label="Dashboard Layout"
+        description="Core portal navigation and resource management headers."
+        code={`<DashboardResourceHeader title="Agents" ... />`}
+        previewHeight="min-h-[140px]"
+      >
         <DashboardResourceHeader
-          title="Agents"
+          title="Resource"
           badge="NC-CONTEXT"
           statusLabel="Neural Link:"
           statusValue="Active"
@@ -944,63 +1060,98 @@ const DashboardPage = () => {
           onSearchChange={setAgentSearch}
           viewMode={agentView}
           onViewModeChange={(m: any) => setAgentView(m)}
-          searchPlaceholder="SEARCH AGENTS..."
+          searchPlaceholder="SEARCH..."
           renderRight={
             <button className="flex items-center gap-3 px-6 py-3 bg-indigo-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20 hover:bg-indigo-500 transition-all active:scale-95">
-              <Bot size={16} /> Deploy Agent
+              <Bot size={16} /> Create resource
             </button>
           }
         />
-      </section>
+      </DocsWrapper>
 
       {/* ── Agent Cards ───────────────────────────────────────── */}
-      <section>
-        {sectionLabel('Agent Cards — Grid & List', <Bot size={14} />)}
-        <div className={cn(
-          agentView === 'grid'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
-            : 'space-y-3'
-        )}>
-          {MOCK_AGENTS
-            .filter(a => a.name.toLowerCase().includes(agentSearch.toLowerCase()))
-            .map(agent => (
-              <AgentCard
-                key={agent.id}
-                agent={agent}
-                viewMode={agentView === 'grid' ? 'grid' : 'table'}
-                onDelete={() => {}}
-                onEdit={() => {}}
-              />
-            ))
-          }
-        </div>
-      </section>
+      <div className="mt-12">
+        <DocsWrapper
+          label="Agent Instances"
+          description="Adaptive grid and list views for autonomous node monitoring."
+          code={`<AgentCard agent={agent} viewMode="grid" />`}
+        >
+          <div className={cn(
+            'w-full',
+            agentView === 'grid'
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
+              : 'space-y-3'
+          )}>
+            {MOCK_AGENTS
+              .filter(a => a.name.toLowerCase().includes(agentSearch.toLowerCase()))
+              .map(agent => (
+                <AgentCard
+                  key={agent.id}
+                  agent={agent}
+                  viewMode={agentView === 'grid' ? 'grid' : 'table'}
+                  onDelete={() => { }}
+                  onEdit={() => { }}
+                />
+              ))
+            }
+          </div>
+        </DocsWrapper>
+      </div>
 
       {/* ── System Vitality ───────────────────────────────────── */}
-      <section>
-        {sectionLabel('System Vitality', <Activity size={14} />)}
-        <SystemVitality />
-      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+        <DocsWrapper
+          label="System Health"
+          description="Real-time hardware and neural fabric monitoring stats."
+          code="<SystemVitality />"
+        >
+          <SystemVitality />
+        </DocsWrapper>
 
-      {/* ── Cost + Project + Heatmap ──────────────────────────── */}
-      <section>
-        {sectionLabel('Cost Tracker · Project Pulse · Activity Heatmap', <TrendingUp size={14} />)}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <DocsWrapper
+          label="Cost Analysis"
+          description="Token consumption and recurring agent expenditure."
+          code="<CostTracker />"
+        >
           <CostTracker />
-          <div className="lg:col-span-1"><ProjectPulse /></div>
+        </DocsWrapper>
+      </div>
+
+      {/* ── Project + Heatmap ──────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+        <DocsWrapper
+          label="Project Activity"
+          description="Aggregated commit and event stream for active workspaces."
+          code="<ProjectPulse />"
+        >
+          <ProjectPulse />
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Node Intensity"
+          description="Temporal density of agentic operations across the mesh."
+          code="<ActivityHeatmap />"
+        >
           <ActivityHeatmap />
-        </div>
-      </section>
+        </DocsWrapper>
+      </div>
 
       {/* ── Workspace Gallery ─────────────────────────────────── */}
-      <section>
-        {sectionLabel('Workspace Gallery', <GitBranch size={14} />)}
-        <WorkspaceGallery viewMode="grid" workspaces={[
-          { id: 'w1', icon: Database, name: 'clawesome Core', path: '~/BiloDev/clawesome', status: 'Active', color: 'indigo', agents: [{ id: 'a1', color: 'bg-indigo-500' }, { id: 'a2', color: 'bg-purple-500' }] },
-          { id: 'w2', icon: Server,   name: 'Cloud Infra',    path: '~/cloud-configs',    status: 'Idle',   color: 'emerald', agents: [{ id: 'a3', color: 'bg-emerald-400' }] },
-          { id: 'w3', icon: Star,     name: 'Protocol X',     path: '~/protocols/x',      status: 'Active', color: 'amber',   agents: [{ id: 'a4', color: 'bg-amber-400' }, { id: 'a5', color: 'bg-rose-400' }, { id: 'a6', color: 'bg-cyan-400' }, { id: 'a7', color: 'bg-violet-400' }] },
-        ]} />
-      </section>
+      <div className="mt-12">
+        <DocsWrapper
+          label="Workspace Mesh"
+          description="Navigation layer for multi-repo agentic orchestration."
+          code="<WorkspaceGallery workspaces={...} />"
+        >
+          <div className="w-full">
+            <WorkspaceGallery viewMode="grid" workspaces={[
+              { id: 'w1', icon: Database, name: 'clawesome Core', path: '~/BiloDev/clawesome', status: 'Active', color: 'indigo', agents: [{ id: 'a1', color: 'bg-indigo-500' }, { id: 'a2', color: 'bg-purple-500' }] },
+              { id: 'w2', icon: Server, name: 'Cloud Infra', path: '~/cloud-configs', status: 'Idle', color: 'emerald', agents: [{ id: 'a3', color: 'bg-emerald-400' }] },
+              { id: 'w3', icon: Star, name: 'Protocol X', path: '~/protocols/x', status: 'Active', color: 'amber', agents: [{ id: 'a4', color: 'bg-amber-400' }, { id: 'a5', color: 'bg-rose-400' }, { id: 'a6', color: 'bg-cyan-400' }, { id: 'a7', color: 'bg-violet-400' }] },
+            ]} />
+          </div>
+        </DocsWrapper>
+      </div>
     </PageWrapper>
   );
 };
@@ -1017,26 +1168,33 @@ const AREA_DATA = [
 ];
 
 const BAR_DATA = [
-  { week: 'W1', success: 88, errors: 9,  timeout: 3 },
+  { week: 'W1', success: 88, errors: 9, timeout: 3 },
   { week: 'W2', success: 74, errors: 18, timeout: 8 },
-  { week: 'W3', success: 92, errors: 5,  timeout: 3 },
+  { week: 'W3', success: 92, errors: 5, timeout: 3 },
   { week: 'W4', success: 81, errors: 12, timeout: 7 },
 ];
 
 const RADAR_DATA = [
-  { subject: 'Code',    nc01: 85, nc02: 62 },
-  { subject: 'Debug',   nc01: 78, nc02: 90 },
-  { subject: 'Review',  nc01: 55, nc02: 72 },
-  { subject: 'Docs',    nc01: 92, nc02: 45 },
-  { subject: 'Deploy',  nc01: 65, nc02: 88 },
+  { subject: 'Code', nc01: 85, nc02: 62 },
+  { subject: 'Debug', nc01: 78, nc02: 90 },
+  { subject: 'Review', nc01: 55, nc02: 72 },
+  { subject: 'Docs', nc01: 92, nc02: 45 },
+  { subject: 'Deploy', nc01: 65, nc02: 88 },
   { subject: 'Monitor', nc01: 70, nc02: 75 },
 ];
 
 const DONUT_DATA = [
   { name: 'Claude 3.5', value: 48, color: '#6366f1' },
-  { name: 'GPT-4o',     value: 28, color: '#06b6d4' },
-  { name: 'DeepSeek',   value: 14, color: '#10b981' },
-  { name: 'Gemini',     value: 10, color: '#f59e0b' },
+  { name: 'GPT-4o', value: 28, color: '#06b6d4' },
+  { name: 'DeepSeek', value: 14, color: '#10b981' },
+  { name: 'Gemini', value: 10, color: '#f59e0b' },
+];
+
+const DONUT_DATA_2 = [
+  { name: 'Frontend', value: 35, color: '#6366f1' },
+  { name: 'Backend', value: 25, color: '#06b6d4' },
+  { name: 'Database', value: 20, color: '#10b981' },
+  { name: 'DevOps', value: 20, color: '#f59e0b' },
 ];
 
 
@@ -1044,108 +1202,119 @@ const ChartsPage = () => {
   const { theme } = useUI();
   const [tf, setTf] = useState('30D');
 
-  const cardCls = cn(
-    'p-8 rounded-[32px] border transition-all',
-    theme === 'dark' ? 'bg-slate-900/40 border-slate-800/60' : 'bg-white border-slate-200 shadow-sm'
-  );
-
-  const sectionLabel = (title: string, sub: string) => (
-    <div className="mb-5">
-      <h3 className={cn('text-sm font-black uppercase tracking-widest', theme === 'dark' ? 'text-white' : 'text-slate-900')}>{title}</h3>
-      <p className={cn('text-xs font-medium mt-0.5', theme === 'dark' ? 'text-slate-500' : 'text-slate-400')}>{sub}</p>
-    </div>
-  );
-
   return (
-    <PageWrapper title="Charts" icon={ChartPieIcon}>
-      <div className="flex items-start justify-between">
+    <PageWrapper title="Telemetrics" icon={BarChart3}>
+      <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-12">
         <PageHeader
-          title="DATA VISUALIZATION"
-          statusLabel="Engine:"
+          title="DATAVIZ ENGINE"
+          statusLabel="Lib:"
           statusValue="Recharts"
           statusColor="indigo"
-          description="Composable chart primitives for dashboards. Stacked areas, multi-series lines, grouped/stacked bars, donuts and radar — all theme-aware."
+          description="Responsive, accessible chart primitives built with Framer Motion and Recharts, themed for decentralized monitoring."
         />
         <TimeframePicker value={tf} onChange={setTf} />
       </div>
 
-      {/* Stacked Area */}
-      <div className={cardCls}>
-        {sectionLabel('Stacked Area Chart', 'Cumulative volume across all agent channels.')}
-        <StackedAreaChart
-          data={AREA_DATA}
-          xKey="month"
-          height={260}
-          series={[
-            { key: 'tokens', color: '#6366f1', label: 'Token Ops' },
-            { key: 'ops',    color: '#06b6d4', label: 'Operations' },
-            { key: 'agents', color: '#10b981', label: 'Agents' },
-          ]}
-        />
-      </div>
-
-      {/* Multi-series line + Grouped bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className={cardCls}>
-          {sectionLabel('Multi-Series Line', 'Agent growth vs operation throughput over time.')}
-          <MultiSeriesLineChart
-            data={AREA_DATA}
-            xKey="month"
-            height={240}
-            series={[
-              { key: 'agents', color: '#6366f1', label: 'Agents' },
-              { key: 'ops',    color: '#f59e0b', label: 'Ops', dashed: true },
-            ]}
-          />
-        </div>
-        <div className={cardCls}>
-          {sectionLabel('Grouped Bar Chart', 'Weekly run outcome breakdown by result type.')}
-          <GroupedBarChart
-            data={BAR_DATA}
-            xKey="week"
-            height={240}
-            series={[
-              { key: 'success', color: '#10b981', label: 'Success' },
-              { key: 'errors',  color: '#f43f5e', label: 'Errors' },
-              { key: 'timeout', color: '#f59e0b', label: 'Timeout' },
-            ]}
-          />
-        </div>
-      </div>
-
-      {/* Stacked bar + Donut + Radar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className={cardCls}>
-          {sectionLabel('Stacked Bar', '100% stacked — proportional run outcomes.')}
-          <GroupedBarChart
-            data={BAR_DATA}
-            xKey="week"
-            height={220}
-            stacked
-            series={[
-              { key: 'success', color: '#10b981', label: 'Success' },
-              { key: 'errors',  color: '#f43f5e', label: 'Errors' },
-              { key: 'timeout', color: '#f59e0b', label: 'Timeout' },
-            ]}
-          />
-        </div>
-        <div className={cardCls}>
-          {sectionLabel('Donut Chart', 'Token consumption split by model provider.')}
-          <div className="flex justify-center mt-2">
-            <DonutChart data={DONUT_DATA} size={200} innerRadius={55} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <DocsWrapper
+          label="Stacked Area"
+          description="Temporal density of agentic operations."
+          code={`<StackedAreaChart 
+  data={AREA_DATA} 
+  xKey="month"
+  series={[
+    { key: 'tokens', color: '#6366f1', label: 'Tokens' },
+    { key: 'ops', color: '#06b6d4', label: 'Ops' }
+  ]} 
+/>`}
+        >
+          <div className="w-full h-80">
+            <StackedAreaChart
+              data={AREA_DATA}
+              xKey="month"
+              series={[
+                { key: 'tokens', color: '#6366f1', label: 'Tokens' },
+                { key: 'ops', color: '#06b6d4', label: 'Ops' },
+                { key: 'agents', color: '#10b981', label: 'Agents' },
+              ]}
+            />
           </div>
-        </div>
-        <div className={cardCls}>
-          {sectionLabel('Radar Chart', 'Agent capability comparison across skill axes.')}
-          <SpiderRadarChart
-            data={RADAR_DATA}
-            size={250}
-            series={[
-              { key: 'nc01', color: '#6366f1', label: 'NC-01' },
-              { key: 'nc02', color: '#10b981', label: 'NC-02' },
-            ]}
-          />
-        </div>
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Multi-Series Line"
+          description="Continuous metric monitoring."
+          code={`<MultiSeriesLineChart 
+  data={AREA_DATA} 
+  series={[
+    { key: 'tokens', color: '#6366f1', label: 'Tokens' }
+  ]} 
+/>`}
+        >
+          <div className="w-full h-80">
+            <MultiSeriesLineChart
+              data={AREA_DATA}
+              xKey="month"
+              series={[
+                { key: 'tokens', color: '#6366f1', label: 'Tokens' },
+                { key: 'ops', color: '#f43f5e', label: 'Failures' },
+              ]}
+            />
+          </div>
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Grouped Bar"
+          description="Categorical comparison of successes/errors."
+          code={`<GroupedBarChart 
+  data={BAR_DATA} 
+  series={[
+    { key: 'success', color: '#10b981', label: 'Success' }
+  ]} 
+/>`}
+        >
+          <div className="w-full h-80">
+            <GroupedBarChart
+              data={BAR_DATA}
+              xKey="week"
+              series={[
+                { key: 'success', color: '#10b981', label: 'Success' },
+                { key: 'errors', color: '#f43f5e', label: 'Errors' },
+              ]}
+            />
+          </div>
+        </DocsWrapper>
+
+        <DocsWrapper
+          label="Spider Radar"
+          description="Relative node capability scores."
+          code={`<SpiderRadarChart 
+  data={RADAR_DATA} 
+  series={[
+     { key: 'nc01', color: '#6366f1', label: 'NC-01' }
+  ]} 
+/>`}
+        >
+          <div className="w-full h-80">
+            <SpiderRadarChart
+              data={RADAR_DATA}
+              dataKey="subject"
+              series={[
+                { key: 'nc01', color: '#6366f1', label: 'NC-01' },
+                { key: 'nc02', color: '#ec4899', label: 'NC-02' },
+              ]}
+            />
+          </div>
+        </DocsWrapper>
+      </div>
+
+      <div className="mt-12">
+        <DocsWrapper label="Donut Chart" description="Resource allocation distribution." code="<DonutChart data={DONUT_DATA} />">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full p-8">
+            <div className="h-64"><DonutChart data={DONUT_DATA} /></div>
+            <div className="h-64"><DonutChart data={DONUT_DATA_2} /></div>
+          </div>
+        </DocsWrapper>
       </div>
     </PageWrapper>
   );
@@ -1178,8 +1347,8 @@ function Showcase() {
 
   const LinkComponent = ({ href, children, className }: any) => {
     return (
-      <div 
-        onClick={() => navigate(href)} 
+      <div
+        onClick={() => navigate(href)}
         className={className}
       >
         {children}
@@ -1188,8 +1357,11 @@ function Showcase() {
   };
 
   return (
-    <div className={`flex min-h-screen transition-colors duration-500 ${theme === 'dark' ? 'bg-[#020617] text-white' : 'bg-slate-50 text-slate-900'}`}>
-      <Sidebar 
+    <div className={cn(
+      'flex min-h-screen transition-colors duration-500',
+      theme === 'dark' ? 'dark bg-[#020617] text-white' : 'bg-slate-50 text-slate-900'
+    )}>
+      <Sidebar
         categories={categories}
         currentPath={location.pathname}
         isExpanded={isSidebarExpanded}
@@ -1237,15 +1409,15 @@ function Showcase() {
           </div>
         </main>
 
-        <BottomDock 
+        <BottomDock
           glowIntensity={glowIntensity}
           onGlowIntensityChange={setGlowIntensity}
-          onToggleFocusMode={() => {}}
+          onToggleFocusMode={() => { }}
           isFocusMode={false}
           isSidebarExpanded={isSidebarExpanded}
         />
 
-        <CommandModal 
+        <CommandModal
           isOpen={isCommandModalOpen}
           onClose={() => setIsCommandModalOpen(false)}
           search={commandSearch}
@@ -1257,7 +1429,7 @@ function Showcase() {
           }}
         />
 
-        <CreateAgentModal 
+        <CreateAgentModal
           isOpen={isCreateAgentModalOpen}
           onClose={() => setIsCreateAgentModalOpen(false)}
           onSubmit={(data) => {
@@ -1266,7 +1438,7 @@ function Showcase() {
           }}
         />
 
-        <AILab 
+        <AILab
           isOpen={isAILabOpen}
           onClose={() => setIsAILabOpen(false)}
           onOpen={() => setIsAILabOpen(true)}
@@ -1276,14 +1448,14 @@ function Showcase() {
           activeTab={activeAiTab}
           onTabSelect={setActiveAiTab}
           onAddTab={() => {
-             const newId = aiTabs.length;
-             setAiTabs([...aiTabs, { id: newId, title: `Mission ${newId + 1}`, messages: [] }]);
-             setActiveAiTab(newId);
+            const newId = aiTabs.length;
+            setAiTabs([...aiTabs, { id: newId, title: `Mission ${newId + 1}`, messages: [] }]);
+            setActiveAiTab(newId);
           }}
           onSendMessage={(content) => {
-             const newTabs = [...aiTabs];
-             newTabs[activeAiTab].messages.push({ role: 'user' as any, content });
-             setAiTabs(newTabs);
+            const newTabs = [...aiTabs];
+            newTabs[activeAiTab].messages.push({ role: 'user' as any, content });
+            setAiTabs(newTabs);
           }}
           thoughts={thoughts}
           isThinking={false}

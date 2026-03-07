@@ -61,8 +61,9 @@ const PDFIcon = ({ size = 18 }: { size?: number }) => (
 );
 
 export default function MemoriesPage() {
-  const { theme } = useUIStore();
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const { theme, setViewMode: storeSetViewMode, getViewMode } = useUIStore();
+  const viewMode = getViewMode('/memory', 'grid');
+  const setViewMode = (mode: 'grid' | 'list') => storeSetViewMode('/memory', mode as any);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<DataType | null>(null);

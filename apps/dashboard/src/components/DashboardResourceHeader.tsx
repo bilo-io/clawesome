@@ -172,8 +172,8 @@ export function DashboardResourceHeader({
                   className={cn(
                     "w-full py-3 px-4 border-none outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 font-bold text-sm tracking-widest uppercase transition-all bg-transparent",
                     theme === 'dark'
-                      ? "text-white placeholder:text-slate-700"
-                      : "text-black placeholder:text-slate-400"
+                      ? "text-white placeholder:text-slate-500"
+                      : "text-slate-900 placeholder:text-slate-400"
                   )}
                   value={searchQuery}
                   onChange={(e) => onSearchChange?.(e.target.value)}
