@@ -30,12 +30,18 @@ export const Navbar = () => {
   }, []);
 
   const docsUrl = process.env.NEXT_PUBLIC_DOCS_URL ?? 'https://clawesome-docs.vercel.app';
+  const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL ?? 
+    (process.env.NODE_ENV === 'production' 
+      ? 'https://clawesome-dashboard.vercel.app' 
+      : 'http://localhost:3000');
+  const uiUrl = process.env.NEXT_PUBLIC_UIURL ?? 'https://clawesome-ui.vercel.app'
 
   const navLinks = [
     { name: 'Docs', href: docsUrl, external: true },
     { name: 'Marketplace', href: '/marketplace' },
     { name: 'Download', href: '/download' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'UI', href: uiUrl, external: true },
   ];
 
   return (
@@ -104,11 +110,11 @@ export const Navbar = () => {
             Log in
           </Link>
           <PrimaryButton 
-            href="/download" 
+            href={dashboardUrl} 
             size="sm"
             icon={<Rocket size={16} />}
           >
-            Let's Go
+            Console
           </PrimaryButton>
         </div>
 
@@ -165,11 +171,11 @@ export const Navbar = () => {
             </div>
             <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
             <PrimaryButton 
-              href="/download" 
+              href={dashboardUrl} 
               className="w-full"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Get Started
+              Console
             </PrimaryButton>
           </motion.div>
         )}

@@ -133,49 +133,60 @@ const PageWrapper = ({ title, icon: Icon, children }: any) => (
 const IntroductionPage = () => {
   const { theme, setTheme } = useUI();
   return (
-    <div className="space-y-16">
-      <section className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-slate-800/20 pb-12">
-        <div>
-          <div className="flex items-center gap-4 mb-4">
-            <img src={logo} alt="Clawesome Logo" className="w-auto h-16 animate-pulse" />
-            <h1 className="text-6xl font-black tracking-tighter">
-              <span className={theme === 'dark' ? "text-white" : "text-black"}>/ui</span>
-            </h1>
-          </div>
-          <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-xs">
-            Shared Component Infrastructure for clawesome OS
-          </p>
-        </div>
+    <div className="relative min-h-[80vh] flex flex-col items-center justify-center space-y-12 overflow-hidden rounded-[40px] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-8 md:p-16">
+      <div className="absolute inset-0 z-0">
+        <BackgroundAnimated />
+      </div>
 
-        <div className={`flex items-center gap-4 p-2 rounded-full border transition-colors ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
-          <button onClick={() => setTheme('light')} className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-black shadow-xl' : 'text-slate-500 hover:text-slate-300'}`}>Light</button>
-          <button onClick={() => setTheme('dark')} className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-600/20' : 'text-slate-400 hover:text-slate-600'}`}>Dark</button>
+      {/* Theme Toggles & Logo */}
+      <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-10">
+        <div className="flex items-center gap-4">
+          <img src={logo} alt="Clawesome Logo" className="w-auto h-8 animate-pulse" />
+          <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white">/ui</span>
         </div>
-      </section>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className={cn(
-          "p-8 rounded-[40px] border space-y-4 shadow-sm transition-colors",
-          theme === 'dark'
-            ? "bg-slate-900/40 border-slate-800 shadow-none"
-            : "bg-white border-slate-200"
-        )}>
-          <h3 className="text-xl font-bold italic underline decoration-indigo-500/30 underline-offset-4">Mission Statement</h3>
-          <p className="text-slate-500 text-sm leading-relaxed italic">The @clawesome/ui library serves as the central neural bridge between our fragmented workspace environments. Every pixel is hardened for high-stakes decentralized operations.</p>
-        </div>
-        <div className={cn(
-          "p-8 rounded-[40px] border space-y-4 shadow-sm transition-colors",
-          theme === 'dark'
-            ? "bg-slate-900/40 border-slate-800 shadow-none"
-            : "bg-white border-slate-200"
-        )}>
-          <h3 className="text-xl font-bold italic underline decoration-emerald-500/30 underline-offset-4">System Status</h3>
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-emerald-500 rounded-full animate-ping" />
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-500">All Nodes Online</span>
-          </div>
+        <div className={`flex items-center gap-2 p-1.5 rounded-full border backdrop-blur-md transition-colors ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800' : 'bg-white/40 border-slate-200'}`}>
+          <button onClick={() => setTheme('light')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'light' ? 'bg-white text-black shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}>Light</button>
+          <button onClick={() => setTheme('dark')} className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${theme === 'dark' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:text-slate-600'}`}>Dark</button>
         </div>
       </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 mt-16">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 dark:bg-white/10 backdrop-blur-xl border border-slate-800 dark:border-white/10 text-white text-[10px] font-black uppercase tracking-widest animate-pulse shadow-2xl">
+          <Sparkles size={14} className="text-indigo-400" /> V1.0 UI Infrastructure
+        </div>
+        
+        <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-indigo-900 via-slate-900 to-emerald-900 dark:from-white dark:via-indigo-200 dark:to-emerald-200 leading-[1.1]">
+          Deploy Stunning<br />
+          <span className="italic">Agent Interfaces</span>
+        </h1>
+        
+        <p className="text-xl dark:text-slate-300 text-slate-700 max-w-2xl mx-auto leading-relaxed font-medium">
+          The central neural bridge for Clawesome OS. Premium React components hardened for high-stakes, decentralized AI operations.
+        </p>
+      </div>
+
+      {/* Installation Panel */}
+      <div className="relative z-10 w-full max-w-2xl mx-auto backdrop-blur-2xl bg-white/60 dark:bg-black/60 border border-slate-200/50 dark:border-slate-800/50 rounded-[32px] p-2 shadow-2xl mt-8">
+        <div className="absolute -inset-[1px] rounded-[32px] bg-gradient-to-r from-indigo-500/30 to-emerald-500/30 blur-md pointer-events-none -z-10" />
+        <div className="p-6 md:p-8 rounded-[28px] bg-slate-50/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2.5 bg-indigo-500/10 text-indigo-500 rounded-xl">
+              <Terminal size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-black tracking-tight uppercase text-slate-900 dark:text-white">Installation</h3>
+              <p className="text-xs text-slate-500 font-medium tracking-wide">Add the shared UI primitives to your workspace.</p>
+            </div>
+          </div>
+          <CommandPreview commands={{
+            npm: 'npm install @clawesome/ui',
+            pnpm: 'pnpm add @clawesome/ui',
+            yarn: 'yarn add @clawesome/ui',
+            bun: 'bun add @clawesome/ui'
+          }} />
+        </div>
+      </div>
+      
     </div>
   );
 };
