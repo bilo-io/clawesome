@@ -1,8 +1,26 @@
+// @ts-nocheck
 'use client';
+/* SHOWCASE_MOCKS_START */
+// @ts-ignore
+const Link = (props: any) => <a href={props.href} {...props}>{props.children}</a>;
+// @ts-ignore
+const Image = (props: any) => <img src={props.src} alt={props.alt} {...props} />;
+// @ts-ignore
+const usePathname = () => "";
+// @ts-ignore
+const useSearchParams = () => new URLSearchParams();
+// @ts-ignore
+const useTheme = () => ({ theme: 'dark', setTheme: () => {} });
+/* SHOWCASE_MOCKS_END */
+
+
+
+
+
 
 import React, { useState } from 'react';
 import { CodePreview } from './CodePreview';
-import { useUI } from '../../ThemeContext'; import { cn } from '../../utils';
+import { useUI, cn } from '@clawesome/ui';
 
 interface LanguageBlock {
   language: string;

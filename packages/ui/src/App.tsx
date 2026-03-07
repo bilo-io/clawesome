@@ -47,7 +47,6 @@ import {
   CodePreview,
   CommandPreview,
   LanguagePreview,
-  DocsLayout,
   LeftSidebar as DocsSidebar,
   TopBar,
   DocPlaceholder

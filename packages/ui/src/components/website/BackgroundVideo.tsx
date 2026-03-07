@@ -1,9 +1,35 @@
+// @ts-nocheck
 'use client';
+/* SHOWCASE_MOCKS_START */
+// @ts-ignore
+const Link = (props: any) => <a href={props.href} {...props}>{props.children}</a>;
+// @ts-ignore
+const Image = (props: any) => <img src={props.src} alt={props.alt} {...props} />;
+// @ts-ignore
+const usePathname = () => "";
+// @ts-ignore
+const useSearchParams = () => new URLSearchParams();
+// @ts-ignore
+const useTheme = () => ({ theme: 'dark', setTheme: () => {} });
+/* SHOWCASE_MOCKS_END */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import React from 'react'
 
 import { cn } from '../../utils'
-import { useTheme } from 'next-themes'
+import { useUI } from '../../ThemeContext';
 
 interface BackgroundVideoProps {
     mounted: boolean
@@ -11,7 +37,7 @@ interface BackgroundVideoProps {
 }
 
 export const BackgroundVideo: React.FC<BackgroundVideoProps> = ({ mounted, src }) => {
-    const { theme } = useTheme()
+    const { theme } = useUI()
     return (
         mounted && (
             <>

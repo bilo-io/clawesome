@@ -1,8 +1,34 @@
+// @ts-nocheck
 'use client';
+/* SHOWCASE_MOCKS_START */
+// @ts-ignore
+const Link = (props: any) => <a href={props.href} {...props}>{props.children}</a>;
+// @ts-ignore
+const Image = (props: any) => <img src={props.src} alt={props.alt} {...props} />;
+// @ts-ignore
+const usePathname = () => "";
+// @ts-ignore
+const useSearchParams = () => new URLSearchParams();
+// @ts-ignore
+const useTheme = () => ({ theme: 'dark', setTheme: () => {} });
+/* SHOWCASE_MOCKS_END */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import React, { useState, useEffect } from 'react';
-const Link = (props: any) => <a {...props} />;
-import { usePathname } from 'next/navigation';
+
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Menu, X, ArrowRight, Sun, Moon, Rocket } from 'lucide-react';
 import { useUI } from '../../ThemeContext';
@@ -13,7 +39,7 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useUI();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch
@@ -29,7 +55,7 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const docsUrl = process.env.NEXT_PUBLIC_DOCS_URL ?? 'https://clawesome-docs.vercel.app';
+  const docsUrl = (typeof process !== 'undefined' ? (typeof process !== 'undefined' ? (typeof process !== 'undefined' ? (typeof process !== 'undefined' ? (typeof process !== 'undefined' ? (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_DOCS_URL : undefined) : undefined) : undefined) : undefined) : undefined) : undefined) ?? 'https://clawesome-docs.vercel.app';
 
   const navLinks = [
     { name: 'Docs', href: docsUrl, external: true },
