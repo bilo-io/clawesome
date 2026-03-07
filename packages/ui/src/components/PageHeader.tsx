@@ -78,7 +78,7 @@ export function PageHeader({
                     theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400" : "bg-white border-slate-100 text-slate-600 shadow-slate-200/50"
                   )}
                 >
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed">
+                  <p className="text-xs font-medium leading-relaxed">
                     {description}
                   </p>
                   <div className={cn(

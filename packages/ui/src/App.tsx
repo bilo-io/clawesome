@@ -75,7 +75,7 @@ import {
 } from 'lucide-react';
 
 const mockCommandResults = [
-  { icon: Terminal, label: 'Run: bun run server.ts', category: 'Commands' },
+  { icon: TerminalIcon, label: 'Run: bun run server.ts', category: 'Commands' },
   { icon: HelpCircle, label: 'Neural Mesh Configuration', category: 'Documentation' },
 ];
 
@@ -836,7 +836,7 @@ const AILabPage = ({ historySearch, setHistorySearch }: any) => {
 const MOCK_SKILLS = [
   { id: 's1', name: 'Filesystem Access', description: 'Read, write, and manage local files and directories.', icon: FolderKanban, color: 'indigo', code: 'import { fs } from "@clawesome/core";\n\n// Read context\nconst content = await fs.readFile("src/main.ts");\n\n// Write update\nawait fs.writeFile("src/main.ts", content.replace("v1", "v2"));' },
   { id: 's2', name: 'Web Browser', description: 'Navigate, click, and scrape content from any website.', icon: Globe, color: 'cyan', code: 'import { browser } from "@clawesome/core";\n\nawait browser.goto("https://clawesome.io");\nconst text = await browser.innerText("main");' },
-  { id: 's3', name: 'Shell Execution', description: 'Run secure shell commands in a sandbox environment.', icon: Terminal, color: 'emerald', code: '# Run build\nnpm run build --incremental\n\n# Check process\nps aux | grep node' },
+  { id: 's3', name: 'Shell Execution', description: 'Run secure shell commands in a sandbox environment.', icon: TerminalIcon, color: 'emerald', code: '# Run build\nnpm run build --incremental\n\n# Check process\nps aux | grep node' },
   { id: 's4', name: 'Email Communication', description: 'Automate inbox management, drafting, and complex email thread reasoning.', icon: Mail, color: 'sky', code: 'import { mail } from "@clawesome/core";\n\n// Search for urgent items\nconst urgent = await mail.search("label:urgent");\n\n// Draft response with AI context\nawait mail.draft({\n  to: urgent[0].from,\n  subject: `Re: ${urgent[0].subject}`,\n  body: "Synchronizing with the neural fabric..."\n});' },
 ];
 

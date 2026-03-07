@@ -1,5 +1,6 @@
 @import url('https://fonts.cdnfonts.com/css/newton-howard-font');
 @import "tailwindcss";
+@source "../../packages/ui/src/**/*.{ts,tsx}";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
