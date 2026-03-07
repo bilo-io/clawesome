@@ -2,6 +2,8 @@
 // apps/cli/src/index.ts
 
 import { Command } from 'commander';
+import chalk from 'chalk';
+import gradient from 'gradient-string';
 import inquirer from 'inquirer';
 import pc from 'picocolors';
 import { readFileSync, existsSync } from 'fs';
@@ -42,11 +44,14 @@ async function pressEnter() {
 async function interactiveRoot() {
   while (true) {
     await showBranding();
+
     const { action } = await (inquirer.prompt as any)([
       {
         type: 'select',
         name: 'action',
-        message: 'Clawesome Interactive Hub',
+        // message: `${chalk.cyan('Clawesome')} Interactive Hub`,
+        prefix: '', // Removes the '?'
+        message: `${gradient.pastel('Clawesome')} | Select an option:`,
         pageSize: 10,
         choices: MAIN_MENU_CHOICES,
       },
@@ -56,6 +61,12 @@ async function interactiveRoot() {
       case 'start':
         console.log(pc.cyan('\nStarting Gateway...'));
         await start({ port: '17871', open: true });
+        console.log('\n');
+        break;
+      case 'restart':
+        console.log(pc.cyan('\nRestarting Gateway...'));
+        await stop();
+        await start({ port: '17871', open: false });
         console.log('\n');
         break;
       case 'setup':
@@ -78,6 +89,11 @@ async function interactiveRoot() {
         console.log(pc.red('\nStopping Gateway...'));
         await stop();
         console.log('\n');
+        break;
+      case 'update':
+        console.log(pc.cyan(`\nChecking for updates (Current version: ${pc.bold(getVersion())})...`));
+        console.log(pc.dim('Use your package manager (e.g. `bun install` or `git pull`) to update Clawesome.'));
+        await pressEnter();
         break;
       case 'exit':
         console.log(pc.dim('\nEnsuring all processes are terminated...'));

@@ -134,6 +134,7 @@ async function mainMenu() {
         type: 'select',
         name: 'action',
         message: 'Select an action:',
+        prefix: '',
         pageSize: 10,
         choices: MAIN_MENU_CHOICES,
       },
@@ -141,6 +142,10 @@ async function mainMenu() {
 
     switch (action) {
       case 'start':
+        await startGateway();
+        break;
+      case 'restart':
+        await stopGateway();
         await startGateway();
         break;
       case 'setup':
@@ -160,6 +165,13 @@ async function mainMenu() {
         break;
       case 'stop':
         await stopGateway();
+        break;
+      case 'update':
+        await showBranding();
+        console.log(pc.cyan(`  Update Check:`));
+        console.log(pc.white(`  Current Version: ${pc.bold(getVersion())}`));
+        console.log(pc.dim(`  Run \`bun update\` or \`git pull\` to get the latest changes.\n`));
+        await pressEnter();
         break;
       case 'exit':
         await stopGateway();

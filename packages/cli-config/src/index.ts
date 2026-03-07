@@ -105,12 +105,14 @@ export const PROVIDERS: Record<string, ProviderInfo> = {
 };
 
 export const MAIN_MENU_CHOICES = [
-  { name: '🚀   Start Gateway', value: 'start' },
-  { name: '🛑   Stop Gateway', value: 'stop' },
-  { name: '⚙️   Setup', value: 'setup' },
-  { name: '🩺   Doctor', value: 'doctor' },
-  { name: '🔍   Version', value: 'version' },
-  { name: '❌   Exit', value: 'exit' },
+  { name: 'Start Gateway', value: 'start' },
+  { name: 'Restart Gateway', value: 'restart' },
+  { name: 'Stop Gateway', value: 'stop' },
+  { name: 'Update', value: 'update' },
+  { name: 'Setup', value: 'setup' },
+  { name: 'Doctor', value: 'doctor' },
+  { name: 'Version', value: 'version' },
+  { name: 'Exit', value: 'exit' },
 ];
 
 export const bullet = (msg: string) => pc.bold(pc.cyan(`◆  ${msg}`));
@@ -133,7 +135,7 @@ export const SETUP_QUESTIONS = {
   },
   gatewayPort: {
     message: 'Gateway port',
-    placeholder: '17879',
+    placeholder: '17654',
   },
   apiKey: {
     message: 'Enter your API Key for the selected provider',

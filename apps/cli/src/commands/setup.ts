@@ -91,7 +91,7 @@ export async function setup(): Promise<void> {
     provider: project.provider,
     model: project.model,
     enableRag: project.enableRag,
-    gatewayPort: parseInt(project.gatewayPort ?? '17879'),
+    gatewayPort: parseInt(project.gatewayPort ?? '17654'),
     createdAt: new Date().toISOString(),
   };
   writeFileSync(

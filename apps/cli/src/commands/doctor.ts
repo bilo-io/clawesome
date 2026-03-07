@@ -84,6 +84,9 @@ export async function doctor(): Promise<void> {
 
     // Env
     check('Git', () => getVersion('git --version')),
+    check('Homebrew (optional)', () => getVersion('brew --version')),
+    check('Proto (optional)', () => getVersion('proto --version')),
+    check('Ollama (optional)', () => getVersion('ollama --version')),
     check('TypeScript (tsc)', () => getVersion('tsc --version')),
   ];
 
