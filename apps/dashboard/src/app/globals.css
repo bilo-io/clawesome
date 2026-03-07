@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
 @plugin "@tailwindcss/typography";
 
 /* Use app theme (html class) for dark mode, not OS preference */

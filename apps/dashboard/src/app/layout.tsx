@@ -9,8 +9,10 @@ import { BottomDock } from "@/components/BottomDock";
 import { WorkspaceTabs } from "@/components/WorkspaceTabs";
 import { AILab } from "@/components/AILab";
 import { CommandModal } from "@/components/CommandModal";
+import { InstanceWizard } from "@/components/InstanceWizard";
 import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
+import { AnimatePresence } from 'framer-motion';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,6 +99,9 @@ export default function RootLayout({
             {children}
           </main>
           <AILab />
+          <AnimatePresence>
+            <InstanceWizard />
+          </AnimatePresence>
           <CommandModal />
           <BottomDock />
         </div>

@@ -231,16 +231,16 @@ export const FileUpload = ({ label, onChange, className }: FileUploadProps) => {
   const { theme } = useUI();
   const isDark = theme === 'dark';
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn('w-full relative', className)}>
       {label && <label className={cn('block text-[10px] font-black uppercase tracking-widest mb-1.5', isDark ? 'text-slate-500' : 'text-slate-400')}>{label}</label>}
       <div className={cn(
-        'w-full border-2 border-dashed rounded-2xl p-6 text-center transition-all',
+        'w-full border-2 border-dashed rounded-2xl p-6 text-center transition-all relative',
         isDark ? 'border-slate-800 hover:border-indigo-500/50 bg-slate-900/40' : 'border-slate-200 hover:border-indigo-400/50 bg-slate-50'
       )}>
         <input 
           type="file" 
           onChange={(e) => onChange(e.target.files?.[0] || null)}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
         />
         <p className={cn('text-sm font-semibold', isDark ? 'text-slate-300' : 'text-slate-600')}>Upload Image</p>
         <p className={cn('text-xs mt-1', isDark ? 'text-slate-500' : 'text-slate-400')}>Drag & drop or click to browse</p>

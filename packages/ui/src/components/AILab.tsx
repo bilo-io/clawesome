@@ -8,10 +8,14 @@ import {
   Sparkles, 
   Command as CommandIcon,
   Brain,
-  Plus
+  Plus,
+  Globe,
+  Terminal as TerminalIcon,
+  Cpu
 } from 'lucide-react';
 import { cn } from '../utils';
 import { useUI } from '../ThemeContext';
+import clawesomeIcon from '../assets/clawesome-icon.svg';
 
 export interface Message {
   role: 'user' | 'assistant';
@@ -43,6 +47,8 @@ export interface AILabProps {
   onSendMessage: (content: string) => void;
   thoughts: Thought[];
   isThinking?: boolean;
+  chatMode?: 'context' | 'terminal' | 'general';
+  onChatModeChange?: (mode: 'context' | 'terminal' | 'general') => void;
 }
 
 export const AILab = ({
@@ -57,7 +63,9 @@ export const AILab = ({
   onAddTab,
   onSendMessage,
   thoughts,
-  isThinking
+  isThinking,
+  chatMode = 'general',
+  onChatModeChange
 }: AILabProps) => {
   const { theme } = useUI();
   const [inputValue, setInputValue] = useState('');
@@ -128,54 +136,72 @@ export const AILab = ({
 
         <div className="w-[400px] flex flex-col h-full shrink-0">
           <header className={cn(
-            "p-6 border-b space-y-4 backdrop-blur-md",
-            theme === 'dark' ? "border-slate-800 bg-slate-950/50" : "border-slate-100 bg-white/50"
+            "p-6 border-b space-y-6 backdrop-blur-xl",
+            theme === 'dark' ? "border-slate-800 bg-slate-950/80" : "bg-white/80 border-slate-100"
           )}>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-                  <Sparkles size={20} className="animate-pulse" />
-                </div>
-                <div>
-                   <span className={cn("block text-sm font-black tracking-tight uppercase", theme === 'dark' ? "text-white" : "text-slate-900")}>AI LAB</span>
-                   <span className="block text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em] mt-0.5">Neural Hub</span>
-                </div>
+              {/* Chat Mode Switcher (Far Left) */}
+              <div className={cn(
+                "flex items-center p-1 rounded-2xl border",
+                theme === 'dark' ? "bg-slate-900/50 border-slate-800" : "bg-slate-100 border-slate-200 shadow-inner"
+              )}>
+                {(['context', 'terminal', 'general'] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => onChatModeChange?.(m)}
+                    className={cn(
+                      "p-2 rounded-xl transition-all",
+                      chatMode === m 
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30" 
+                        : (theme === 'dark' ? "text-slate-500 hover:text-slate-400" : "text-slate-400 hover:text-slate-600")
+                    )}
+                    title={m.charAt(0).toUpperCase() + m.slice(1)}
+                  >
+                    {m === 'context' && <Globe size={18} />}
+                    {m === 'terminal' && <TerminalIcon size={18} />}
+                    {m === 'general' && <img src={clawesomeIcon} className={cn("w-4.5 h-4.5", chatMode === 'general' ? "brightness-[100]" : "grayscale opacity-50")} />}
+                  </button>
+                ))}
               </div>
+
+              {/* Action Buttons (Right) */}
               <div className="flex items-center gap-2">
                 <button 
                   onClick={onToggleThoughts}
                   className={cn(
-                    "p-2 rounded-xl transition-all border",
+                    "p-2.5 rounded-2xl transition-all border",
                     showThoughts 
-                      ? "bg-indigo-600 text-white border-indigo-500 shadow-md" 
+                      ? "bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-600/20" 
                       : (theme === 'dark' ? "bg-slate-900 text-slate-500 border-slate-800 hover:text-white" : "bg-slate-50 text-slate-400 border-slate-100 hover:text-slate-900")
                   )}
-                  title="Toggle Thought Stream"
+                  title="Neural Thought Stream"
                 >
-                  <Brain size={18} />
+                  <Brain size={20} />
                 </button>
                 <button 
                   onClick={onClose}
                   className={cn(
-                    "p-2 rounded-xl transition-all border",
-                    theme === 'dark' ? "bg-slate-900 text-slate-500 border-slate-800 hover:text-white hover:bg-slate-800" : "bg-slate-50 text-slate-400 border-slate-100 hover:text-slate-900 hover:bg-slate-100"
+                    "p-2.5 rounded-2xl transition-all border",
+                    theme === 'dark' ? "bg-slate-900 text-slate-500 border-slate-800 hover:text-rose-500" : "bg-slate-50 text-slate-400 border-slate-100 hover:text-rose-600"
                   )}
+                  title="Deactivate Interface"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1">
+            {/* Conversation Context Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-1">
               {tabs.map((tab, idx) => (
                 <button
                   key={tab.id}
                   onClick={() => onTabSelect(idx)}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap",
+                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all whitespace-nowrap border-2",
                     activeTab === idx 
-                      ? 'bg-indigo-600 text-white shadow-md' 
-                      : (theme === 'dark' ? 'bg-slate-900 text-slate-500 hover:text-slate-300' : 'bg-slate-100 text-slate-400 hover:text-slate-600')
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-xl' 
+                      : (theme === 'dark' ? 'bg-slate-900/50 text-slate-500 border-slate-800 hover:text-slate-300' : 'bg-slate-50 text-slate-400 border-slate-200 hover:text-slate-600')
                   )}
                 >
                   {tab.title}
@@ -184,11 +210,11 @@ export const AILab = ({
               <button 
                 onClick={onAddTab}
                 className={cn(
-                  "p-2 transition-colors",
+                  "p-2 hover:bg-indigo-500/10 rounded-xl transition-all",
                   theme === 'dark' ? "text-slate-600 hover:text-indigo-400" : "text-slate-400 hover:text-indigo-500"
                 )}
               >
-                <Plus size={16} />
+                <Plus size={18} />
               </button>
             </div>
           </header>
@@ -197,14 +223,29 @@ export const AILab = ({
             "flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar",
             theme === 'dark' ? "bg-slate-900/10" : "bg-slate-50/10"
           )}>
+            {/* Mode Indicator Banner */}
+            {chatMode !== 'general' && (
+              <div className={cn(
+                "px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border flex items-center gap-2 mb-4",
+                chatMode === 'terminal' 
+                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                  : "bg-blue-500/10 border-blue-500/20 text-blue-500"
+              )}>
+                <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", chatMode === 'terminal' ? "bg-emerald-500" : "bg-blue-500")} />
+                {chatMode === 'terminal' ? "Live Neural Terminal Gateway" : "Page Context Awareness Active"}
+              </div>
+            )}
+
             {tabs[activeTab]?.messages.map((msg, i) => (
               <div key={i} className={cn("flex", msg.role === 'user' ? 'justify-end' : 'justify-start')}>
                 <div className={cn(
-                  "max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed border font-bold",
+                  "max-w-[85%] p-4 rounded-3xl text-sm leading-relaxed border font-bold relative",
                   msg.role === 'user' 
                     ? 'bg-indigo-600 text-white shadow-lg border-indigo-500' 
-                    : (theme === 'dark' ? 'bg-slate-800 text-slate-100 border-slate-700' : 'bg-white text-slate-800 border-slate-100 shadow-sm')
+                    : (theme === 'dark' ? 'bg-slate-800 text-slate-100 border-slate-700' : 'bg-white text-slate-800 border-slate-100 shadow-sm shadow-indigo-100/10'),
+                  chatMode === 'terminal' && msg.role === 'assistant' && "font-mono text-[11px] bg-black border-emerald-500/20 text-emerald-500 tracking-tight"
                 )}>
+                  {chatMode === 'terminal' && msg.role === 'assistant' && <span className="text-[10px] text-emerald-500/40 block mb-2 font-black uppercase tracking-widest border-b border-emerald-500/5 pb-1">CLI_OUTPUT // PID_8442</span>}
                   {msg.content}
                 </div>
               </div>

@@ -57,14 +57,21 @@ import {
   Select, Checkbox, RadioGroup, Breadcrumbs, Chip,
   Slider, FileUpload, DateTimePicker,
   TopBar,
-  DocPlaceholder
+  DocPlaceholder,
+  Terminal,
+  ProfileHeader,
+  ProfileCard,
+  ProfileActionCard,
+  ProfileInfoRow,
+  Carousel
 } from './index';
 
 import logo from './assets/clawesome-logo.svg';
 import {
-  Settings, Globe, Shield, HelpCircle, Terminal, Bot,
+  Settings, Globe, Shield, HelpCircle, Terminal as TerminalIcon, Bot, User,
   BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, Sparkles, Home, Layout,
-  ChartPieIcon, Zap, Layers, Activity, Lock, Star, Database, Server, Code2, LayoutGrid, TrendingUp, GitBranch, MessageSquare, Search, Plus, List, Mail
+  ChartPieIcon, Zap, Layers, Activity, Lock, Star, Database, Server, Code2, LayoutGrid, TrendingUp, GitBranch, MessageSquare, Search, Plus, List, Mail,
+  ChevronDown, ChevronRight, File, Image as ImageIcon, FileText
 } from 'lucide-react';
 
 const mockCommandResults = [
@@ -113,6 +120,13 @@ const categories = [
     title: 'CHARTS',
     items: [
       { icon: ChartPieIcon, label: 'Charts', href: '/charts' }
+    ]
+  },
+  {
+    title: 'SYSTEM',
+    items: [
+      { icon: TerminalIcon, label: 'Terminal', href: '/system/terminal' },
+      { icon: User, label: 'Identity', href: '/system/identity' },
     ]
   }
 ];
@@ -173,7 +187,7 @@ const IntroductionPage = () => {
         <div className="p-6 md:p-8 rounded-[28px] bg-slate-50/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2.5 pb-0 bg-indigo-500/10 text-indigo-500 rounded-xl">
-              <Terminal size={20} />
+              <TerminalIcon size={20} />
             </div>
             <div>
               <h3 className="text-lg font-black tracking-tight uppercase text-slate-900 dark:text-white">Installation</h3>
@@ -1373,6 +1387,319 @@ const ChartsPage = () => {
 };
 
 
+// ─── SystemPage ────────────────────────────────────────────────────────────────
+
+const SystemPage = ({ mode }: { mode: 'terminal' | 'identity' }) => {
+  return (
+    <PageWrapper title={mode === 'terminal' ? "Neural Terminal" : "Identity Matrix"} icon={mode === 'terminal' ? TerminalIcon : User}>
+      {mode === 'terminal' ? (
+        <Surface className="p-0 border-none bg-transparent">
+          <Terminal 
+            title="Showcase Gateway"
+            subtitle="Demonstration of the neural terminal component logic."
+            initialHistory={[
+              { type: 'output', text: 'Clawesome UI Showcase // Terminal v2.0' },
+              { type: 'success', text: 'SYSTEM: All modules nominal.' }
+            ]}
+          />
+        </Surface>
+      ) : (
+        <div className="space-y-12">
+          <ProfileHeader 
+            name="Showcase User" 
+            clearanceLevel="OP_CLEARANCE: S9 [GOD_MODE]"
+            email="showcase@clawesome.io"
+            onEdit={() => alert('Edit triggered')}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <ProfileCard title="Identity Configuration" icon={<Settings size={18} />}>
+                <div className="space-y-4">
+                   <p className="text-slate-500 italic font-medium">"This is how the profile card looks in the showcase environment."</p>
+                   <ProfileInfoRow label="Access Level" value="Unlimited" />
+                   <ProfileInfoRow label="Node Region" value="Localhost" />
+                </div>
+             </ProfileCard>
+             <ProfileActionCard 
+                title="Secure Uplink" 
+                description="This demonstrates the action card style used for security and connection notices."
+                icon={<Shield size={100} />}
+             />
+          </div>
+        </div>
+      )}
+    </PageWrapper>
+  );
+};
+
+
+// ─── Layouts Showcase helpers ─────────────────────────────────────────────────────
+
+const FileTreeNode = ({ item, onSelect, active, depth = 0 }: any) => {
+  const [isOpen, setIsOpen] = useState(depth === 0);
+  const isFile = item.type === 'file';
+
+  const getIcon = () => {
+    if (!isFile) return isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />;
+    const ext = item.name.split('.').pop()?.toLowerCase();
+    if (ext === 'tsx' || ext === 'ts') return <Code2 size={14} className="text-indigo-400 group-hover:scale-110 transition-transform" />;
+    if (ext === 'json') return <Database size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />;
+    if (ext === 'png' || ext === 'jpg' || ext === 'svg') return <ImageIcon size={14} className="text-emerald-400 group-hover:scale-110 transition-transform" />;
+    if (ext === 'pdf') return <FileText size={14} className="text-rose-400 group-hover:scale-110 transition-transform" />;
+    return <File size={14} className="text-slate-400 group-hover:scale-110 transition-transform" />;
+  };
+
+  return (
+    <div className="select-none">
+      <div 
+        className={cn(
+          "flex items-center gap-3 py-2 px-3 rounded-xl cursor-not-allowed group transition-all",
+          active?.name === item.name 
+            ? "bg-indigo-500/15 text-indigo-400 shadow-[0_4px_12px_rgba(99,102,241,0.08)] border border-indigo-500/20" 
+            : "hover:bg-slate-200/50 dark:hover:bg-slate-800/40 text-slate-500 border border-transparent",
+          item.type === 'folder' && "font-black uppercase tracking-[0.15em] text-[9px] opacity-80"
+        )}
+        style={{ paddingLeft: `${depth * 16 + 12}px`, cursor: 'pointer' }}
+        onClick={() => isFile ? onSelect(item) : setIsOpen(!isOpen)}
+      >
+        <span className="shrink-0">
+           {getIcon()}
+        </span>
+        <span className={cn(isFile ? "text-xs font-bold" : "tracking-tight font-black")}>{item.name}</span>
+      </div>
+      {!isFile && isOpen && item.children?.map((child: any) => (
+        <FileTreeNode key={child.name} item={child} onSelect={onSelect} active={active} depth={depth + 1} />
+      ))}
+    </div>
+  );
+};
+
+const TwoColumnGrid = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+    {children}
+  </div>
+);
+
+const LayoutsPage = () => {
+  const { theme } = useUI();
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [search, setSearch] = useState('');
+  const [isPreviewOpen, setIsPreviewOpen] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+
+  // grid/list resources
+  const resources = [
+    { id: 'r1', name: 'Neural Gateway', status: 'Healthy', version: '2.4.0', type: 'System', icon: <Cpu size={16}/> },
+    { id: 'r2', name: 'Vector Cache', status: 'Syncing', version: '1.2.1', type: 'Storage', icon: <Database size={16}/> },
+    { id: 'r3', name: 'Swarm Monitor', status: 'Active', version: '3.0.0', type: 'AI', icon: <Bot size={16}/> },
+    { id: 'r4', name: 'Ethical Guard', status: 'Standby', version: '0.9.5', type: 'Security', icon: <Shield size={16}/> },
+    { id: 'r5', name: 'Compute Node-01', status: 'Offline', version: '1.1.0', type: 'Compute', icon: <Server size={16}/> },
+  ];
+
+  // filetree
+  const fileTree = [
+    { name: 'packages', type: 'folder', children: [
+        { name: 'ui', type: 'folder', children: [
+            { name: 'src', type: 'folder', children: [
+                { name: 'App.tsx', type: 'file', content: "// App entry point\nconsole.log('Clawesome OS Initialized');\n\nexport const Core = () => {\n  return <div>Neural Core</div>;\n};" },
+                { name: 'components', type: 'folder', children: [
+                    { name: 'Button.tsx', type: 'file', content: "import React from 'react';\n\nexport const Button = () => (\n  <button className='px-4 py-2 bg-indigo-600 rounded-xl'>\n    Click Me\n  </button>\n);" },
+                    { name: 'Sidebar.tsx', type: 'file', content: "export const Sidebar = () => (\n  <aside className='w-64 border-r'>\n    Nav\n  </aside>\n);" },
+                ]},
+                { name: 'assets', type: 'folder', children: [
+                    { name: 'logo.png', type: 'file', content: 'https://picsum.photos/seed/clawesome/800/600' },
+                    { name: 'hero.jpg', type: 'file', content: 'https://picsum.photos/seed/hero/1200/800' },
+                ]},
+            ]},
+            { name: 'blueprint.pdf', type: 'file', content: 'BINARY_PDF_STREAM' },
+            { name: 'package.json', type: 'file', content: '{\n  "name": "@clawesome/ui",\n  "version": "2.1.4",\n  "dependencies": {\n    "framer-motion": "latest",\n    "lucide-react": "latest"\n  }\n}' },
+        ]},
+    ]},
+    { name: 'apps', type: 'folder', children: [
+        { name: 'dashboard', type: 'folder', children: [] },
+        { name: 'website', type: 'folder', children: [] }
+    ]},
+    { name: 'moon.yml', type: 'file', content: 'type: project\nlanguage: typescript\ntasks:\n  build: tsc -b && vite build' }
+  ];
+
+  const filteredResources = resources.filter(r => r.name.toLowerCase().includes(search.toLowerCase()));
+
+  // masonry
+  const masonryImgs = Array.from({ length: 20 }, (_, i) => ({
+    url: `https://picsum.photos/seed/${i + 150}/400/${[300, 450, 600, 400][i % 4]}`,
+    h: [300, 450, 600, 400][i % 4]
+  }));
+
+  // carousel items
+  const carouselItems = [
+    { id: 'c1', title: 'System Pulse', desc: 'Real-time telemetry and monitoring.', color: 'from-indigo-600 to-blue-500' },
+    { id: 'c2', title: 'Agent Swarm', desc: 'Coordinated task execution.', color: 'from-emerald-600 to-teal-500' },
+    { id: 'c3', title: 'Vector Grid', desc: 'Secure high-density storage.', color: 'from-orange-600 to-rose-500' },
+    { id: 'c4', title: 'Ethics Core', desc: 'Validated safety alignment.', color: 'from-violet-600 to-purple-500' },
+  ];
+
+  return (
+    <PageWrapper title="Layout Architectures" icon={Layout}>
+      <PageHeader 
+        title="RESOURCE ORCHESTRATION" 
+        description="Complex UX patterns for data-heavy AI platforms. From recursive file explorers to high-clarity resource grids."
+        statusLabel="Components:"
+        statusValue="4 Patterns"
+      />
+
+      {/* 1. Grid/List Resource Management */}
+      <DocsWrapper label="Grid & List Control" description="Responsive layout with real-time filtering and view mode persistence.">
+         <div className="w-full space-y-6">
+            <div className="flex items-center justify-between">
+               <div className="relative w-72">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                  <input 
+                    type="text" 
+                    placeholder="Search resources..." 
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border-none text-sm placeholder:italic focus:ring-1 focus:ring-indigo-500"
+                  />
+               </div>
+               <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                  <button onClick={() => setViewMode('grid')} className={cn("p-1.5 rounded-md transition-all", viewMode === 'grid' ? "bg-white dark:bg-slate-700 shadow-sm text-indigo-500" : "text-slate-500")}>
+                     <LayoutGrid size={16} />
+                  </button>
+                  <button onClick={() => setViewMode('list')} className={cn("p-1.5 rounded-md transition-all", viewMode === 'list' ? "bg-white dark:bg-slate-700 shadow-sm text-indigo-500" : "text-slate-500")}>
+                     <List size={16} />
+                  </button>
+               </div>
+            </div>
+
+            <div className={cn(
+              "grid gap-4",
+              viewMode === 'grid' ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+            )}>
+               {filteredResources.map(res => (
+                 <Surface key={res.id} material="paper" className={cn("flex group", viewMode === 'grid' ? "flex-col p-6 h-full" : "p-4 items-center justify-between")}>
+                    <div className="flex items-center gap-4">
+                       <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-500 transition-transform group-hover:scale-110">{res.icon}</div>
+                       <div className="flex flex-col">
+                          <span className="font-black text-sm">{res.name}</span>
+                          <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{res.type} // v{res.version}</span>
+                       </div>
+                    </div>
+                    {viewMode === 'list' ? (
+                      <div className="flex items-center gap-4">
+                        <Badge variant={res.status === 'Healthy' || res.status === 'Active' ? 'emerald' : res.status === 'Offline' ? 'rose' : 'amber'} dot>{res.status}</Badge>
+                        <Button variant="ghost" size="xs">Config</Button>
+                      </div>
+                    ) : (
+                        <div className="mt-8 flex items-center justify-between pt-4 border-t border-slate-800/5">
+                            <Badge variant={res.status === 'Healthy' || res.status === 'Active' ? 'emerald' : res.status === 'Offline' ? 'rose' : 'amber'} dot>{res.status}</Badge>
+                            <Button variant="outline" size="xs">Details</Button>
+                        </div>
+                    )}
+                 </Surface>
+               ))}
+            </div>
+         </div>
+      </DocsWrapper>
+
+      {/* 2. Filetree & Preview */}
+      <DocsWrapper label="File Explorer" description="Recursive tree structure with code preview and toggleable split-view.">
+         <div className="w-full h-[500px] border border-slate-200 dark:border-slate-800 rounded-[2rem] overflow-hidden flex bg-slate-50 dark:bg-slate-950 shadow-inner">
+            {/* Tree */}
+            <div className="w-64 border-r border-slate-200 dark:border-slate-800 p-6 overflow-y-auto no-scrollbar">
+               <div className="flex items-center gap-2 mb-6">
+                  <FolderKanban size={16} className="text-indigo-500" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Workspace Root</span>
+               </div>
+               <div className="space-y-1">
+                  {fileTree.map(item => <FileTreeNode key={item.name} item={item} onSelect={setSelectedFile} active={selectedFile} />)}
+               </div>
+            </div>
+
+            {/* Editor Area */}
+            <div className="flex-1 flex flex-col min-w-0">
+               <div className="h-12 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                     <span className="text-[10px] font-mono text-slate-500 truncate">{selectedFile?.name || 'select a file...'}</span>
+                  </div>
+                  <button onClick={() => setIsPreviewOpen(!isPreviewOpen)} className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded bg-slate-200 dark:bg-slate-800 hover:bg-indigo-500 hover:text-white transition-all">
+                     {isPreviewOpen ? 'Hide Preview' : 'Show Preview'}
+                  </button>
+               </div>
+               <div className="flex-1 flex min-h-0 relative">
+                  <div className="flex-1 p-8 font-mono text-xs overflow-auto no-scrollbar bg-slate-950 text-slate-300 leading-relaxed whitespace-pre selection:bg-indigo-500/30 font-medium">
+                     {selectedFile?.type === 'file' && (selectedFile.name.endsWith('.png') || selectedFile.name.endsWith('.jpg')) ? (
+                        <div className="h-full flex items-center justify-center p-8 animate-in zoom-in-50 duration-500">
+                           <img src={selectedFile.content} alt="Preview" className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10 ring-1 ring-white/5" />
+                        </div>
+                     ) : selectedFile?.name?.endsWith('.pdf') ? (
+                        <div className="h-full flex flex-col items-center justify-center p-8 gap-6 text-slate-400 animate-in fade-in duration-700">
+                           <div className="w-24 h-24 rounded-[2rem] bg-rose-500/10 flex items-center justify-center text-rose-500 shadow-xl shadow-rose-500/20">
+                              <FileText size={48} />
+                           </div>
+                           <div className="text-center">
+                              <p className="text-sm font-black uppercase tracking-[0.2em] mb-1">Neural_Blueprint.pdf</p>
+                              <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">Encrypted document stream</p>
+                           </div>
+                           <Button variant="outline" size="sm" icon={<Plus size={14} />}>Open Securely</Button>
+                        </div>
+                     ) : (
+                        selectedFile?.content || '// No file selected. Select an asset from the Workspace tree to preview.'
+                     )}
+                  </div>
+                  {isPreviewOpen && (
+                    <div className="w-1/3 border-l border-slate-200 dark:border-slate-800 bg-white/30 dark:bg-black/30 p-8 flex flex-col items-center justify-center text-center animate-in slide-in-from-right duration-500">
+                        <div className="w-16 h-16 rounded-3xl bg-indigo-500 text-white flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/20">
+                           <Code2 size={32} />
+                        </div>
+                        <h5 className="font-black italic uppercase tracking-tighter text-sm mb-2">{selectedFile?.name || 'File Preview'}</h5>
+                        <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Metadata Optimized Asset</p>
+                    </div>
+                  )}
+               </div>
+            </div>
+         </div>
+      </DocsWrapper>
+
+      {/* 3. Masonry Layout */}
+      <TwoColumnGrid>
+        <DocsWrapper label="Masonry Grid" description="Fluid column distribution for varied aspect ratio image assets.">
+           <div className="columns-2 md:columns-3 gap-4 space-y-4">
+              {masonryImgs.map((img, i) => (
+                <div key={i} className="break-inside-avoid rounded-2xl overflow-hidden border border-slate-800/10 dark:border-slate-800/50 group bg-slate-100 dark:bg-slate-900 shadow-sm relative">
+                   <div className="absolute inset-0 bg-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none" />
+                   <img src={img.url} alt="" className="w-full h-auto grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" />
+                </div>
+              ))}
+           </div>
+        </DocsWrapper>
+
+        {/* 4. Carousel Layout */}
+        <DocsWrapper label="Interactive Carousel" description="Motion-driven hero slider with peek-ahead depth effects.">
+           <Carousel 
+             items={carouselItems}
+             peekCount={1}
+             renderItem={(item: any, isActive: boolean) => (
+                <div className={cn(
+                  "w-[260px] h-[360px] sm:w-[320px] sm:h-[420px] rounded-[3.5rem] p-10 flex flex-col justify-end text-white overflow-hidden relative transition-all duration-700",
+                  "bg-gradient-to-br", item.color,
+                  isActive ? "shadow-2xl shadow-indigo-500/30 scale-100" : "scale-90 opacity-30 blur-sm grayscale-[0.8]"
+                )}>
+                   <div className="absolute top-0 right-0 p-8 opacity-10">
+                      <Zap size={140} />
+                   </div>
+                   <div className="relative z-10">
+                      <h5 className="text-2xl font-black italic tracking-tighter mb-2">{item.title}</h5>
+                      <p className="text-[11px] font-medium opacity-80 leading-relaxed uppercase tracking-widest">{item.desc}</p>
+                   </div>
+                </div>
+             )}
+           />
+        </DocsWrapper>
+      </TwoColumnGrid>
+    </PageWrapper>
+  );
+};
+
+
 function Showcase() {
   const { theme } = useUI();
   const location = useLocation();
@@ -1387,10 +1714,12 @@ function Showcase() {
   const [historySearch, setHistorySearch] = useState('');
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
-  const [aiTabs, setAiTabs] = useState([
-    { id: 0, title: 'Mission 1', messages: [{ role: 'assistant' as const, content: 'Ready to analyze NC-01 context. What is the objective?' }] }
-  ]);
   const [activeAiTab, setActiveAiTab] = useState(0);
+  const [chatMode, setChatMode] = useState<'context' | 'terminal' | 'general'>('general');
+
+  const [aiTabs, setAiTabs] = useState([
+    { id: 0, title: 'Mission 1', messages: [{ role: 'assistant' as any, content: 'Ready to analyze NC-01 context. What is the objective?' }] }
+  ]);
 
   const thoughts = [
     { timestamp: '01:25:01', content: 'SCANNING WORKSPACE: /Users/bilolwabona/BiloDev/clawesome' },
@@ -1410,7 +1739,7 @@ function Showcase() {
 
   return (
     <div className={cn(
-      'flex min-h-screen transition-colors duration-500',
+      'flex h-screen overflow-hidden transition-colors duration-500',
       theme === 'dark' ? 'dark bg-[#020617] text-white' : 'bg-slate-50 text-slate-900'
     )}>
       <Sidebar
@@ -1422,14 +1751,14 @@ function Showcase() {
         onMobileToggle={() => setIsMobileSidebarOpen(false)}
         logoFull={logo}
         LinkComponent={LinkComponent}
-        user={{ name: 'BiloDev', clearance: 'OP_CLEARANCE: S3' }}
+        user={{ name: 'BiloDev', clearance: 'ROLE: S3' }}
       />
 
       {/* spacer so content isn't under the fixed sidebar on mobile */}
       <div className="md:hidden h-0 w-0 flex-none" />
 
-      <div className="flex-1 overflow-hidden relative">
-        <main className="h-screen overflow-y-auto no-scrollbar p-4 sm:p-8 md:p-16 pb-32">
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 relative overflow-hidden">
+        <main className="flex-1 overflow-y-auto no-scrollbar p-4 sm:p-8 md:p-16 pb-32 h-full">
           <div className="max-w-7xl mx-auto">
             {/* Mobile top-bar with hamburger */}
             <div className="flex items-center gap-3 mb-6 md:hidden">
@@ -1449,12 +1778,15 @@ function Showcase() {
             <Routes>
               <Route path="/" element={<IntroductionPage />} />
               <Route path="/foundation/core" element={<FoundationPage />} />
+              <Route path="/foundation/layouts" element={<LayoutsPage />} />
               <Route path="/ai/lab" element={<AILabPage historySearch={historySearch} setHistorySearch={setHistorySearch} />} />
               <Route path="/ai/agents" element={<AgentsPage setIsCreateAgentModalOpen={setIsCreateAgentModalOpen} setIsAILabOpen={setIsAILabOpen} />} />
               <Route path="/portals/docs" element={<DocsPortalPage />} />
               <Route path="/portals/website" element={<WebsitePage />} />
               <Route path="/portals/dashboard" element={<DashboardPage />} />
               <Route path="/charts" element={<ChartsPage />} />
+              <Route path="/system/terminal" element={<SystemPage mode="terminal" />} />
+              <Route path="/system/identity" element={<SystemPage mode="identity" />} />
 
               <Route path="*" element={<div className="h-[60vh] flex items-center justify-center font-black text-slate-500 italic uppercase">Module Pending Integration</div>} />
             </Routes>
@@ -1507,10 +1839,25 @@ function Showcase() {
           onSendMessage={(content) => {
             const newTabs = [...aiTabs];
             newTabs[activeAiTab].messages.push({ role: 'user' as any, content });
-            setAiTabs(newTabs);
+            
+            // Mock response based on mode
+            setTimeout(() => {
+              if (chatMode === 'terminal') {
+                newTabs[activeAiTab].messages.push({ role: 'assistant' as any, content: `SUCCESS: Execution of "${content}" finalized in 42ms.\n\nNODE_STATUS: Nominal\nMEMORY_FLUSH: 0.2%` });
+              } else if (chatMode === 'context') {
+                newTabs[activeAiTab].messages.push({ role: 'assistant' as any, content: `Analyzing page depth... Current context: "${location.pathname}". I see 12 components and a neural fabric active.` });
+              } else {
+                newTabs[activeAiTab].messages.push({ role: 'assistant' as any, content: "Neural synthesis complete. How else can I assist with the Clawesome platform?" });
+              }
+              setAiTabs([...newTabs]);
+            }, 600);
+
+            setAiTabs([...newTabs]);
           }}
           thoughts={thoughts}
           isThinking={false}
+          chatMode={chatMode}
+          onChatModeChange={setChatMode}
         />
       </div>
     </div>

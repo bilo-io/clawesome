@@ -226,7 +226,7 @@ export default function MarketplacePage() {
     });
   }, [activeCategory, searchQuery]);
 
-  const categories: Category[] = ['All', 'Skills', 'Integrations', 'Plugins', 'MCP', 'Automation', 'Models', 'Platforms'];
+  const categories: Category[] = ['All', 'Integrations', 'Skills', 'Plugins', 'MCP', 'Automation', 'Models', 'Platforms'];
 
   return (
     <main className="min-h-screen relative transition-colors duration-500 overflow-hidden">

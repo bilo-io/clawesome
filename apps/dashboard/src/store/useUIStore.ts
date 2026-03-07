@@ -15,6 +15,7 @@ interface UIState {
   /** Per-route view mode map, keyed by pathname e.g. '/agents' */
   viewModes: Record<string, ViewMode>;
   isMobileSidebarOpen: boolean;
+  isInstanceWizardOpen: boolean;
 
   toggleSidebar: () => void;
   toggleMobileSidebar: (open?: boolean) => void;
@@ -25,6 +26,7 @@ interface UIState {
   setTheme: (theme: 'light' | 'dark') => void;
   setViewMode: (route: string, mode: ViewMode) => void;
   getViewMode: (route: string, defaultMode?: ViewMode) => ViewMode;
+  setInstanceWizardOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -38,6 +40,7 @@ export const useUIStore = create<UIState>()(
       theme: 'dark',
       viewModes: {},
       isMobileSidebarOpen: false,
+      isInstanceWizardOpen: false,
 
       toggleSidebar: () =>
         set((state) => ({ isSidebarExpanded: !state.isSidebarExpanded })),
@@ -55,6 +58,7 @@ export const useUIStore = create<UIState>()(
         })),
       getViewMode: (route, defaultMode = 'grid') =>
         get().viewModes[route] ?? defaultMode,
+      setInstanceWizardOpen: (open: boolean) => set({ isInstanceWizardOpen: open }),
     }),
     {
       name: 'clawesome:ui',
