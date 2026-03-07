@@ -192,7 +192,7 @@ export default function LogsPage() {
   };
 
   return (
-    <main className="space-y-10 pb-20 max-w-[1400px] mx-auto">
+    <main className="space-y-6 pb-20 max-w-[1400px] mx-auto">
       <DashboardResourceHeader
         title="Logs"
         description="High-fidelity traceability stream monitoring system-level operations, neural link events, and mission execution traces."
@@ -258,13 +258,13 @@ export default function LogsPage() {
                     toggleSelection(log.id);
                   }}
                   className={cn(
-                  "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
-                  viewMode === 'grid' ? "top-5 left-5" : "left-4 top-1/2 -translate-y-1/2",
+                  "rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+                  viewMode === 'grid' ? "w-7 h-7 top-5 left-5" : "w-6 h-6 left-4 top-1/2 -translate-y-1/2",
                   selectedIds.includes(log.id)
                     ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
                     : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
                 )}>
-                  {selectedIds.includes(log.id) && <Check size={14} strokeWidth={4} />}
+                  {selectedIds.includes(log.id) && <Check size={viewMode === 'grid' ? 14 : 12} strokeWidth={4} />}
                 </div>
 
                 <div className={cn(

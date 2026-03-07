@@ -31,7 +31,7 @@ export default function Dashboard() {
   const { theme } = useUIStore();
 
   return (
-    <main className="space-y-10 pb-20 max-w-[1600px] mx-auto transition-colors duration-300">
+    <main className="space-y-6 pb-20 max-w-[1600px] mx-auto transition-colors duration-300">
       <DashboardResourceHeader
         title="Dashboard"
         description="Unified neural command center providing real-time telemetry on resource allocation, agent activity, and system integrity."

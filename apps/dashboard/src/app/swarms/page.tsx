@@ -93,7 +93,7 @@ export default function SwarmsPage() {
   ) : null;
 
   return (
-    <main className="space-y-10 pb-20 max-w-[1600px] mx-auto">
+    <main className="space-y-6 pb-20 max-w-[1600px] mx-auto">
       <DashboardResourceHeader
         title="Swarms"
         description="Collective intelligence orchestration for large-scale operations. Deploy and coordinate groups of specialized agents to execute complex, parallelized mission protocols."

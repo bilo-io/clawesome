@@ -77,7 +77,7 @@ export default function IntegrationsPage() {
   ) : null;
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-10 pb-20">
+    <div className="max-w-[1600px] mx-auto space-y-6 pb-20">
       <DashboardResourceHeader
         title="Integrations"
         description="Unified ecosystem for third-party extensions and neural plugins. Connect your agents to external tools, platforms, and services to expand their operational reach."

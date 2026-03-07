@@ -94,10 +94,10 @@ export function IntegrationCard({ integration, viewMode, isInstalled, source, se
           className={cn(
           "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 cursor-pointer",
           selected 
-            ? "bg-indigo-500 border-indigo-500 text-white" 
-            : (theme === 'dark' ? "border-slate-800 bg-slate-950" : "border-slate-200 bg-white shadow-inner")
+            ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+            : (theme === 'dark' ? "border-slate-800 bg-slate-950 opacity-0 group-hover:opacity-100" : "border-slate-200 bg-white shadow-inner opacity-0 group-hover:opacity-100")
         )}>
-          {selected && <Check size={14} strokeWidth={4} />}
+          {selected && <Check size={12} strokeWidth={4} />}
         </div>
         <div
           className={cn(
@@ -205,12 +205,12 @@ export function IntegrationCard({ integration, viewMode, isInstalled, source, se
       <div 
         onClick={onToggleSelection}
         className={cn(
-        "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
+        "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
         selected 
           ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
           : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
       )}>
-        {selected && <Check size={16} strokeWidth={4} />}
+        {selected && <Check size={14} strokeWidth={4} />}
       </div>
       <div className="flex justify-between items-start mb-6 relative z-10 pl-6">
         <div

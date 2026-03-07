@@ -84,7 +84,7 @@ export default function AgentsPage() {
   ) : null;
 
   return (
-    <div className="max-w-[1600px] mx-auto space-y-10 pb-20">
+    <div className="max-w-[1600px] mx-auto space-y-6 pb-20">
       <DashboardResourceHeader
         title="Agents"
         description="Management and maintenance of autonomous neural entities. Orchestrate your workforce of specialized agents for complex mission fulfillment."

@@ -108,7 +108,7 @@ export function DashboardResourceHeader({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Breadcrumbs & Back Link Row */}
       <div className="flex items-center justify-between">
         <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]">
@@ -298,7 +298,7 @@ export function DashboardResourceHeader({
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2"
+                className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-0"
               >
                 {bulkActions}
               </motion.div>

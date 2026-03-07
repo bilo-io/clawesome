@@ -12,7 +12,7 @@ export default function HistoryPage() {
   const { theme } = useUIStore();
 
   return (
-    <main className="space-y-10 pb-20 max-w-[1400px] mx-auto">
+    <main className="space-y-6 pb-20 max-w-[1400px] mx-auto">
       <DashboardResourceHeader
         title="History"
         description="Comprehensive audit trail and semantic search for historical operations. Trace the lifecycle of agent decisions, tool executions, and system-wide state transitions over time."

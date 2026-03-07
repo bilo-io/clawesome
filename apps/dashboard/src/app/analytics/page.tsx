@@ -26,7 +26,7 @@ export default function AnalyticsPage() {
   const [range, setRange] = React.useState('24H');
   
   return (
-    <main className="space-y-10 pb-20 max-w-[1600px] mx-auto">
+    <main className="space-y-6 pb-20 max-w-[1600px] mx-auto">
       <DashboardResourceHeader
         title="Analytics"
         description="High-precision telemetry and resource utilization metrics. Monitor the efficiency, cost distribution, and operational load of your global neural network."

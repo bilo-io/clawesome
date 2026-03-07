@@ -131,13 +131,13 @@ export const WorkspaceGallery = ({
                 onToggleSelection?.(ws.id, e);
               }}
               className={cn(
-              "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
-              viewMode === 'grid' ? "top-6 right-6" : "left-4 top-1/2 -translate-y-1/2",
+              "rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+              viewMode === 'grid' ? "w-7 h-7 top-6 right-6" : "w-6 h-6 left-4 top-1/2 -translate-y-1/2",
               selectedIds.includes(ws.id)
                 ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
                 : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
             )}>
-              {selectedIds.includes(ws.id) && <Check size={16} strokeWidth={4} />}
+              {selectedIds.includes(ws.id) && <Check size={viewMode === 'grid' ? 14 : 12} strokeWidth={4} />}
             </div>
 
             <div 

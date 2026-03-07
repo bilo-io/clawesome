@@ -84,7 +84,7 @@ export default function ChatsPage() {
   };
 
   return (
-    <main className="max-w-[1200px] mx-auto space-y-10 pb-20">
+    <main className="max-w-[1200px] mx-auto space-y-6 pb-20">
       <DashboardResourceHeader
         title="Chats"
         description="Encrypted communication channels and thought-stream archives. Review past missions or initiate new neural dialogues with your agent collective."
@@ -153,13 +153,13 @@ export default function ChatsPage() {
                       toggleSelection(chat.id);
                     }}
                     className={cn(
-                    "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
-                    viewMode === 'grid' ? "top-5 left-5" : "left-4 top-1/2 -translate-y-1/2",
+                    "rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
+                    viewMode === 'grid' ? "w-7 h-7 top-5 left-5" : "w-6 h-6 left-4 top-1/2 -translate-y-1/2",
                     selectedIds.includes(chat.id)
                       ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
                       : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
                   )}>
-                    {selectedIds.includes(chat.id) && <Check size={14} strokeWidth={4} />}
+                    {selectedIds.includes(chat.id) && <Check size={viewMode === 'grid' ? 14 : 12} strokeWidth={4} />}
                   </div>
                   {/* Icon */}
                   <div className={cn(

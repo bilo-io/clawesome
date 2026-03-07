@@ -155,7 +155,7 @@ export default function ProjectsPage() {
 
 
   return (
-    <div className="space-y-10 max-w-[1600px] mx-auto">
+    <div className="space-y-6 max-w-[1600px] mx-auto">
       <DashboardResourceHeader
         title="Projects"
         description="Unified workspace for mission orchestration and tactical objective tracking. Monitor the progress of active campaigns and resource allocation across different sectors."
@@ -199,37 +199,32 @@ export default function ProjectsPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <div className="block group relative">
-                {/* Selection Indicator */}
-                <div 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleSelection(project.id);
-                  }}
-                  className={cn(
-                  "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all absolute z-30 cursor-pointer",
-                  viewMode === 'grid' ? "top-6 left-6" : "left-4 top-1/2 -translate-y-1/2",
-                  selectedIds.includes(project.id)
-                    ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-                    : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
-                )}>
-                  {selectedIds.includes(project.id) && <Check size={16} strokeWidth={4} />}
-                </div>
+                <Link href={`/projects/${project.id}`} className="block relative transition-all">
+                  {viewMode === 'grid' ? (
+                    <div className={cn(
+                      "relative h-full p-8 rounded-[48px] border transition-all overflow-hidden",
+                      selectedIds.includes(project.id)
+                        ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+                        : (theme === 'dark' 
+                            ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
+                            : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40 hover:border-indigo-200")
+                    )}>
+                      {/* Selection Indicator */}
+                      <div 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleSelection(project.id);
+                        }}
+                        className={cn(
+                        "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-30 cursor-pointer",
+                        selectedIds.includes(project.id)
+                          ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                          : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                      )}>
+                        {selectedIds.includes(project.id) && <Check size={14} strokeWidth={4} />}
+                      </div>
 
-                <Link href={`/projects/${project.id}`} className={cn(
-                  "block relative transition-all",
-                  viewMode === 'list' && "pl-12"
-                )}>
-                {viewMode === 'grid' ? (
-                  <div className={cn(
-                    "relative h-full p-8 rounded-[48px] border transition-all overflow-hidden",
-                    selectedIds.includes(project.id)
-                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
-                      : (theme === 'dark' 
-                          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
-                          : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40 hover:border-indigo-200")
-                  )}>
                     <div className="flex justify-between items-start mb-10">
                        <div className="flex flex-col gap-1">
                           <span className={cn(
@@ -327,13 +322,28 @@ export default function ProjectsPage() {
                   </div>
                 ) : (
                   <div className={cn(
-                    "p-4 rounded-[28px] border flex items-center gap-6 transition-all",
+                    "p-4 rounded-[28px] border flex items-center gap-6 transition-all relative pl-16",
                     selectedIds.includes(project.id)
                       ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
                       : (theme === 'dark' 
                           ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
                           : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200")
                   )}>
+                    {/* Selection Indicator for List */}
+                    <div 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleSelection(project.id);
+                      }}
+                      className={cn(
+                      "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all absolute left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer",
+                      selectedIds.includes(project.id)
+                        ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
+                        : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                    )}>
+                      {selectedIds.includes(project.id) && <Check size={12} strokeWidth={4} />}
+                    </div>
                      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
                         <CircleDot size={20} />
                      </div>
@@ -370,7 +380,6 @@ export default function ProjectsPage() {
                   </div>
                 )}
               </Link>
-            </div>
             </motion.div>
           ))}
         </AnimatePresence>
