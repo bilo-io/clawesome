@@ -29,6 +29,7 @@ export interface DashboardResourceHeaderProps {
   toolbarActions?: React.ReactNode;
   pathname?: string; // Passed from parent (e.g. usePathname())
   LinkComponent?: any; // e.g. next/link
+  hideBreadcrumbs?: boolean;
 }
 
 export function DashboardResourceHeader({
@@ -51,7 +52,8 @@ export function DashboardResourceHeader({
   renderRight,
   toolbarActions,
   pathname = '/',
-  LinkComponent = 'a'
+  LinkComponent = 'a',
+  hideBreadcrumbs = false
 }: DashboardResourceHeaderProps) {
   const { theme } = useUI();
   const Link = LinkComponent;
@@ -81,23 +83,25 @@ export function DashboardResourceHeader({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]">
-          <Link href="/" className="text-slate-500 hover:text-indigo-500 transition-colors flex items-center gap-1.5">
-            <Home size={13} className="mb-0.5" />
-          </Link>
-          {breadcrumbs.map((bc) => (
-            <React.Fragment key={bc.href}>
-              <ChevronRight size={10} className="text-slate-700 opacity-20" />
-              {bc.isLast ? (
-                <span className="text-indigo-500 truncate max-w-[200px]">{bc.label}</span>
-              ) : (
-                <Link href={bc.href} className="text-slate-500 hover:text-indigo-500 transition-colors truncate max-w-[150px]">
-                  {bc.label}
-                </Link>
-              )}
-            </React.Fragment>
-          ))}
-        </nav>
+        {hideBreadcrumbs ? null : (
+          <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]">
+            <Link href="/" className="text-slate-500 hover:text-indigo-500 transition-colors flex items-center gap-1.5">
+              <Home size={13} className="mb-0.5" />
+            </Link>
+            {breadcrumbs.map((bc) => (
+              <React.Fragment key={bc.href}>
+                <ChevronRight size={10} className="text-slate-700 opacity-20" />
+                {bc.isLast ? (
+                  <span className="text-indigo-500 truncate max-w-[200px]">{bc.label}</span>
+                ) : (
+                  <Link href={bc.href} className="text-slate-500 hover:text-indigo-500 transition-colors truncate max-w-[150px]">
+                    {bc.label}
+                  </Link>
+                )}
+              </React.Fragment>
+            ))}
+          </nav>
+        )}
 
         {backLink && (
           <Link

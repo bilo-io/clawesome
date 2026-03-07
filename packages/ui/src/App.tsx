@@ -132,18 +132,40 @@ const categories = [
 ];
 
 // Helper components for pages
-const PageWrapper = ({ title, icon: Icon, children }: any) => (
-  <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <div className="space-y-2">
-      <h2 className="text-3xl font-black tracking-tighter flex items-center gap-4">
-        <span className="p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl"><Icon size={24} /></span>
-        {title}
-      </h2>
-      <div className="h-1.5 w-24 bg-gradient-to-r from-indigo-500 to-transparent rounded-full" />
+const PageWrapper = ({ title, description, icon: Icon, children }: any) => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const LinkComponent = ({ href, children, className }: any) => (
+    <div onClick={() => navigate(href)} className={cn("cursor-pointer", className)}>
+      {children}
     </div>
-    {children}
-  </div>
-);
+  );
+
+  return (
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <DashboardResourceHeader
+        title={title}
+        description={description}
+        badge="UI-LIB"
+        statusLabel="Library:"
+        statusValue="v1.0.0"
+        statusColor="indigo"
+        isCollection={false}
+        pathname={pathname}
+        LinkComponent={LinkComponent}
+        hideBreadcrumbs={true}
+        renderRight={
+          <button className="flex items-center gap-3 px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20 hover:scale-105 transition-all active:scale-95 group">
+             <Globe size={16} className="group-hover:rotate-12 transition-transform" /> 
+             View live deployment
+          </button>
+        }
+      />
+      {children}
+    </div>
+  );
+};
 
 const IntroductionPage = () => {
   const { theme, themePreference, setTheme } = useUI();
@@ -365,16 +387,8 @@ const IconShowcase = () => {
 const FoundationPage = () => {
 
   const { theme } = useUI();
-  return (
-    <PageWrapper title="Core Foundation" icon={Shield}>
-      <PageHeader
-        title="SURFACE MATERIALS"
-        statusLabel="Design System:"
-        statusValue="4 Material Variants"
-        statusColor="indigo"
-        description="The Surface component is the foundational building block of the Clawesome UI. It accepts a material prop that controls the visual treatment — from clean paper to reactive neon borders."
-      />
-
+ return (
+    <PageWrapper title="Core Foundation" description="The essential building blocks of the Clawesome design system. These primitive components provide the atomic foundation for all interface patterns, ensuring consistency and type-safety across the platform." icon={Shield}>
       {/* ── Paper ─────────────────────────────────────────────── */}
       <DocsWrapper
         label="Paper"
@@ -792,7 +806,7 @@ bg-white        // Surface base (light)`}
 const AILabPage = ({ historySearch, setHistorySearch }: any) => {
   const { theme } = useUI();
   return (
-    <PageWrapper title="Intelligence Sandbox" icon={Sparkles}>
+    <PageWrapper title="Intelligence Sandbox" description="Advanced AI experimentation environment for training, prompt engineering, and model fine-tuning. This laboratory provides the specialized interfaces needed for sophisticated agent orchestration." icon={Sparkles}>
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
         <DocsWrapper
           label="Filesystem Sandbox"
@@ -847,7 +861,7 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
   );
 
   return (
-    <PageWrapper title="Agent Orchestration" icon={Bot}>
+    <PageWrapper title="Agent Orchestration" description="Management system for your autonomous AI workforce. Control agent lifecycles, monitor swarm performance, and configure inter-agent communication protocols." icon={Bot}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div className="flex flex-wrap items-center gap-3">
           <button
@@ -999,7 +1013,7 @@ const AgentsPage = ({ setIsCreateAgentModalOpen, setIsAILabOpen }: any) => {
 
 
 const DocsPortalPage = () => (
-  <PageWrapper title="Documentation Hub" icon={BrainCircuit}>
+  <PageWrapper title="Documentation Hub" description="A centralized repository for all Clawesome OS technical documentation, API references, and usage guides. Explore interactive code examples and comprehensive component showcases." icon={BrainCircuit}>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
       <DocsWrapper
         label="CLI Usage"
@@ -1038,7 +1052,7 @@ const DocsPortalPage = () => (
 );
 
 const WebsitePage = () => (
-  <PageWrapper title="Portal Landing" icon={Globe}>
+  <PageWrapper title="Portal Landing" description="Marketing-focused components designed for public-facing websites and landing pages. Showcase your product with engaging hero sections, feature grids, and social proof elements." icon={Globe}>
     <DocsWrapper
       label="Hero & Navigation"
       description="Marketing navigation and hero section with animated background."
@@ -1099,15 +1113,7 @@ const DashboardPage = () => {
   );
 
   return (
-    <PageWrapper title="Dashboard Portal" icon={LayoutGrid}>
-      <PageHeader
-        title="COMPONENT SHOWCASE"
-        statusLabel="Portal:"
-        statusValue="Dashboard"
-        statusColor="indigo"
-        description="Live previews of the core dashboard widgets: resource headers, agent cards, vitality metrics, cost tracking, project pulse, and workspace gallery."
-      />
-
+    <PageWrapper title="Dashboard Portal" description="Comprehensive overview of the Clawesome dashboard ecosystem. These components are optimized for high-density data visualization and rapid system status assessments." icon={LayoutGrid}>
       {/* ── Resource Header ───────────────────────────────────── */}
       <DocsWrapper
         label="Dashboard Layout"
@@ -1269,15 +1275,8 @@ const ChartsPage = () => {
   const [tf, setTf] = useState('30D');
 
   return (
-    <PageWrapper title="Telemetrics" icon={BarChart3}>
+    <PageWrapper title="Telemetrics" description="Advanced data visualization components for monitoring agent performance, system health, and operational metrics. Built with Recharts and Framer Motion for dynamic, responsive displays." icon={BarChart3}>
       <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-12">
-        <PageHeader
-          title="DATAVIZ ENGINE"
-          statusLabel="Lib:"
-          statusValue="Recharts"
-          statusColor="indigo"
-          description="Responsive, accessible chart primitives built with Framer Motion and Recharts, themed for decentralized monitoring."
-        />
         <TimeframePicker value={tf} onChange={setTf} />
       </div>
 
@@ -1391,7 +1390,7 @@ const ChartsPage = () => {
 
 const SystemPage = ({ mode }: { mode: 'terminal' | 'identity' }) => {
   return (
-    <PageWrapper title={mode === 'terminal' ? "Neural Terminal" : "Identity Matrix"} icon={mode === 'terminal' ? TerminalIcon : User}>
+    <PageWrapper title={mode === 'terminal' ? "Neural Terminal" : "Identity Matrix"} description={mode === 'terminal' ? "A low-level gateway for direct interaction with the neural fabric, enabling command execution, system diagnostics, and real-time data streaming." : "User and agent identity management, including authentication, authorization, and profile configuration. Securely manage access levels and operational clearances."} icon={mode === 'terminal' ? TerminalIcon : User}>
       {mode === 'terminal' ? (
         <DocsWrapper
           label="Neural Terminal"
@@ -1560,13 +1559,7 @@ const LayoutsPage = () => {
   ];
 
   return (
-    <PageWrapper title="Layout Architectures" icon={Layout}>
-      <PageHeader 
-        title="RESOURCE ORCHESTRATION" 
-        description="Complex UX patterns for data-heavy AI platforms. From recursive file explorers to high-clarity resource grids."
-        statusLabel="Components:"
-        statusValue="4 Patterns"
-      />
+    <PageWrapper title="Layout Architectures" description="Standardized structural shells for various application contexts. From complex dashboards to minimalistic content viewers, these layouts ensure responsive and accessible spatial organization." icon={Layout}>
 
       {/* 1. Grid/List Resource Management */}
       <DocsWrapper label="Grid & List Control" description="Responsive layout with real-time filtering and view mode persistence.">

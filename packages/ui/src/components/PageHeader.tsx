@@ -46,13 +46,15 @@ export function PageHeader({
       )}
     >
       <div>
-        <h1
-          className={cn(
-            'text-4xl font-black tracking-tighter flex items-center gap-4',
-            theme === 'dark' ? 'text-white' : 'text-black'
-          )}
-        >
-          {title}{' '}
+        <div className="flex items-center gap-4">
+          <h1
+            className={cn(
+              'text-4xl font-black tracking-tighter',
+              theme === 'dark' ? 'text-white' : 'text-black'
+            )}
+          >
+            {title}
+          </h1>
           <div className="relative inline-flex items-center">
             <button
               onMouseEnter={() => setShowTooltip(true)}
@@ -87,19 +89,29 @@ export function PageHeader({
               )}
             </AnimatePresence>
           </div>
-        </h1>
-          <div
-            className={cn(
-              'text-[12px] font-bold uppercase tracking-[0.25em] flex items-center gap-3 mt-2',
-              theme === 'dark' ? 'text-slate-500' : 'text-slate-600'
-            )}
-          >
-            {statusLabel}{' '}
-            <span className={cn(valueClass, 'flex items-center gap-2 font-black text-lg uppercase tracking-tighter')}>
-              <span className={cn('w-2.5 h-2.5 rounded-full animate-pulse', dotClass)} />
-              {statusValue}
-            </span>
-          </div>
+        </div>
+        
+        {/* {description && (
+          <p className={cn(
+            "mt-2 text-[11px] font-bold uppercase tracking-[0.15em] leading-relaxed max-w-2xl opacity-60",
+            theme === 'dark' ? "text-slate-400" : "text-slate-600"
+          )}>
+            {description}
+          </p>
+        )} */}
+
+        <div
+          className={cn(
+            'text-[11px] font-bold uppercase tracking-[0.3em] flex items-center gap-3 mt-4',
+            theme === 'dark' ? 'text-slate-500' : 'text-slate-600'
+          )}
+        >
+          {statusLabel}{' '}
+          <span className={cn(valueClass, 'flex items-center gap-2 font-black text-lg uppercase tracking-tighter')}>
+            <span className={cn('w-2.5 h-2.5 rounded-full animate-pulse', dotClass)} />
+            {statusValue}
+          </span>
+        </div>
       </div>
       {children ? <div className="flex items-center gap-4">{children}</div> : null}
     </header>
