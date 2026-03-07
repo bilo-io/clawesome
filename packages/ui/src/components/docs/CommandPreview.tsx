@@ -10,7 +10,7 @@ import { CodePreview } from './CodePreview';
 import { useUI } from '../../ThemeContext';
 import { cn } from '../../utils';
 
-export type PackageManager = 'npm' | 'pnpm' | 'bun';
+export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
 
 interface CommandPreviewProps {
   commands: Record<PackageManager, string>;

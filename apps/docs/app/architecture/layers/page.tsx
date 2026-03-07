@@ -1,4 +1,4 @@
-import DocPlaceholder from "@/components/DocPlaceholder";
+import { DocPlaceholder } from "@clawesome/ui";
 
 export default function LayersPage() {
   return (

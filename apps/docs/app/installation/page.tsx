@@ -1,5 +1,4 @@
-import { CommandPreview } from "../../components/CommandPreview";
-import { LanguagePreview } from "../../components/LanguagePreview";
+import { CommandPreview, LanguagePreview } from "@clawesome/ui";
 import { Terminal, Box, Globe, Shield, ArrowRight, Zap } from "lucide-react";
 
 export default function InstallationPage() {

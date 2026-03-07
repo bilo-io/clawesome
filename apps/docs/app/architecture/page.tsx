@@ -1,4 +1,4 @@
-import { CodePreview } from "../../components/CodePreview";
+import { CodePreview } from "@clawesome/ui";
 
 export default function ArchitecturePage() {
   return (
