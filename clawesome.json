@@ -52,6 +52,13 @@
                 ],
                 "apiKey": "sk-proj-1234567890"
             }
-        ]
+        ],
+        "settings": {
+            "executionPolicy": "confirm",
+            "allowlist": ["fs", "http", "terminal", "web_search"],
+            "maxConsecutiveSteps": 10,
+            "confirmDeletions": true,
+            "privacyMode": false
+        }
     }
 }

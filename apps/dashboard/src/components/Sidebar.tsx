@@ -22,7 +22,8 @@ import {
   FolderKanban,
   Sliders,
   Settings,
-  Blocks
+  Blocks,
+  Workflow
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
@@ -72,6 +73,7 @@ export const Sidebar = () => {
         { icon: Blocks, label: 'Skills', href: '/skills' },
         { icon: Brain, label: 'Memories', href: '/memory' },
         { icon: FolderKanban, label: 'Projects', href: '/projects' },
+        { icon: Workflow, label: 'Workflows', href: '/workflows' },
       ]
     },
     {

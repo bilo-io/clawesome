@@ -1,5 +1,7 @@
 // packages/core/src/index.ts
 
+export * from './types/workflows';
+
 export interface AgentSession {
   id: string;
   startTime: number;

@@ -14,7 +14,11 @@ import {
   Shield, 
   Bot,
   CircleCheck,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck,
+  Zap,
+  Lock,
+  ScanEye
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
@@ -37,6 +41,13 @@ interface Config {
       models: string[];
       apiKey: string;
     }>;
+    settings: {
+      executionPolicy: 'always' | 'confirm' | 'ask_per_tool';
+      allowlist: string[];
+      maxConsecutiveSteps: number;
+      confirmDeletions: boolean;
+      privacyMode: boolean;
+    };
   };
 }
 
@@ -320,6 +331,109 @@ export default function ConfigPage() {
 
             {/* AI Providers & Connections */}
             <div className="space-y-8">
+              {/* Safety & Governance */}
+              <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-500">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Safety & Governance</h2>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <label className={cn("text-[10px] font-bold uppercase tracking-widest ml-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>Execution Policy</label>
+                    <div className="flex gap-2">
+                       {['always', 'confirm', 'ask_per_tool'].map((policy) => (
+                         <button
+                           key={policy}
+                           onClick={() => setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, settings: { ...prev.ai.settings, executionPolicy: policy as any } } } : null)}
+                           className={cn(
+                             "flex-1 py-3 rounded-xl border font-bold text-[10px] uppercase tracking-wider transition-all",
+                             config?.ai.settings.executionPolicy === policy 
+                               ? "bg-indigo-600 text-white border-indigo-500 shadow-lg shadow-indigo-500/20" 
+                               : (theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-500" : "bg-slate-50 border-slate-100 text-slate-400 shadow-sm")
+                           )}
+                         >
+                           {policy.replace(/_/g, ' ')}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                       <label className={cn("text-[10px] font-bold uppercase tracking-widest ml-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>Max Sequential Steps</label>
+                       <div className="flex items-center gap-3">
+                         <Zap size={14} className="text-amber-500" />
+                         <input 
+                           type="number"
+                           value={config?.ai.settings.maxConsecutiveSteps}
+                           onChange={(e) => setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, settings: { ...prev.ai.settings, maxConsecutiveSteps: parseInt(e.target.value) || 0 } } } : null)}
+                           className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-sm", theme === 'dark' ? "bg-slate-950 border-slate-800 text-white focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")}
+                         />
+                       </div>
+                    </div>
+                    <div className="space-y-3">
+                       <label className={cn("text-[10px] font-bold uppercase tracking-widest ml-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>Security Mode</label>
+                       <div className="flex items-center gap-3">
+                         <Lock size={14} className="text-emerald-500" />
+                         <div className={cn("flex-1 px-5 py-3 rounded-xl border font-bold text-[10px] uppercase tracking-widest", theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400" : "bg-slate-100 border-slate-200 text-slate-500")}>
+                           Standard Node V2
+                         </div>
+                       </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                     <label className={cn("text-[10px] font-bold uppercase tracking-widest ml-1", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>Authorized Tool Scopes [Allowlist]</label>
+                     <input 
+                       value={config?.ai.settings.allowlist.join(', ')} 
+                       onChange={(ev) => {
+                         const newList = ev.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
+                         setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, settings: { ...prev.ai.settings, allowlist: newList } } } : null);
+                       }} 
+                       className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-400 focus:border-indigo-500/50" : "bg-slate-50 border-slate-100 focus:border-indigo-500/50")} 
+                       placeholder="e.g. fs, http, terminal"
+                     />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, settings: { ...prev.ai.settings, confirmDeletions: !prev.ai.settings.confirmDeletions } } } : null)}
+                      className={cn(
+                        "flex-1 p-4 rounded-2xl border flex items-center justify-between transition-all",
+                        config?.ai.settings.confirmDeletions ? "bg-rose-500/10 border-rose-500/30" : (theme === 'dark' ? "bg-slate-950 border-slate-800" : "bg-white border-slate-100 shadow-sm")
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                         <Trash2 size={16} className={config?.ai.settings.confirmDeletions ? "text-rose-500" : "text-slate-500"} />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Confirm Deletions</span>
+                      </div>
+                      <div className={cn("w-8 h-4 rounded-full relative transition-colors", config?.ai.settings.confirmDeletions ? "bg-rose-500" : "bg-slate-700")}>
+                        <div className={cn("absolute top-1 w-2 h-2 rounded-full bg-white transition-all", config?.ai.settings.confirmDeletions ? "left-5" : "left-1")} />
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, settings: { ...prev.ai.settings, privacyMode: !prev.ai.settings.privacyMode } } } : null)}
+                      className={cn(
+                        "flex-1 p-4 rounded-2xl border flex items-center justify-between transition-all",
+                        config?.ai.settings.privacyMode ? "bg-indigo-500/10 border-indigo-500/30" : (theme === 'dark' ? "bg-slate-950 border-slate-800" : "bg-white border-slate-100 shadow-sm")
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                         <ScanEye size={16} className={config?.ai.settings.privacyMode ? "text-indigo-500" : "text-slate-500"} />
+                         <span className="text-[10px] font-black uppercase tracking-widest">Privacy Focus</span>
+                      </div>
+                      <div className={cn("w-8 h-4 rounded-full relative transition-colors", config?.ai.settings.privacyMode ? "bg-indigo-500" : "bg-slate-700")}>
+                        <div className={cn("absolute top-1 w-2 h-2 rounded-full bg-white transition-all", config?.ai.settings.privacyMode ? "left-5" : "left-1")} />
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </section>
+
               <section className={cn("p-8 rounded-[32px] border shadow-xl space-y-6", theme === 'dark' ? "bg-slate-900/40 border-slate-800/60" : "bg-white border-slate-100 shadow-slate-200/50")}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
@@ -382,7 +496,7 @@ export default function ConfigPage() {
                        <h2 className={cn("text-xs font-black uppercase tracking-[0.4em]", theme === "dark" ? "text-slate-500" : "text-slate-700")}>Intelligence Hub</h2>
                     </div>
                     <button 
-                      onClick={() => setConfig(prev => prev ? { ...prev, ai: { providers: [...prev.ai.providers, { name: '', code: '', models: [], apiKey: '' }] } } : null)}
+                      onClick={() => setConfig(prev => prev ? { ...prev, ai: { ...prev.ai, providers: [...prev.ai.providers, { name: '', code: '', models: [], apiKey: '' }] } } : null)}
                       className={cn("p-2 rounded-xl transition-all", theme === 'dark' ? "hover:bg-slate-800 text-slate-600 hover:text-white" : "hover:bg-slate-50 text-slate-300 hover:text-black")}
                     >
                        <Plus size={18} />
@@ -398,13 +512,13 @@ export default function ConfigPage() {
                                 <input value={provider.name} onChange={(ev) => {
                                   const newP = [...config.ai.providers];
                                   newP[i].name = ev.target.value;
-                                  setConfig({ ...config, ai: { providers: newP } });
+                                  setConfig({ ...config, ai: { ...config.ai, providers: newP } });
                                 }} className="bg-transparent border-none outline-none text-sm font-black text-white hover:text-indigo-400 focus:text-indigo-500 transition-colors" />
                              </div>
-                             <button 
+                             <button
                                 onClick={() => {
                                    const newP = [...config.ai.providers].filter((_, idx) => idx !== i);
-                                   setConfig({ ...config, ai: { providers: newP } });
+                                   setConfig({ ...config, ai: { ...config.ai, providers: newP } });
                                 }}
                                 className="text-slate-600 hover:text-rose-500"
                              >
@@ -418,20 +532,20 @@ export default function ConfigPage() {
                                <input value={provider.apiKey} type="password" onChange={(ev) => {
                                    const newP = [...config.ai.providers];
                                    newP[i].apiKey = ev.target.value;
-                                   setConfig({ ...config, ai: { providers: newP } });
+                                   setConfig({ ...config, ai: { ...config.ai, providers: newP } });
                                }} className={cn("w-full px-5 py-3 rounded-xl border outline-none font-mono text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-indigo-500" : "bg-white border-slate-200 text-indigo-600")} />
                              </div>
-                             
+
                              <div className="space-y-2">
                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-600 ml-1">Neural Models [CSV]</label>
-                               <input 
-                                 value={provider.models.join(', ')} 
+                               <input
+                                 value={provider.models.join(', ')}
                                  onChange={(ev) => {
                                    const newP = [...config.ai.providers];
                                    newP[i].models = ev.target.value.split(',').map(s => s.trim()).filter(s => s !== '');
-                                   setConfig({ ...config, ai: { providers: newP } });
-                                 }} 
-                                 className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-300 focus:border-indigo-500/50" : "bg-white border-slate-200 text-slate-600 focus:border-indigo-500/50")} 
+                                   setConfig({ ...config, ai: { ...config.ai, providers: newP } });
+                                 }}
+                                 className={cn("w-full px-5 py-3 rounded-xl border outline-none font-bold text-xs", theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-300 focus:border-indigo-500/50" : "bg-white border-slate-200 text-slate-600 focus:border-indigo-500/50")}
                                />
                              </div>
                           </div>

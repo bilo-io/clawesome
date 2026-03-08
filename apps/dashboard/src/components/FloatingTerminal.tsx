@@ -70,7 +70,7 @@ export const FloatingTerminal = () => {
             className={cn(
               "overflow-hidden shadow-2xl flex flex-col pointer-events-auto z-[101]",
               isMaximized 
-                ? "rounded-[3rem] border border-white/10" 
+                ? "rounded-[1.5rem]" 
                 : theme === 'dark' 
                   ? "rounded-[1.5rem] bg-slate-950 border-slate-800" 
                   : "rounded-[1.5rem] bg-white border-slate-200"
