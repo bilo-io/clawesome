@@ -52,7 +52,7 @@ export const FloatingTerminal = () => {
             initial={{ opacity: 0, y: '100%', scale: 0.95 }}
             animate={{ 
               opacity: 1, 
-              y: isMaximized ? 0 : 0, 
+              y: 0, 
               scale: 1,
               width: isMaximized ? 'calc(100% - 32px)' : 650,
               height: isMaximized ? 'calc(100% - 32px)' : 450,
@@ -61,7 +61,12 @@ export const FloatingTerminal = () => {
               position: isMaximized ? 'relative' : 'fixed' as any
             }}
             exit={{ opacity: 0, y: '100%', scale: 0.95 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            transition={{ 
+              y: { type: 'spring', damping: 25, stiffness: 200 },
+              opacity: { duration: 0.2 },
+              scale: { duration: 0.2 },
+              default: { duration: 0 } 
+            }}
             className={cn(
               "overflow-hidden shadow-2xl flex flex-col pointer-events-auto z-[101]",
               isMaximized 

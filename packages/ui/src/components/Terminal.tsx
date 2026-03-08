@@ -150,9 +150,15 @@ export const Terminal: React.FC<TerminalProps> = ({
               </div>
               
               {(onMaximize || onClose) && (
-                <div className="flex items-center gap-1.5 ml-4 border-l border-white/10 pl-4">
+                <div className={cn(
+                  "flex items-center gap-1.5 ml-4 border-l pl-4",
+                  theme === 'dark' ? "border-white/10" : "border-slate-200"
+                )}>
                    {onMaximize && (
-                     <button onClick={onMaximize} className="p-1 hover:bg-white/5 rounded transition-colors text-slate-500 hover:text-white">
+                     <button onClick={onMaximize} className={cn(
+                       "p-1 rounded transition-colors text-slate-500",
+                       theme === 'dark' ? "hover:bg-white/5 hover:text-white" : "hover:bg-slate-200 hover:text-slate-900"
+                     )}>
                         {isMaximized ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
                      </button>
                    )}
@@ -211,22 +217,25 @@ export const Terminal: React.FC<TerminalProps> = ({
            </div>
         </div>
 
-        <div className="p-3 px-8 bg-emerald-500/5 border-t border-white/5 flex items-center justify-between">
+         <div className={cn(
+          "p-3 px-8 border-t flex items-center justify-between",
+          theme === 'dark' ? "bg-emerald-500/5 border-white/5" : "bg-slate-50 border-slate-100"
+        )}>
            <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                 <Cpu size={12} className="text-slate-600" />
-                 <span className="text-[10px] font-bold text-slate-600 uppercase">Local Instance</span>
+                 <Cpu size={12} className={theme === 'dark' ? "text-slate-600" : "text-slate-400"} />
+                 <span className={cn("text-[10px] font-bold uppercase", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>Local Instance</span>
               </div>
               <div className="flex items-center gap-2">
-                 <Info size={12} className="text-slate-600" />
-                 <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">UTF-8 // zsh</span>
+                 <Info size={12} className={theme === 'dark' ? "text-slate-600" : "text-slate-400"} />
+                 <span className={cn("text-[10px] font-bold uppercase tracking-widest", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>UTF-8 // zsh</span>
               </div>
            </div>
-           <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <span className="text-[10px] font-black text-emerald-500/50 uppercase tracking-[0.2em]">Encrypted Session</span>
               <CheckCircle2 size={12} className="text-emerald-500/50" />
-           </div>
-        </div>
+            </div>
+         </div>
       </div>
     </div>
   );
