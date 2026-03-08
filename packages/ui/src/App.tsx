@@ -1163,7 +1163,6 @@ const DashboardPage = () => {
                   agent={agent}
                   viewMode={agentView === 'grid' ? 'grid' : 'table'}
                   onDelete={() => { }}
-                  onEdit={() => { }}
                 />
               ))
             }

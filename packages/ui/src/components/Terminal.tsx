@@ -9,7 +9,10 @@ import {
   Activity, 
   Info, 
   CornerDownLeft, 
-  CheckCircle2 
+  CheckCircle2,
+  X,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 import { cn } from '../utils';
 import { useUI } from '../ThemeContext';
@@ -24,7 +27,12 @@ export interface TerminalProps {
   title?: string;
   subtitle?: string;
   onCommand?: (cmd: string) => TerminalLine[];
+  onClose?: () => void;
+  onMaximize?: () => void;
+  isMaximized?: boolean;
+  isConnected?: boolean;
   className?: string;
+  showChrome?: boolean;
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -32,7 +40,12 @@ export const Terminal: React.FC<TerminalProps> = ({
   title = "Neural Terminal",
   subtitle = "Direct CLI access to your agentic swarm.",
   onCommand,
-  className
+  onClose,
+  onMaximize,
+  isMaximized = false,
+  isConnected = true,
+  className,
+  showChrome = true,
 }) => {
   const { theme } = useUI();
   const [input, setInput] = useState('');
@@ -79,48 +92,77 @@ export const Terminal: React.FC<TerminalProps> = ({
 
   return (
     <div className={cn("h-full flex flex-col space-y-6", className)}>
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-xl bg-slate-900 border border-emerald-500/30 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/10">
-                <TerminalIcon size={18} />
-             </div>
-             <h1 className="text-3xl font-black italic tracking-tighter uppercase">{title}</h1>
+      {showChrome && (
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-xl bg-slate-900 border border-emerald-500/30 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/10">
+                  <TerminalIcon size={18} />
+               </div>
+               <h1 className="text-3xl font-black italic tracking-tighter uppercase">{title}</h1>
+            </div>
+            <p className="text-slate-500 font-medium ml-1 text-sm tracking-tight italic opacity-70">{subtitle}</p>
           </div>
-          <p className="text-slate-500 font-medium ml-1 text-sm tracking-tight italic opacity-70">{subtitle}</p>
+          
+          <div className="flex items-center gap-4">
+             <div className="flex flex-col items-end">
+               <span className="text-[10px] font-black tracking-widest text-emerald-500 uppercase">Gateway Locked</span>
+               <span className="text-[9px] font-bold text-slate-500 uppercase">SSHv2 / AES-256-GCM</span>
+             </div>
+             <div className="w-10 h-10 rounded-full border border-slate-800 bg-slate-900/50 flex items-center justify-center text-emerald-500">
+                <Zap size={20} className="animate-pulse" />
+             </div>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-4">
-           <div className="flex flex-col items-end">
-             <span className="text-[10px] font-black tracking-widest text-emerald-500 uppercase">Gateway Locked</span>
-             <span className="text-[9px] font-bold text-slate-500 uppercase">SSHv2 / AES-256-GCM</span>
-           </div>
-           <div className="w-10 h-10 rounded-full border border-slate-800 bg-slate-900/50 flex items-center justify-center text-emerald-500">
-              <Zap size={20} className="animate-pulse" />
-           </div>
-        </div>
-      </div>
+      )}
 
       <div 
         className={cn(
-          "flex-1 rounded-[2.5rem] border overflow-hidden flex flex-col relative min-h-[400px]",
-          theme === 'dark' ? "bg-black border-slate-800 shadow-[0_0_50px_-12px_rgba(16,185,129,0.15)]" : "bg-slate-950 border-slate-200"
+          "flex-1 rounded-[1.5rem] border overflow-hidden flex flex-col relative min-h-[400px] transition-all duration-300",
+          isMaximized 
+            ? theme === 'dark' ? "bg-black/60 backdrop-blur-md border-white/10" : "bg-white/80 backdrop-blur-md border-slate-200" 
+            : theme === 'dark' 
+              ? "bg-black border-slate-800 shadow-[0_0_50px_-12px_rgba(16,185,129,0.15)]" 
+              : "bg-white border-slate-200 shadow-xl shadow-slate-200/50"
         )}
         onClick={() => inputRef.current?.focus()}
       >
-        <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/5">
+        <div className={cn(
+          "p-4 border-b flex items-center justify-between",
+          theme === 'dark' ? "bg-white/5 border-white/5" : "bg-slate-50 border-slate-100"
+        )}>
            <div className="flex items-center gap-2">
               <div className="flex gap-1.5 mr-3">
-                 <div className="w-3 h-3 rounded-full bg-rose-500/20 border border-rose-500/50" />
+                 <div className={cn("w-3 h-3 rounded-full border", isConnected ? "bg-emerald-500/20 border-emerald-500/50" : "bg-rose-500/20 border-rose-500/50")} />
                  <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/50" />
                  <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/50" />
               </div>
               <TerminalIcon size={14} className="text-emerald-500 opacity-50" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">clawesome-cli // v2.0.4</span>
+              <span className={cn("text-[10px] font-black uppercase tracking-[0.2em]", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>
+                {title} // {isConnected ? 'CONNECTED' : 'OFFLINE'}
+              </span>
            </div>
-           <div className="flex items-center gap-2 text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
-              <Activity size={12} />
-              <span>Sync: 14ms</span>
+           
+           <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
+                 <Activity size={12} className={isConnected ? "animate-pulse" : ""} />
+                 <span>Sync: 14ms</span>
+              </div>
+              
+              {(onMaximize || onClose) && (
+                <div className="flex items-center gap-1.5 ml-4 border-l border-white/10 pl-4">
+                   {onMaximize && (
+                     <button onClick={onMaximize} className="p-1 hover:bg-white/5 rounded transition-colors text-slate-500 hover:text-white">
+                        {isMaximized ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+                     </button>
+                   )}
+                   {onClose && (
+                     <button onClick={onClose} className="p-1 hover:bg-rose-500/20 rounded transition-colors text-slate-500 hover:text-rose-500">
+                        <X size={12} />
+                     </button>
+                   )}
+                </div>
+              )}
            </div>
         </div>
 
@@ -131,14 +173,15 @@ export const Terminal: React.FC<TerminalProps> = ({
                   {line.type === 'input' ? (
                     <>
                       <span className="text-emerald-500 font-bold shrink-0">➜</span>
-                      <span className="text-slate-100 font-bold">{line.text}</span>
+                      <span className={cn("font-bold", theme === 'dark' ? "text-slate-100" : "text-slate-900")}>{line.text}</span>
                     </>
                   ) : (
                     <span className={cn(
                       "leading-relaxed break-all",
                       line.type === 'error' ? "text-rose-400" :
                       line.type === 'success' ? "text-emerald-400" :
-                      line.type === 'warn' ? "text-amber-400" : "text-slate-400"
+                      line.type === 'warn' ? "text-amber-400" : 
+                      (theme === 'dark' ? "text-slate-400" : "text-slate-600")
                     )}>
                       {line.text}
                     </span>
@@ -153,7 +196,10 @@ export const Terminal: React.FC<TerminalProps> = ({
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-white font-bold p-0 placeholder:text-slate-800"
+                  className={cn(
+                    "flex-1 bg-transparent border-none outline-none font-bold p-0 placeholder:text-slate-800",
+                    theme === 'dark' ? "text-white" : "text-slate-900"
+                  )}
                   spellCheck={false}
                   autoComplete="off"
                 />

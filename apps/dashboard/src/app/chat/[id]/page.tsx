@@ -12,13 +12,17 @@ import {
   Cpu,
   Globe,
   Brain,
+  Activity,
+  Terminal,
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
+import { DEFAULT_PORT } from '@antigravity/core';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { CodeBlock } from '@/components/CodeBlock';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { useSocket } from '@/hooks/useSocket';
 
 const CHAT_TRANSITION = { duration: 0.35, ease: [0.32, 0.72, 0, 1] as const };
 
@@ -133,26 +137,109 @@ export default function ChatDetailPage() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   };
 
+  const { isConnected: isWsConnected, lastMessage, sendMessage } = useSocket();
+
   useEffect(() => {
     scrollToBottom();
   }, [messages, isThinking]);
+
+  // Handle incoming websocket messages
+  useEffect(() => {
+    if (lastMessage && lastMessage.type === 'chat_response') {
+      setIsThinking(false);
+      const assistantMessage: Message = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: lastMessage.payload.content,
+        isTyping: true,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    }
+  }, [lastMessage]);
 
   const handleSend = () => {
     if (!inputValue.trim()) return;
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: inputValue };
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = inputValue;
     setInputValue('');
     setIsThinking(true);
-    setTimeout(() => {
-      setIsThinking(false);
+
+    if (isWsConnected) {
+      sendMessage({ type: 'chat', content: currentInput });
+    } else {
+      // Fallback/Mock if WS is not connected
+      setTimeout(() => {
+        setIsThinking(false);
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: "System Offline. Unable to reach the CLI Gateway via Neural Link (WebSocket). Please ensure `clawesome start` is running.",
+          isTyping: true,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+      }, 1500);
+    }
+  };
+
+  const handleHealthCheck = async () => {
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: "Gateway Health Check" };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsThinking(true);
+    
+    try {
+      const response = await fetch(`http://localhost:${DEFAULT_PORT}/health`);
+      if (!response.ok) throw new Error(`Gateway returned ${response.status}`);
+      const data = await response.json();
+      
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "Understood. Analyzing request against global neural context. Integration complete. Proceeding with instructed vector...",
+        content: `**GATEWAY STATUS: OK**\n\n- **Status:** ${data.status.toUpperCase()}\n- **Latency:** Nominal\n- **Timestamp:** ${new Date(data.timestamp).toLocaleString()}\n\nThe CLI Gateway is active and responsive.`,
         isTyping: true,
       };
       setMessages((prev) => [...prev, assistantMessage]);
-    }, 1500);
+    } catch (error: any) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: `**CONNECTION ERROR**\n\nUnable to reach the locally running CLI Gateway at \`localhost:${DEFAULT_PORT}\`.\n\n**Error:** ${error.message}\n\n*Please ensure the gateway is started using \`clawesome start\`.*`,
+        isTyping: true,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
+  const handleVersionCheck = async () => {
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: "Check CLI Version" };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsThinking(true);
+    
+    try {
+      const response = await fetch(`http://localhost:${DEFAULT_PORT}/version`);
+      if (!response.ok) throw new Error(`Gateway returned ${response.status}`);
+      const data = await response.json();
+      
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: `**CLI VERSION INFORMATION**\n\n- **Version:** \`v${data.version}\`\n- **Platform:** ${data.platform}\n- **State:** Synchronized\n\nYou are running the latest stable build of Clawesome OS.`,
+        isTyping: true,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error: any) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: `**CONNECTION ERROR**\n\nUnable to reach the locally running CLI Gateway at \`localhost:${DEFAULT_PORT}\`.\n\n**Error:** ${error.message}\n\n*Please ensure the gateway is started using \`clawesome start\`.*`,
+        isTyping: true,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   return (
@@ -280,6 +367,28 @@ export default function ChatDetailPage() {
       {/* Floating Input */}
       <div className="absolute bottom-10 left-0 right-0 px-4 flex justify-center pointer-events-none">
         <div className="w-full max-w-[760px] pointer-events-auto">
+          {/* Quick Action Pills */}
+          <div className="flex justify-center mb-6 gap-3">
+            <button 
+              onClick={handleHealthCheck}
+              className={cn(
+                "px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-2 backdrop-blur-md",
+                theme === 'dark' ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-emerald-400" : "bg-white/80 border-slate-200 text-slate-500 hover:text-emerald-600 shadow-lg"
+              )}
+            >
+              <Activity size={12} /> Health Check
+            </button>
+            <button 
+              onClick={handleVersionCheck}
+              className={cn(
+                "px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-2 backdrop-blur-md",
+                theme === 'dark' ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-indigo-400" : "bg-white/80 border-slate-200 text-slate-500 hover:text-indigo-600 shadow-lg"
+              )}
+            >
+              <Terminal size={12} /> CLI Info
+            </button>
+          </div>
+          
           <div className="relative group perspective-1000">
             <div className={cn(
               "relative p-[2px] rounded-full transition-all duration-700 shadow-[0_32px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_48px_100px_rgba(0,0,0,0.5)]",

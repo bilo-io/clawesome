@@ -10,6 +10,8 @@ import { WorkspaceTabs } from "@/components/WorkspaceTabs";
 import { AILab } from "@/components/AILab";
 import { CommandModal } from "@/components/CommandModal";
 import { InstanceWizard } from "@/components/InstanceWizard";
+import { FloatingActionHub } from "@/components/FloatingActionHub";
+import { FloatingTerminal } from "@/components/FloatingTerminal";
 import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
 import { AnimatePresence } from 'framer-motion';
@@ -104,6 +106,8 @@ export default function RootLayout({
           </AnimatePresence>
           <CommandModal />
           <BottomDock />
+          <FloatingActionHub />
+          <FloatingTerminal />
         </div>
       </body>
     </html>

@@ -14,10 +14,10 @@ import {
   Plus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const AILab = () => {
-  const { isFocusMode, theme } = useUIStore();
-  const [isOpen, setIsOpen] = useState(false);
+  const { isFocusMode, theme, isAILabOpen, setAILabOpen } = useUIStore();
   const [showThoughts, setShowThoughts] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [tabs, setTabs] = useState([
@@ -33,34 +33,19 @@ export const AILab = () => {
   if (isFocusMode) return null;
 
   return (
-    <>
-      {/* Trigger Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "fixed bottom-8 right-8 z-[60] p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 group border overflow-hidden",
-          theme === 'dark' 
-            ? "bg-indigo-600 border-indigo-500/50 shadow-indigo-500/30" 
-            : "bg-white border-slate-200 shadow-slate-200/50 hover:border-indigo-500",
-          isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'
-        )}
-      >
-         <div className={cn(
-           "absolute inset-0 bg-indigo-600 transition-opacity",
-           theme === 'dark' ? "opacity-100" : "opacity-0 group-hover:opacity-10"
-         )} />
-         <MessageCircle size={24} className={cn("relative z-10", theme === 'dark' ? "text-white" : "text-indigo-600 group-hover:text-white")} />
-      </button>
-
-      {/* Slide-out Panel */}
-      <div 
-        className={cn(
-          "fixed right-0 top-0 h-screen z-50 transition-all duration-500 ease-in-out flex flex-row shadow-2xl overflow-hidden border-l",
-          theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200",
-          isOpen ? 'translate-x-0' : 'translate-x-full',
-          showThoughts ? 'w-[800px]' : 'w-[400px]'
-        )}
-      >
+    <AnimatePresence>
+      {isAILabOpen && (
+        <motion.div 
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className={cn(
+            "fixed right-0 top-0 h-screen z-[80] flex flex-row shadow-2xl overflow-hidden border-l",
+            theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200",
+            showThoughts ? 'w-[800px]' : 'w-[400px]'
+          )}
+        >
         {/* Thought Stream (Conditional) */}
         {showThoughts && (
           <div className={cn(
@@ -128,7 +113,7 @@ export const AILab = () => {
                   <Brain size={18} />
                 </button>
                 <button 
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setAILabOpen(false)}
                   className={cn(
                     "p-2 rounded-xl transition-all border",
                     theme === 'dark' ? "bg-slate-900 text-slate-500 border-slate-800 hover:text-white hover:bg-slate-800" : "bg-slate-50 text-slate-400 border-slate-100 hover:text-slate-900 hover:bg-slate-100"
@@ -223,7 +208,8 @@ export const AILab = () => {
             </div>
           </footer>
         </div>
-      </div>
-    </>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

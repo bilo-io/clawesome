@@ -16,6 +16,8 @@ interface UIState {
   viewModes: Record<string, ViewMode>;
   isMobileSidebarOpen: boolean;
   isInstanceWizardOpen: boolean;
+  isAILabOpen: boolean;
+  isFloatingTerminalOpen: boolean;
 
   toggleSidebar: () => void;
   toggleMobileSidebar: (open?: boolean) => void;
@@ -27,6 +29,8 @@ interface UIState {
   setViewMode: (route: string, mode: ViewMode) => void;
   getViewMode: (route: string, defaultMode?: ViewMode) => ViewMode;
   setInstanceWizardOpen: (open: boolean) => void;
+  setAILabOpen: (open: boolean) => void;
+  setFloatingTerminalOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -41,6 +45,8 @@ export const useUIStore = create<UIState>()(
       viewModes: {},
       isMobileSidebarOpen: false,
       isInstanceWizardOpen: false,
+      isAILabOpen: false,
+      isFloatingTerminalOpen: false,
 
       toggleSidebar: () =>
         set((state) => ({ isSidebarExpanded: !state.isSidebarExpanded })),
@@ -59,6 +65,8 @@ export const useUIStore = create<UIState>()(
       getViewMode: (route, defaultMode = 'grid') =>
         get().viewModes[route] ?? defaultMode,
       setInstanceWizardOpen: (open: boolean) => set({ isInstanceWizardOpen: open }),
+      setAILabOpen: (open: boolean) => set({ isAILabOpen: open }),
+      setFloatingTerminalOpen: (open: boolean) => set({ isFloatingTerminalOpen: open }),
     }),
     {
       name: 'clawesome:ui',

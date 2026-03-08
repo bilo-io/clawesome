@@ -17,4 +17,4 @@ export interface GatewayEvent {
   payload: any;
 }
 
-export const DEFAULT_PORT = 17871;
+export const DEFAULT_PORT = 17654;
