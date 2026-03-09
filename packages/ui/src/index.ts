@@ -35,6 +35,7 @@ export * from './components/FilesystemSandbox';
 export * from './components/Sidebar';
 export * from './components/Terminal';
 export * from './components/Profile';
+export * from './components/WorkflowCard';
 
 // Primitives
 export * from './components/Button';

@@ -15,21 +15,25 @@ import {
   Zap,
   Check,
   Pause,
-  Play
+  Play,
+  PackageCheck,
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useWorkflowStore } from '@/store/useWorkflowStore';
+import { WorkflowCard } from '@clawesome/ui';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 
 export default function WorkflowsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
-  const { workflows, addWorkflow, deleteWorkflow, updateWorkflow } = useWorkflowStore();
+  const { workflows, marketplaceWorkflows, addWorkflow, deleteWorkflow, updateWorkflow, installWorkflow } = useWorkflowStore();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/workflows', 'grid') as 'grid' | 'list');
 
@@ -38,7 +42,9 @@ export default function WorkflowsPage() {
     return () => clearSelection();
   }, [clearSelection]);
 
-  const filteredWorkflows = workflows.filter(w => 
+  const currentWorkflows = activeTab === 'my' ? workflows : marketplaceWorkflows;
+
+  const filteredWorkflows = currentWorkflows.filter(w => 
     w.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -117,13 +123,43 @@ export default function WorkflowsPage() {
         onSelectAll={handleSelectAll}
         bulkActions={bulkActions}
         renderRight={
-          <button
-            onClick={handleCreateWorkflow}
-            className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white rounded-full font-bold shadow-xl shadow-purple-600/20 transition-all active:translate-y-1"
-          >
-            <Plus size={20} />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Create Workflow</span>
-          </button>
+          <div className={cn(
+            "flex items-center gap-2 p-1.5 rounded-full border transition-all shadow-xl",
+            theme === 'dark' ? "bg-slate-900/60 border-slate-800" : "bg-white border-slate-100 shadow-slate-200/40"
+          )}>
+            <button
+              onClick={() => setActiveTab('my')}
+              className={cn(
+                "flex items-center gap-3 px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all active:scale-95",
+                activeTab === 'my' 
+                  ? "bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white shadow-lg shadow-purple-600/20" 
+                  : (theme === 'dark' ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600")
+              )}
+            >
+              <PackageCheck size={18} />
+              <span>MY SYSTEMS</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('marketplace')}
+              className={cn(
+                "flex items-center gap-3 px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all active:scale-95",
+                activeTab === 'marketplace' 
+                  ? "bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white shadow-lg shadow-purple-600/20" 
+                  : (theme === 'dark' ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600")
+              )}
+            >
+              <ShoppingCart size={18} />
+              <span>MARKETPLACE</span>
+            </button>
+            <div className="w-[1px] h-6 bg-slate-800 mx-2" />
+            <button
+              onClick={handleCreateWorkflow}
+              className="flex items-center gap-3 px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold transition-all active:scale-95"
+            >
+              <Plus size={18} />
+              <span className="text-[10px] font-bold uppercase tracking-widest">Create</span>
+            </button>
+          </div>
         }
       />
 
@@ -142,181 +178,19 @@ export default function WorkflowsPage() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <Link href={`/workflows/${workflow.id}`} className="group block relative transition-all">
-                {viewMode === 'grid' ? (
-                  <div className={cn(
-                    "relative h-full p-8 rounded-[48px] border transition-all overflow-hidden",
-                    selectedIds.includes(workflow.id)
-                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
-                      : (theme === 'dark' 
-                          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
-                          : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40 hover:border-indigo-200")
-                  )}>
-                    {/* Selection Indicator */}
-                    <div 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        toggleSelection(workflow.id);
-                      }}
-                      className={cn(
-                        "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-30 cursor-pointer",
-                        selectedIds.includes(workflow.id)
-                          ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-                          : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
-                      )}
-                    >
-                      {selectedIds.includes(workflow.id) && <Check size={14} strokeWidth={4} />}
-                    </div>
-
-                    <div className="flex justify-between items-start mb-10">
-                      <div className="flex flex-col gap-1">
-                        <span className={cn(
-                          "text-[10px] font-black tracking-widest uppercase mb-1",
-                          theme === 'dark' ? "text-slate-600" : "text-slate-400"
-                        )}>
-                          TYPE: AUTOMATION
-                        </span>
-                        <h3 className={cn(
-                          "text-2xl font-black group-hover:text-indigo-500 transition-colors uppercase tracking-tight truncate whitespace-nowrap",
-                          theme === 'dark' ? "text-white" : "text-slate-900"
-                        )}>
-                          {workflow.name}
-                        </h3>
-                      </div>
-                      <button 
-                        onClick={(e) => handleToggleStatus(e, workflow.id, workflow.status)}
-                        className={cn(
-                          "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border transition-all hover:scale-105 active:scale-95",
-                          workflow.status === 'active' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                          "bg-amber-500/10 text-amber-500 border-amber-500/20"
-                        )}
-                      >
-                        {workflow.status}
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col gap-6">
-                      <div className="flex items-center justify-between">
-                         <div className="flex flex-col gap-2">
-                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                <Zap size={12} className="text-indigo-500" />
-                                Nodes Count
-                             </div>
-                             <span className={cn("text-2xl font-black font-mono pl-1", theme === 'dark' ? "text-white" : "text-black")}>
-                                {workflow.nodes.length}
-                             </span>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">
-                                Last Run
-                                <Clock size={12} className="text-indigo-500" />
-                             </div>
-                             <span className={cn("text-xs font-bold font-mono", theme === 'dark' ? "text-slate-400" : "text-slate-600")}>
-                                {workflow.lastRun ? formatDistanceToNow(workflow.lastRun) + ' ago' : 'Never'}
-                             </span>
-                          </div>
-                      </div>
-
-                      <div className="flex gap-2">
-                        {workflow.nodes.slice(0, 5).map((node, i) => (
-                          <div key={i} className={cn(
-                            "w-8 h-8 rounded-lg border flex items-center justify-center transition-all",
-                            theme === 'dark' ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"
-                          )} title={node.data.label}>
-                            <CircleDot size={14} className="text-indigo-500" />
-                          </div>
-                        ))}
-                        {workflow.nodes.length > 5 && (
-                          <div className={cn(
-                            "w-8 h-8 rounded-lg border flex items-center justify-center text-[10px] font-bold",
-                            theme === 'dark' ? "bg-slate-800 border-slate-700 text-slate-400" : "bg-slate-50 border-slate-200 text-slate-500"
-                          )}>
-                            +{workflow.nodes.length - 5}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className={cn(
-                        "pt-6 border-t flex items-center justify-between",
-                        theme === 'dark' ? "border-slate-800/50" : "border-slate-100"
-                      )}>
-                         <div className="flex items-center gap-3">
-                            <button className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-                              workflow.status === 'active' 
-                                ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
-                                : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
-                            )}>
-                               {workflow.status === 'active' ? <Pause size={14} /> : <Play size={14} />}
-                            </button>
-                         </div>
-                         <div className="flex items-center gap-1 group-hover:gap-2 transition-all text-[#8C00FF] font-black text-[11px] uppercase tracking-widest">
-                            EDITOR VIEW
-                            <ChevronRight size={14} />
-                         </div>
-                      </div>
-                    </div>
-
-                    {/* Industrial background accent */}
-                    <div className="absolute top-0 right-0 p-8 opacity-5">
-                       <Workflow size={60} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className={cn(
-                    "p-4 rounded-[28px] border flex items-center gap-6 transition-all relative pl-16",
-                    selectedIds.includes(workflow.id)
-                      ? (theme === 'dark' ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
-                      : (theme === 'dark' 
-                          ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-indigo-500/30 shadow-none" 
-                          : "bg-white border-slate-100 shadow-xl shadow-slate-200/20 hover:border-indigo-200")
-                  )}>
-                    {/* Selection Indicator for List */}
-                    <div 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        toggleSelection(workflow.id);
-                      }}
-                      className={cn(
-                        "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all absolute left-6 top-1/2 -translate-y-1/2 z-30 cursor-pointer",
-                        selectedIds.includes(workflow.id)
-                          ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-                          : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
-                      )}
-                    >
-                      {selectedIds.includes(workflow.id) && <Check size={12} strokeWidth={4} />}
-                    </div>
-                    <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
-                      <Workflow size={20} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className={cn("text-lg font-black uppercase tracking-tight truncate max-w-md", theme === 'dark' ? "text-white" : "text-slate-900")}>
-                          {workflow.name}
-                        </h3>
-                        <span className={cn(
-                          "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border",
-                          workflow.status === 'active' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                          "bg-amber-500/10 text-amber-500 border-amber-500/20"
-                        )}>
-                          {workflow.status}
-                        </span>
-                      </div>
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">TYPE: AUTOMATION</p>
-                    </div>
-                    <div className="flex flex-col items-end min-w-[150px]">
-                      <span className={cn("text-base font-black font-mono", theme === 'dark' ? "text-white" : "text-black")}>
-                        {workflow.nodes.length} NODES
-                      </span>
-                      <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">
-                        LAST RUN: {workflow.lastRun ? formatDistanceToNow(workflow.lastRun) + ' ago' : 'Never'}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </Link>
+              <WorkflowCard 
+                workflow={workflow}
+                viewMode={viewMode}
+                isMarketplace={activeTab === 'marketplace'}
+                isImported={workflows.some(w => w.name === workflow.name)}
+                selected={selectedIds.includes(workflow.id)}
+                onToggleSelection={() => toggleSelection(workflow.id)}
+                onToggleStatus={(e) => handleToggleStatus(e, workflow.id, workflow.status)}
+                onInstall={() => installWorkflow(workflow)}
+                onClick={() => {
+                  if (activeTab === 'my') router.push(`/workflows/${workflow.id}`);
+                }}
+              />
             </motion.div>
           ))}
         </AnimatePresence>
