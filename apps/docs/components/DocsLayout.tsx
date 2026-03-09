@@ -25,7 +25,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
           pathname={pathname}
           LinkComponent={Link}
         />
-        <main className="flex-1 w-full min-w-0 pb-16 pt-8 md:pl-72">
+        <main className="flex-1 w-full min-w-0 pb-16 pt-8">
           <article className="max-w-4xl mx-auto px-4 sm:px-8 xl:px-16 w-full pt-16 md:pt-0">
              {children}
           </article>
