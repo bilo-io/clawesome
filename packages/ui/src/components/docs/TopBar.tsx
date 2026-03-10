@@ -29,15 +29,15 @@ export function TopBar({
 
   return (
     <header className={cn(
-      "sticky top-0 z-50 w-full border-b backdrop-blur transition-colors",
-      theme === 'dark' ? "bg-[#020617]/80 border-slate-800" : "bg-white/80 border-slate-200"
+      "sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-all duration-300",
+      theme === 'dark' ? "bg-slate-950 border-slate-900" : "bg-white border-slate-200"
     )}>
-      <div className="flex h-16 items-center px-6 gap-4 justify-between">
+      <div className="flex h-16 items-center p-2 gap-4 justify-between">
         <div className="flex items-center gap-3">
           <button 
             onClick={onMenuClick}
             className={cn(
-              "p-2 -ml-2 md:hidden transition-colors",
+              "p-2 -ml-2 transition-colors block md:hidden",
               theme === 'dark' ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
             )}
           >
@@ -57,7 +57,7 @@ export function TopBar({
         </div>
         
         <div className="flex items-center gap-6">
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             <Link href="/" className={cn(
               "transition-colors",
               theme === 'dark' ? "text-slate-400 hover:text-white" : "text-slate-600 hover:text-slate-900"

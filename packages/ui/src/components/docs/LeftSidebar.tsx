@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, ChevronDown, ChevronRight, X } from 'lucide-react';
+import { 
+  Search, 
+  ChevronRight, 
+  X, 
+  Hash, 
+  Zap, 
+  Cpu, 
+  Globe, 
+  Share2, 
+  Terminal, 
+  Info, 
+  Layout as LayoutIcon,
+  Layers
+} from 'lucide-react';
 import { useUI } from '../../ThemeContext';
 import { cn } from '../../utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,9 +52,9 @@ export function LeftSidebar({
     {
       title: 'GET STARTED',
       links: [
-        { href: '/', label: 'Introduction' },
-        { href: '/installation', label: 'Installation' },
-        { href: '/cli', label: 'CLI Reference' },
+        { href: '/', label: 'Introduction', icon: <Info size={16} /> },
+        { href: '/installation', label: 'Installation', icon: <Hash size={16} /> },
+        { href: '/cli', label: 'CLI Reference', icon: <Terminal size={16} /> },
       ]
     },
     {
@@ -50,6 +63,7 @@ export function LeftSidebar({
         { 
           href: '/ai', 
           label: 'Overview',
+          icon: <Cpu size={16} />,
           children: [
             { href: '/ai/neural-network', label: 'Neural Network' },
             { href: '/ai/llms', label: 'LLMs' },
@@ -65,13 +79,14 @@ export function LeftSidebar({
         { 
           href: '/architecture', 
           label: 'Architecture',
+          icon: <Zap size={16} />,
           children: [
             { href: '/architecture/layers', label: 'System Layers' },
             { href: '/architecture/security', label: 'Security' },
             { href: '/architecture/scalability', label: 'Scalability' },
           ]
         },
-        { href: '/components', label: 'UI Components' },
+        { href: '/components', label: 'UI Components', icon: <LayoutIcon size={16} /> },
       ]
     },
     {
@@ -80,6 +95,7 @@ export function LeftSidebar({
         { 
           href: '/connect', 
           label: 'Connect',
+          icon: <Globe size={16} />,
           children: [
             { href: '/connect/slack', label: 'Slack' },
             { href: '/connect/discord', label: 'Discord' },
@@ -87,277 +103,236 @@ export function LeftSidebar({
             { href: '/connect/whatsapp', label: 'WhatsApp' },
           ]
         },
-        { href: '/resources', label: 'Resources & MCPs' },
+        { href: '/resources', label: 'Resources & MCPs', icon: <Share2 size={16} /> },
       ]
     },
     {
       title: 'OTHER',
       links: [
-        { href: '/releases', label: 'Release Notes' },
+        { href: '/releases', label: 'Release Notes', icon: <Hash size={16} /> },
       ]
     }
   ], []);
 
-  // Filter logic based on search query
   const filteredSections = useMemo(() => {
     if (!searchQuery.trim()) return sections;
-
-    const query = searchQuery.toLowerCase();
-
+    const q = searchQuery.toLowerCase();
     return sections.map(section => {
-      // Check if section title matches
-      if (section.title.toLowerCase().includes(query)) {
-        return section;
-      }
-
-      // Filter links
-      const filteredLinks = section.links.map(link => {
-        if (link.label.toLowerCase().includes(query)) {
-          return link;
-        }
-
-        // Filter children
-        if (link.children) {
-          const filteredChildren = link.children.filter(child => 
-            child.label.toLowerCase().includes(query)
-          );
-          if (filteredChildren.length > 0) {
-            return { ...link, children: filteredChildren };
-          }
+      const matchS = section.title.toLowerCase().includes(q);
+      const matchedLinks = section.links.map(link => {
+        const matchL = link.label.toLowerCase().includes(q);
+        const matchedC = link.children?.filter(c => c.label.toLowerCase().includes(q));
+        if (matchL || (matchedC && matchedC.length > 0)) {
+          return { ...link, children: (matchedC && matchedC.length > 0) ? matchedC : link.children };
         }
         return null;
       }).filter(Boolean) as SidebarLink[];
-
-      if (filteredLinks.length > 0) {
-        return { ...section, links: filteredLinks };
-      }
+      if (matchS || matchedLinks.length > 0) return { ...section, links: matchedLinks.length > 0 ? matchedLinks : section.links };
       return null;
     }).filter(Boolean) as SidebarSection[];
   }, [searchQuery, sections]);
 
-  // When search runs, auto-expand sections containing matches
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isOpen) onClose();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen, onClose]);
+
   useEffect(() => {
     if (searchQuery.trim()) {
-      const allExpanded = filteredSections.reduce((acc, section) => {
-        section.links.forEach(link => {
-          if (link.children) {
-            acc[link.label] = true;
-          }
-        });
-        return acc;
-      }, {} as Record<string, boolean>);
-      setExpandedSections(prev => ({ ...prev, ...allExpanded }));
+      const exp: Record<string, boolean> = {};
+      filteredSections.forEach(s => s.links.forEach(l => { if (l.children) exp[l.label] = true; }));
+      setExpandedSections(prev => ({ ...prev, ...exp }));
     }
   }, [searchQuery, filteredSections]);
 
-  // Auto-expand the section that has the active pathname on mount/nav
   useEffect(() => {
-    sections.forEach(section => {
-      section.links.forEach(link => {
-        if (link.children) {
-          const hasActiveChild = link.children.some(child => pathname === child.href);
-          if (hasActiveChild || pathname === link.href) {
-            setExpandedSections(prev => ({ ...prev, [link.label]: true }));
-          }
-        }
-      });
-    });
+    sections.forEach(s => s.links.forEach(l => {
+      if (l.children) {
+        const active = l.children.some(c => pathname === c.href) || pathname === l.href;
+        if (active) setExpandedSections(prev => ({ ...prev, [l.label]: true }));
+      }
+    }));
   }, [pathname, sections]);
 
-  const toggleSection = (label: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [label]: !prev[label]
-    }));
-  };
-
+  const toggleSection = (label: string) => setExpandedSections(p => ({ ...p, [label]: !p[label] }));
   const isActive = (href: string) => pathname === href;
-
   const Link = LinkComponent;
 
-  return (
-    <>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm md:hidden"
-            onClick={onClose}
-          />
-        )}
-      </AnimatePresence>
+  const NavItem = ({ link, isChild = false }: { link: SidebarLink, isChild?: boolean }) => {
+    const hasChildren = link.children && link.children.length > 0;
+    const isExpanded = expandedSections[link.label];
+    const active = isActive(link.href);
 
-      <aside className={cn(
-        "fixed md:sticky top-0 md:top-16 left-0 md:left-auto z-[60] md:z-40 w-72 h-[100dvh] md:h-[calc(100vh-4rem)] shrink-0 border-r transition-transform duration-300 overflow-y-auto no-scrollbar",
-        theme === 'dark' ? 'border-slate-800 bg-[#020617]' : 'border-slate-200 bg-slate-50',
-        isOpen ? 'translate-x-0 shadow-2xl md:shadow-none' : '-translate-x-full md:translate-x-0'
-      )}>
-        {/* Mobile Header */}
-        <div className="flex items-center justify-between p-6 md:hidden border-b border-slate-200 dark:border-slate-800 mb-4 sticky top-0 z-10 bg-inherit">
-          <span className="font-black tracking-tighter uppercase text-sm flex items-center gap-2">
-            Documentation
-          </span>
-          <button onClick={onClose} className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors">
-             <X size={18} />
+    return (
+      <div className="flex flex-col">
+        <Link 
+          href={link.href}
+          onClick={(e: React.MouseEvent) => {
+            if (hasChildren) {
+              e.preventDefault();
+              toggleSection(link.label);
+            } else if (isOpen) {
+              onClose();
+            }
+          }}
+          className={cn(
+            "group relative flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-200 text-[13px] font-bold",
+            active
+              ? (theme === 'dark' ? "text-white bg-indigo-500/20" : "text-indigo-600 bg-indigo-50")
+              : (theme === 'dark' ? "text-slate-500 hover:text-slate-200 hover:bg-slate-900" : "text-slate-600 hover:text-slate-950 hover:bg-slate-100/50"),
+            isChild && "pl-10 text-[12px] font-medium"
+          )}
+        >
+          <div className="flex items-center gap-2.5">
+            {!isChild && link.icon && (
+              <span className={cn("transition-colors", active ? "text-indigo-500" : "text-slate-500 group-hover:text-slate-400")}>{link.icon}</span>
+            )}
+            {link.label}
+          </div>
+          {hasChildren && <ChevronRight size={14} className={cn("transition-transform duration-200 opacity-40", isExpanded && "rotate-90")} />}
+        </Link>
+        <AnimatePresence initial={false}>
+          {hasChildren && isExpanded && (
+            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+              <div className="mt-1 space-y-0.5 border-l border-slate-100 dark:border-slate-800 ml-[23px]">
+                {link.children!.map(child => <NavItem key={child.href} link={child} isChild />)}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  };
+
+  const SidebarContent = ({ isDrawer = false }) => (
+    <div className={cn(
+      "flex flex-col h-full w-full relative z-[101] !opacity-100",
+      theme === 'dark' ? "bg-slate-950" : "bg-white"
+    )}>
+      {isDrawer && (
+        <div className="h-16 flex items-center px-8 shrink-0">
+          <button 
+            onClick={onClose} 
+            className={cn(
+              "p-2 -ml-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95",
+              theme === 'dark' ? "text-slate-400 hover:text-white hover:bg-slate-900" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+            )}
+          >
+            <X size={24} />
           </button>
         </div>
+      )}
 
-        <div className="p-6 space-y-8">
-          {/* Search Box */}
-          <div className="sticky top-6 z-10">
+      <div className={cn("p-6 shrink-0", !isDrawer && "pt-8")}>
+        <div className="relative group perspective-1000">
+          <div className={cn(
+            "relative p-[4px] rounded-xl transition-all duration-500 shadow-lg",
+            "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]",
+            "focus-within:shadow-[0_0_20px_rgba(140,0,255,0.25)]"
+          )}>
             <div className={cn(
-              "group relative flex items-center p-2 rounded-xl transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500/50",
-              theme === 'dark' 
-                ? 'bg-slate-900 border border-slate-800 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]' 
-                : 'bg-white border border-slate-200 shadow-sm'
+              "relative rounded-[11px] flex items-center transition-all duration-700 px-3 py-2",
+              theme === 'dark' ? "bg-slate-950" : "bg-white"
             )}>
-              <Search size={16} className={cn("ml-2 transition-colors", theme === 'dark' ? 'text-slate-500 group-focus-within:text-indigo-400' : 'text-slate-400 group-focus-within:text-indigo-600')} />
+              <Search 
+                size={14} 
+                className={cn(
+                  "shrink-0 transition-colors",
+                  theme === 'dark' ? "text-slate-700 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
+                )} 
+              />
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search documentation..." 
+                placeholder="Search documentation..."
                 className={cn(
-                  "w-full bg-transparent px-3 py-1 text-sm outline-none font-medium",
-                  theme === 'dark' ? 'text-white placeholder:text-slate-600' : 'text-slate-900 placeholder:text-slate-400'
+                  "w-full bg-transparent ml-2 text-[12px] outline-none font-bold placeholder:font-medium tracking-wide",
+                  theme === 'dark' ? "text-white placeholder:text-slate-800" : "text-slate-900 placeholder:text-slate-400"
                 )}
               />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="mr-2 p-1 rounded-full hover:bg-slate-500/20 text-slate-500 transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              )}
             </div>
           </div>
-
-          <nav className="space-y-8 pb-20">
-            {filteredSections.length === 0 ? (
-              <div className="text-center py-10 px-4">
-                <Search size={32} className="mx-auto text-slate-400 mb-3 opacity-20" />
-                <p className="text-sm font-medium text-slate-500">No results found for "{searchQuery}"</p>
-                <p className="text-xs text-slate-400 mt-1">Try a different search term.</p>
-              </div>
-            ) : (
-              filteredSections.map(section => (
-                <div key={section.title} className="space-y-3">
-                  <h4 className="text-[11px] font-black tracking-[0.2em] text-slate-500 uppercase px-4 flex items-center gap-2">
-                    {section.title}
-                  </h4>
-                  <div className="space-y-0.5">
-                    {section.links.map(link => {
-                      const hasChildren = link.children && link.children.length > 0;
-                      const isExpanded = expandedSections[link.label];
-                      const active = isActive(link.href) && (!hasChildren || !isExpanded);
-
-                      return (
-                        <div key={link.href} className="flex flex-col">
-                          <div className="relative group/nav-item">
-                            <Link 
-                              href={link.href}
-                              onClick={(e: React.MouseEvent) => {
-                                if (hasChildren) {
-                                  // Optional: Let docs nav logic handle it OR toggle it.
-                                  // toggleSection(link.label);
-                                }
-                              }}
-                              className={cn(
-                                "flex items-center justify-between px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 relative z-10",
-                                active
-                                  ? (theme === 'dark' ? 'text-indigo-400 bg-indigo-500/10' : 'text-indigo-600 bg-indigo-50')
-                                  : (theme === 'dark' ? 'text-slate-400 hover:text-white hover:bg-slate-800/60' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100')
-                              )}
-                            >
-                              <span className="flex items-center gap-2">
-                                {link.icon && <span className="opacity-70">{link.icon}</span>}
-                                {link.label}
-                              </span>
-                              
-                              {hasChildren && (
-                                <button 
-                                  onClick={(e: React.MouseEvent) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    toggleSection(link.label);
-                                  }}
-                                  className={cn(
-                                    "p-1 rounded-md transition-all",
-                                    theme === 'dark' ? "hover:bg-slate-700 text-slate-500 hover:text-slate-300" : "hover:bg-slate-200 text-slate-400 hover:text-slate-600"
-                                  )}
-                                >
-                                  <ChevronRight size={14} className={cn("transition-transform duration-200", isExpanded && "rotate-90")} />
-                                </button>
-                              )}
-                            </Link>
-
-                          </div>
-                          
-                          <AnimatePresence initial={false}>
-                            {hasChildren && isExpanded && (
-                              <motion.div 
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2, ease: "easeInOut" }}
-                                className="overflow-hidden"
-                              >
-                                <div className={cn(
-                                  "ml-6 mt-1 mb-2 relative pt-1 pb-1 flex flex-col gap-0.5",
-                                  theme === 'dark' ? "border-l border-slate-800" : "border-l border-slate-200"
-                                )}>
-                                  {link.children!.map((child, idx) => {
-                                    const childActive = isActive(child.href);
-                                    
-                                    return (
-                                      <div key={child.href} className="relative group/child">
-                                        {/* Branch Horizontal Line */}
-                                        <div className={cn(
-                                          "absolute top-[15px] -left-[1px] w-3 h-[1px] transition-colors duration-300",
-                                          childActive 
-                                            ? (theme === 'dark' ? 'bg-indigo-500' : 'bg-indigo-400') 
-                                            : (theme === 'dark' ? 'bg-slate-800 group-hover/child:bg-slate-600' : 'bg-slate-200 group-hover/child:bg-slate-300')
-                                        )} />
-                                        
-                                        {/* Vertical selection highlight bar */}
-                                        <div className={cn(
-                                          "absolute top-0 -left-[1px] w-[2px] h-full transition-colors duration-300",
-                                          childActive
-                                            ? (theme === 'dark' ? 'bg-indigo-500' : 'bg-indigo-400')
-                                            : "bg-transparent"
-                                        )}/>
-
-                                        <Link 
-                                          href={child.href}
-                                          className={cn(
-                                            "flex items-center pl-5 pr-3 py-1.5 text-[13px] font-medium rounded-r-lg transition-all relative block",
-                                            childActive
-                                              ? (theme === 'dark' ? 'text-indigo-400 bg-indigo-500/10' : 'text-indigo-600 bg-indigo-50')
-                                              : (theme === 'dark' ? 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/40' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/80')
-                                          )}
-                                        >
-                                          {child.label}
-                                        </Link>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))
-            )}
-          </nav>
         </div>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto no-scrollbar p-6 pt-0 pb-10 space-y-8">
+        {filteredSections.map(section => (
+          <div key={section.title} className="space-y-3">
+            <h4 className="px-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
+              {section.title}
+            </h4>
+            <div className="space-y-1">
+              {section.links.map(link => <NavItem key={link.href} link={link} />)}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      <div className={cn(
+        "p-6 border-t shrink-0",
+        theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50"
+      )}>
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-[12px] shadow-lg shadow-indigo-600/30">OS</div>
+          <div className="flex flex-col">
+            <span className={cn("text-[11px] font-black uppercase tracking-tight", theme === 'dark' ? "text-white" : "text-slate-900")}>Clawesome Docs</span>
+            <span className="text-[10px] font-bold text-slate-500 tracking-wider">v1.2.4-STABLE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <aside className={cn(
+        "hidden lg:block w-72 shrink-0 h-[calc(100vh-4rem)] sticky top-16 z-20 transition-colors bg-white dark:bg-slate-950",
+        theme === 'dark' ? "border-r border-slate-900" : "border-r border-slate-200"
+      )}>
+        <SidebarContent />
       </aside>
+
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-[99999] lg:hidden">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={cn(
+                "absolute inset-0 backdrop-blur-3xl transition-colors duration-500",
+                theme === 'dark' ? "bg-slate-950/90" : "bg-white/80"
+              )}
+              onClick={onClose}
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className={cn(
+                "absolute inset-y-0 left-0 w-80 shadow-[20px_0_60px_rgba(0,0,0,0.5)] flex flex-col z-[100000] overflow-hidden !opacity-100",
+                theme === 'dark' ? "bg-slate-950 border-r border-slate-800" : "bg-white border-r border-slate-200"
+              )}
+            >
+              <SidebarContent isDrawer />
+            </motion.aside>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
