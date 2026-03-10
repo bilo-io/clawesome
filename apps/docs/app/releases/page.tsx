@@ -19,27 +19,35 @@ export default function ReleasesPage() {
         </p>
       </header>
       
-      <section className="space-y-16 mt-16">
-        {releases.map((release, index) => (
-          <div key={release.version} className="relative pl-8 md:pl-0">
-             <div className="hidden md:block absolute left-[120px] top-6 w-8 border-t-2 border-dashed border-indigo-500/30" />
-             <div className="flex flex-col md:flex-row gap-6 md:gap-16 items-start">
-                <div className="w-24 shrink-0 font-bold text-sm text-slate-400 uppercase tracking-widest pt-2">
+      <section className="space-y-16 mt-16 max-w-5xl mx-auto">
+        {releases.map((release) => (
+          <div key={release.version} className="relative pl-0">
+             <div className="flex flex-col md:flex-row gap-6 md:gap-0 items-start">
+                {/* Date column */}
+                <div className="w-40 shrink-0 font-bold text-[11px] text-slate-400 uppercase tracking-[0.2em] pt-[42px]">
                   {release.date}
                 </div>
                 
+                {/* Dashed line and dot connector */}
+                <div className="hidden md:flex items-center justify-center w-24 self-stretch relative">
+                   <div className="absolute top-[52px] left-0 w-full border-t-2 border-dashed border-indigo-500/30" />
+                </div>
+
+                {/* Content Box */}
                 <div className={cn(
                   "flex-1 p-8 rounded-[40px] border transition-colors relative group",
                   theme === 'dark' 
                     ? "border-slate-800 bg-slate-900 hover:border-indigo-500/30 shadow-none" 
                     : "border-slate-100 bg-slate-50/30 backdrop-blur-sm hover:border-indigo-200 shadow-xl shadow-slate-200/40"
                 )}>
+                  {/* The dot */}
                   <div className={cn(
-                    "absolute -left-3 top-6 w-6 h-6 rounded-full border-4 transition-colors hidden md:block",
-                    theme === 'dark' ? "bg-slate-950 border-slate-800" : "bg-white border-slate-200 group-hover:border-indigo-500"
+                    "absolute -left-3 top-10 w-6 h-6 rounded-full border-2 transition-colors hidden md:block z-10",
+                    theme === 'dark' ? "bg-slate-950 border-slate-700" : "bg-white border-slate-200 group-hover:border-indigo-500"
                   )} />
+
                   <h3 className="text-2xl font-black tracking-tighter mb-6 flex items-center gap-3">
-                    <span className="text-indigo-500">{release.version}</span>
+                    <span className="text-indigo-500 font-black">{release.version}</span>
                   </h3>
                   
                   <ul className="space-y-4">

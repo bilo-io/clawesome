@@ -143,7 +143,7 @@ export function LeftSidebar({
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024 && isOpen) onClose();
+      if (window.innerWidth >= 768 && isOpen) onClose();
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -197,8 +197,17 @@ export function LeftSidebar({
         >
           <div className="flex items-center gap-2.5">
             {!isChild && link.icon && (
-              <span className={cn("transition-colors", active ? "text-indigo-500" : "text-slate-500 group-hover:text-slate-400")}>{link.icon}</span>
+              <span className={cn(
+                "transition-colors",
+                active
+                  ? "text-indigo-500"
+                  : "text-slate-500 group-hover:text-slate-400",
+              )}>
+                {link.icon}
+              </span>
             )}
+            &nbsp;
+            &nbsp;
             {link.label}
           </div>
           {hasChildren && <ChevronRight size={14} className={cn("transition-transform duration-200 opacity-40", isExpanded && "rotate-90")} />}
@@ -235,31 +244,33 @@ export function LeftSidebar({
         </div>
       )}
 
-      <div className={cn("p-6 shrink-0", !isDrawer && "pt-8")}>
-        <div className="relative group perspective-1000">
+      <div className={cn("px-6 pb-6 shrink-0", !isDrawer && "pt-8")}>
+        <div className="relative flex-1 group w-full perspective-1000 shadow-xl shadow-indigo-500/5">
           <div className={cn(
-            "relative p-[4px] rounded-xl transition-all duration-500 shadow-lg",
+            "relative p-[1px] rounded-full transition-all duration-500",
             "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]",
-            "focus-within:shadow-[0_0_20px_rgba(140,0,255,0.25)]"
+            "focus-within:scale-[1.01] focus-within:shadow-[0_20px_40px_rgba(140,0,255,0.15)]"
           )}>
             <div className={cn(
-              "relative rounded-[11px] flex items-center transition-all duration-700 px-3 py-2",
-              theme === 'dark' ? "bg-slate-950" : "bg-white"
+              "relative rounded-full flex items-center transition-all duration-700 px-2",
+              theme === 'dark' ? "bg-slate-950/95" : "bg-white/95"
             )}>
-              <Search 
-                size={14} 
-                className={cn(
-                  "shrink-0 transition-colors",
-                  theme === 'dark' ? "text-slate-700 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
-                )} 
-              />
+              <div className="flex items-center justify-center p-2 rounded-full transition-colors relative ml-1">
+                <Search 
+                  size={16} 
+                  className={cn(
+                    "transition-colors",
+                    theme === 'dark' ? "text-slate-600 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
+                  )} 
+                />
+              </div>
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search documentation..."
+                placeholder="SEARCH..."
                 className={cn(
-                  "w-full bg-transparent ml-2 text-[12px] outline-none font-bold placeholder:font-medium tracking-wide",
+                  "w-full bg-transparent ml-1 text-[11px] outline-none font-bold placeholder:font-medium tracking-widest uppercase py-2.5 px-2",
                   theme === 'dark' ? "text-white placeholder:text-slate-800" : "text-slate-900 placeholder:text-slate-400"
                 )}
               />
@@ -299,7 +310,7 @@ export function LeftSidebar({
   return (
     <>
       <aside className={cn(
-        "hidden lg:block w-72 shrink-0 h-[calc(100vh-4rem)] sticky top-16 z-20 transition-colors bg-white dark:bg-slate-950",
+        "hidden md:block w-72 shrink-0 h-[calc(100vh-4rem)] sticky top-16 z-20 transition-colors bg-white dark:bg-slate-950",
         theme === 'dark' ? "border-r border-slate-900" : "border-r border-slate-200"
       )}>
         <SidebarContent />
@@ -307,7 +318,7 @@ export function LeftSidebar({
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[99999] lg:hidden">
+          <div className="fixed inset-0 z-[99999] md:hidden">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

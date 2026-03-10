@@ -37,7 +37,7 @@ export function TopBar({
           <button 
             onClick={onMenuClick}
             className={cn(
-              "p-2 -ml-2 transition-colors block md:hidden",
+              "p-2 -ml-2 transition-colors block md:!hidden",
               theme === 'dark' ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
             )}
           >
@@ -57,7 +57,7 @@ export function TopBar({
         </div>
         
         <div className="flex items-center gap-6">
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
             <Link href="/" className={cn(
               "transition-colors",
               theme === 'dark' ? "text-slate-400 hover:text-white" : "text-slate-600 hover:text-slate-900"
