@@ -186,8 +186,7 @@ const ITEMS: MarketplaceItem[] = [
   { id: '85', name: 'macOS', category: 'Platforms', description: 'Native menu bar app + Voice Wake for desktop operators.', icon: <Apple className="w-6 h-6" />, isPopular: true },
   { id: '86', name: 'iOS', category: 'Platforms', description: 'Mobile Canvas, camera integration, and Voice Wake.', icon: <Smartphone className="w-6 h-6 text-blue-500" /> },
   { id: '87', name: 'Android', category: 'Platforms', description: 'Full screen mirror, Canvas, and camera automation.', icon: <Smartphone className="w-6 h-6 text-emerald-500" /> },
-  { id: '88', name: 'Windows', category: 'Platforms', description: 'Deep WSL2 integration for high-performance agent runs.', icon: <Monitor className="w-6 h-6 text-blue-400" /> },
-  { id: '89', name: 'Linux', category: 'Platforms', description: 'Native kernel-level support for server-side swarms.', icon: <Terminal className="w-6 h-6 text-yellow-600" /> },
+  { id: '88', name: 'Linux', category: 'Platforms', description: 'Native kernel-level support for server-side swarms.', icon: <Terminal className="w-6 h-6 text-yellow-600" /> },
 ];
 
 function UploadCloud({ className }: { className?: string }) {

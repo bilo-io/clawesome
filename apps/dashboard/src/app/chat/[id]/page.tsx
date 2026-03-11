@@ -46,7 +46,7 @@ const INITIAL_CONVERSATION: Message[] = [
   { id: '10', role: 'assistant', content: "Neural profile updated. Identity: 'Senior Engineer'. Sub-routines initialized for code optimization and system architectural analysis. Ready for new instructions." },
 ];
 
-function TypewriterText({ text, delay = 15, onComplete }: { text: string; delay?: number; onComplete?: () => void }) {
+function TypewriterText({ text, delay = 15, onComplete, onType }: { text: string; delay?: number; onComplete?: () => void; onType?: () => void }) {
   const [displayedText, setDisplayedText] = useState('');
   const [isFinishing, setIsFinishing] = useState(false);
 
@@ -57,6 +57,7 @@ function TypewriterText({ text, delay = 15, onComplete }: { text: string; delay?
       if (i < text.length) {
         currentText += text[i];
         setDisplayedText(currentText);
+        onType?.();
         i++;
       } else {
         clearInterval(timer);
@@ -128,7 +129,9 @@ export default function ChatDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { theme } = useUIStore();
-  const [messages, setMessages] = useState<Message[]>(INITIAL_CONVERSATION);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    return params.id === 'new' ? [] : INITIAL_CONVERSATION;
+  });
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -160,10 +163,17 @@ export default function ChatDetailPage() {
   const handleSend = () => {
     if (!inputValue.trim()) return;
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: inputValue };
+    
+    const isFirstMessage = params.id === 'new' && messages.length === 0;
+
     setMessages((prev) => [...prev, userMessage]);
     const currentInput = inputValue;
     setInputValue('');
     setIsThinking(true);
+
+    if (isFirstMessage) {
+       window.history.replaceState(null, '', `/chat/${Date.now()}`);
+    }
 
     if (isWsConnected) {
       sendMessage({ type: 'chat', content: currentInput });
@@ -254,7 +264,9 @@ export default function ChatDetailPage() {
         isCollection={false}
         backLink={{ label: "BACK TO CHATS", href: "/chat" }}
         renderRight={
-          <button className={cn(
+          <button 
+            onClick={() => setMessages([])}
+            className={cn(
             "p-3 rounded-2xl border flex items-center gap-2 transition-all hover:scale-105 active:scale-95",
             theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-500 hover:text-white" : "bg-white border-slate-100 text-slate-400 hover:text-black shadow-sm"
           )}>
@@ -267,7 +279,7 @@ export default function ChatDetailPage() {
       {/* Message Area */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto pt-10 pb-40 space-y-10 no-scrollbar scroll-smooth"
+        className="flex-1 overflow-y-auto pt-10 pb-[280px] space-y-10 no-scrollbar scroll-smooth"
       >
         <div className="max-w-4xl mx-auto space-y-10">
           <AnimatePresence initial={false}>
@@ -276,7 +288,7 @@ export default function ChatDetailPage() {
                 key={msg.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={cn("flex gap-6", msg.role === 'user' ? "flex-reverse items-end" : "items-start")}
+                className={cn("flex gap-6 w-full", msg.role === 'user' ? "flex-row-reverse items-start" : "flex-row items-start")}
               >
                 {msg.role === 'assistant' && (
                   <div className={cn(
@@ -287,16 +299,17 @@ export default function ChatDetailPage() {
                   </div>
                 )}
                 <div className={cn(
-                  "flex-1 p-8 rounded-[40px] shadow-2xl relative overflow-hidden group border",
+                  "p-8 rounded-2xl shadow-xl relative overflow-hidden group border",
                   msg.role === 'user'
-                    ? (theme === 'dark' ? "bg-indigo-600/10 border-indigo-500/20 text-white ml-20" : "bg-white border-slate-200 text-black shadow-slate-200/40 ml-20")
-                    : (theme === 'dark' ? "bg-slate-950/40 border-slate-800/60 text-slate-200 mr-20" : "bg-slate-100 border-slate-200 text-slate-800 mr-20")
+                    ? (theme === 'dark' ? "bg-indigo-600/10 border-indigo-500/20 text-white w-fit max-w-[85%]" : "bg-white border-slate-200 text-black shadow-slate-200/40 w-fit max-w-[85%]")
+                    : (theme === 'dark' ? "bg-slate-950/40 border-slate-800/60 text-slate-200 mr-20 flex-1" : "bg-slate-100 border-slate-200 text-slate-800 mr-20 flex-1")
                 )}>
                   {msg.role === 'user' ? (
                     <div className="font-bold text-lg tracking-tight leading-relaxed">{msg.content}</div>
                   ) : msg.isTyping ? (
                     <TypewriterText
                       text={msg.content}
+                      onType={scrollToBottom}
                       onComplete={() => {
                         const next = [...messages];
                         next[idx].isTyping = false;
@@ -391,11 +404,11 @@ export default function ChatDetailPage() {
           
           <div className="relative group perspective-1000">
             <div className={cn(
-              "relative p-[2px] rounded-full transition-all duration-700 shadow-[0_32px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_48px_100px_rgba(0,0,0,0.5)]",
+              "relative p-[2px] rounded-3xl transition-all duration-700 shadow-[0_32px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_48px_100px_rgba(0,0,0,0.5)]",
               "bg-gradient-to-tr from-[#8C00FF]/20 to-[#008FD6]/20 focus-within:from-[#8C00FF] focus-within:to-[#008FD6] focus-within:scale-[1.01] focus-within:shadow-[0_48px_100px_rgba(140,0,255,0.15)]"
             )}>
               <div className={cn(
-                "flex items-center gap-4 bg-white dark:bg-slate-950 rounded-full px-8 py-5 transition-all duration-700 overflow-hidden",
+                "flex items-center gap-4 bg-white dark:bg-slate-950 rounded-3xl px-8 py-5 transition-all duration-700 overflow-hidden",
                 "bg-white/95 dark:bg-slate-950/95"
               )}>
                 <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
@@ -437,7 +450,7 @@ export default function ChatDetailPage() {
                   onClick={handleSend}
                   disabled={!inputValue.trim()}
                   className={cn(
-                    "p-4 rounded-full transition-all duration-500 flex items-center justify-center shadow-xl active:scale-90 disabled:opacity-30 disabled:grayscale",
+                    "p-4 rounded-xl transition-all duration-500 flex items-center justify-center shadow-xl active:scale-90 disabled:opacity-30 disabled:grayscale",
                     "bg-indigo-600 text-white shadow-indigo-500/30 hover:bg-indigo-500 group-focus-within:rotate-[-5deg]"
                   )}
                 >

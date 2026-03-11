@@ -12,18 +12,64 @@ import { motion } from 'framer-motion';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { SegmentedControl } from '@/components/SegmentedControl';
 
-const resourceData = [
-  { name: '00:00', cpu: 45, mem: 60, cost: 2.1 },
-  { name: '04:00', cpu: 32, mem: 55, cost: 1.8 },
-  { name: '08:00', cpu: 65, mem: 75, cost: 3.5 },
-  { name: '12:00', cpu: 85, mem: 80, cost: 4.2 },
-  { name: '16:00', cpu: 55, mem: 65, cost: 2.8 },
-  { name: '20:00', cpu: 40, mem: 60, cost: 2.4 },
-];
+const generateHourlyData = () => {
+  const data = [];
+  const now = new Date();
+  for (let i = 23; i >= 0; i--) {
+    const d = new Date(now.getTime() - i * 60 * 60 * 1000);
+    const isNight = d.getHours() < 6 || d.getHours() > 22;
+    const cpu = isNight ? 20 + Math.random() * 20 : 50 + Math.random() * 40;
+    const mem = isNight ? 40 + Math.random() * 20 : 60 + Math.random() * 30;
+    const cost = cpu * 0.05 + Math.random();
+    data.push({
+      name: `${d.getHours().toString().padStart(2, '0')}:00`,
+      cpu: Math.floor(cpu),
+      mem: Math.floor(mem),
+      cost: Number(cost.toFixed(2))
+    });
+  }
+  return data;
+};
+
+const generateDailySystemData = (days: number) => {
+  const data = [];
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const multiplier = isWeekend ? 0.4 + Math.random() * 0.2 : 1.0;
+    
+    const cpu = (60 + Math.random() * 30) * multiplier;
+    const mem = (70 + Math.random() * 20) * multiplier;
+    const cost = cpu * 0.08 + Math.random() * 2;
+    
+    data.push({
+      name: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      cpu: Math.floor(cpu),
+      mem: Math.floor(mem),
+      cost: Number(cost.toFixed(2))
+    });
+  }
+  return data;
+};
+
+const DATA_24H = generateHourlyData();
+const DATA_90D = generateDailySystemData(90);
 
 export default function AnalyticsPage() {
   const { theme } = useUIStore();
   const [range, setRange] = React.useState('24H');
+  
+  const currentData = React.useMemo(() => {
+    switch (range) {
+      case '7D': return DATA_90D.slice(-7);
+      case '30D': return DATA_90D.slice(-30);
+      case 'ALL': return DATA_90D;
+      case '24H':
+      default: return DATA_24H;
+    }
+  }, [range]);
   
   return (
     <main className="space-y-6 pb-20 max-w-[1600px] mx-auto">
@@ -121,11 +167,11 @@ export default function AnalyticsPage() {
                   </div>
                   <h2 className={cn("text-lg font-bold tracking-tight", theme === 'dark' ? "text-white" : "text-slate-950")}>Resource Load History</h2>
                </div>
-               <span className={cn("text-[10px] font-black uppercase tracking-widest", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>Last 24 Hours</span>
+               <span className={cn("text-[10px] font-black uppercase tracking-widest", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>{range === '24H' ? 'Last 24 Hours' : range === '7D' ? 'Last 7 Days' : range === '30D' ? 'Last 30 Days' : 'Last 90 Days'}</span>
             </div>
             <div className="h-72 w-full">
                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={resourceData}>
+                  <AreaChart data={currentData}>
                      <defs>
                         <linearGradient id="colorCpu" x1="0" y1="0" x2="0" y2="1">
                            <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
@@ -170,7 +216,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="h-72 w-full">
                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={resourceData}>
+                  <LineChart data={currentData}>
                      <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? '#1e293b' : '#f1f5f9'} vertical={false} />
                      <XAxis dataKey="name" stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} tick={{ fontWeight: 700 }} />
                      <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} tick={{ fontWeight: 700 }} />

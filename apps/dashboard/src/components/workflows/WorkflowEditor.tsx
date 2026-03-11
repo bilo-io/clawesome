@@ -23,7 +23,9 @@ import {
   GitBranch,
   Upload,
   MessageSquare,
-  Search
+  Search,
+  Check,
+  X
 } from 'lucide-react';
 import { 
   ReactFlow, 
@@ -66,6 +68,9 @@ const CustomNode = ({ data, selected }: NodeProps<Node<CustomNodeData>>) => {
   const isTrigger = data.type?.toLowerCase() === 'trigger';
   
   const getNodeIcon = () => {
+    if (data.status === 'completed') return <Check size={14} className="text-emerald-500" />;
+    if (data.status === 'failed') return <X size={14} className="text-rose-500" />;
+    
     switch (data.type?.toLowerCase()) {
       case 'start': return <Play size={14} fill="currentColor" />;
       case 'trigger': return <Zap size={14} />;
@@ -81,7 +86,7 @@ const CustomNode = ({ data, selected }: NodeProps<Node<CustomNodeData>>) => {
 
   return (
     <div className={cn(
-      "px-4 py-3 rounded-2xl border min-w-[200px] shadow-2xl transition-all relative overflow-hidden",
+      "px-4 py-3 rounded-2xl border min-w-[200px] shadow-2xl transition-all relative",
       selected 
         ? "border-indigo-500 shadow-indigo-500/20 scale-105" 
         : (theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"),
@@ -89,14 +94,24 @@ const CustomNode = ({ data, selected }: NodeProps<Node<CustomNodeData>>) => {
         ? "border-indigo-500/50 bg-indigo-500/5 shadow-[0_0_20px_rgba(99,102,241,0.1)]" 
         : "border-indigo-200 bg-indigo-50/50 shadow-[0_0_20px_rgba(99,102,241,0.05)]")
     )}>
-      {isTrigger && (
-        <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none">
-          <Zap size={40} className="text-indigo-500" />
-        </div>
+      {data.status === 'running' && (
+        <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-2xl z-10 overflow-visible">
+           <rect x="0" y="0" width="100%" height="100%" rx="16" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="12 12" className="text-indigo-500">
+             <animate attributeName="stroke-dashoffset" values="0;24" dur="1s" repeatCount="indefinite" />
+           </rect>
+        </svg>
       )}
-      <Handle type="target" position={Position.Left} className="w-2.5 h-2.5 bg-indigo-500 border-2 border-slate-950" />
+      <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-0">
+        {isTrigger && (
+          <div className="absolute top-0 right-0 p-2 opacity-10 pointer-events-none">
+            <Zap size={40} className="text-indigo-500" />
+          </div>
+        )}
+      </div>
+
+      <Handle type="target" position={Position.Left} className="w-2.5 h-2.5 bg-indigo-500 border-2 border-slate-950 z-20" />
       
-      <div className="flex items-center justify-between mb-2">
+      <div className="relative flex items-center justify-between mb-2 z-20">
          <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
                 {getNodeIcon()}
@@ -214,6 +229,60 @@ export function WorkflowEditor({ workflow, onUpdate }: WorkflowEditorProps) {
     setActiveBranches((prev: Record<string, number>) => ({ ...prev, [nodeId]: index }));
   };
 
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRunning) {
+      const nextIndex = nodes.findIndex(n => n.data.status !== 'completed' && n.data.status !== 'failed');
+      if (nextIndex >= 0) {
+        const currentNode = nodes[nextIndex];
+        
+        if (currentNode.data.status !== 'running') {
+          setNodes(nds => nds.map((n, i) => i === nextIndex ? { ...n, data: { ...n.data, status: 'running' } } : n));
+        } else {
+          timer = setTimeout(() => {
+            const isFailure = Math.random() < 0.05; 
+            const payload = {
+              type: isFailure ? 'error' : 'success',
+              text: `[${(currentNode.data.type as string | undefined)?.toUpperCase() || 'NODE'}] ${currentNode.data.label} executed ${isFailure ? 'unsuccessfully' : 'successfully'}...`
+            };
+            
+            window.dispatchEvent(new CustomEvent('terminal-log', { detail: payload }));
+            
+            setNodes(nds => nds.map((n, i) => i === nextIndex ? { ...n, data: { ...n.data, status: isFailure ? 'failed' : 'completed' } } : n));
+            
+            if (isFailure) {
+              setIsRunning(false); 
+            } else {
+              window.dispatchEvent(new CustomEvent('terminal-log', { detail: { 
+                 type: 'output', 
+                 text: `   > Output: {\n      "status": 200,\n      "node": "${currentNode.data.label}",\n      "timestamp": "${new Date().toISOString()}"\n   }` 
+              }}));
+            }
+
+          }, 1000);
+        }
+      } else {
+        setIsRunning(false);
+        window.dispatchEvent(new CustomEvent('terminal-log', { detail: { type: 'success', text: 'ORCHESTRATION ENGINE COMPLETED WORKFLOW.' } }));
+      }
+    }
+    return () => clearTimeout(timer);
+  }, [isRunning, nodes]);
+
+  const handlePlayToggle = () => {
+    if (!isRunning) {
+      const allDone = nodes.every(n => n.data.status === 'completed' || n.data.status === 'failed');
+      if (allDone) {
+         setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'idle' } })));
+      }
+      setIsRunning(true);
+      window.dispatchEvent(new CustomEvent('terminal-log', { detail: { type: 'warn', text: 'INITIALIZING WORKFLOW EXECUTION LAYER...' } }));
+    } else {
+      setIsRunning(false);
+      window.dispatchEvent(new CustomEvent('terminal-log', { detail: { type: 'warn', text: 'WORKFLOW EXECUTION HALTED BY USER.' } }));
+    }
+  };
+
   // Sync with store
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => {
@@ -300,26 +369,36 @@ export function WorkflowEditor({ workflow, onUpdate }: WorkflowEditorProps) {
             theme === 'dark' ? "bg-slate-900/40 border-slate-800" : "bg-white border-slate-100 shadow-2xl shadow-slate-200/40"
           )}
         >
-           <div className="flex items-center gap-6">
-              <div className={cn(
-                "w-16 h-16 rounded-[28px] border flex items-center justify-center transition-all",
-                theme === 'dark' ? "bg-slate-950 border-slate-800 text-indigo-500" : "bg-indigo-50 border-indigo-100 text-indigo-600"
-              )}>
-                 {(() => {
-                    const label = (nodeForClosure.data?.label as string) || '';
-                    switch (nodeForClosure.type?.toLowerCase()) {
-                      case 'start': return <Play size={24} fill="currentColor" />;
-                      case 'trigger': return <Zap size={24} />;
-                      case 'agent': return <Bot size={24} />;
-                      case 'logic': return <GitBranch size={24} />;
-                      case 'tool':
-                        if (label.toLowerCase().includes('slack')) return <MessageSquare size={24} />;
-                        if (label.toLowerCase().includes('upload')) return <Upload size={24} />;
-                        return <Database size={24} />;
-                      default: return <Zap size={24} />;
-                    }
-                 })()}
-              </div>
+           {nodeForClosure.data.status === 'running' && (
+             <svg className="absolute inset-0 w-full h-full pointer-events-none rounded-[48px] z-10 overflow-visible">
+               <rect x="0" y="0" width="100%" height="100%" rx="48" fill="none" stroke="currentColor" strokeWidth="4" strokeDasharray="16 16" className="text-indigo-500">
+                 <animate attributeName="stroke-dashoffset" values="0;32" dur="1s" repeatCount="indefinite" />
+               </rect>
+             </svg>
+           )}
+           <div className="flex items-center gap-6 relative z-20">
+               <div className={cn(
+                  "w-16 h-16 rounded-[28px] border flex items-center justify-center transition-all z-20",
+                  theme === 'dark' ? "bg-slate-950 border-slate-800 text-indigo-500" : "bg-indigo-50 border-indigo-100 text-indigo-600"
+                )}>
+                   {(() => {
+                      if (nodeForClosure.data.status === 'completed') return <Check size={28} className="text-emerald-500" />;
+                      if (nodeForClosure.data.status === 'failed') return <X size={28} className="text-rose-500" />;
+                      
+                      const label = (nodeForClosure.data?.label as string) || '';
+                      switch (nodeForClosure.type?.toLowerCase()) {
+                        case 'start': return <Play size={24} fill="currentColor" />;
+                        case 'trigger': return <Zap size={24} />;
+                        case 'agent': return <Bot size={24} />;
+                        case 'logic': return <GitBranch size={24} />;
+                        case 'tool':
+                          if (label.toLowerCase().includes('slack')) return <MessageSquare size={24} />;
+                          if (label.toLowerCase().includes('upload')) return <Upload size={24} />;
+                          return <Database size={24} />;
+                        default: return <Zap size={24} />;
+                      }
+                   })()}
+                </div>
               <div className="flex-1 min-w-0">
                  <div className="flex items-center gap-3 mb-1">
                     <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">
@@ -454,7 +533,7 @@ export function WorkflowEditor({ workflow, onUpdate }: WorkflowEditorProps) {
             <div className={cn("w-[1px] h-4 mx-1", theme === 'dark' ? "bg-slate-800" : "bg-slate-200")} />
             <Tooltip label={isRunning ? "Stop" : "Run"}>
               <button 
-                onClick={() => setIsRunning(!isRunning)}
+                onClick={handlePlayToggle}
                 className={cn(
                   "p-2.5 rounded-full transition-all active:scale-95",
                   isRunning 

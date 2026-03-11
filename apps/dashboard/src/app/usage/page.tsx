@@ -38,7 +38,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { SegmentedControl } from '@/components/SegmentedControl';
 
-const USAGE_DATA = {
+const USAGE_DATA: Record<string, { name: string; tokens: number; cost: number }[]> = {
   '1h': [
     { name: '10:05', tokens: 450, cost: 0.12 },
     { name: '10:15', tokens: 890, cost: 0.25 },
@@ -64,17 +64,31 @@ const USAGE_DATA = {
     { name: 'Sat', tokens: 12000, cost: 4.2 },
     { name: 'Sun', tokens: 8500, cost: 2.8 },
   ],
-  '30d': Array.from({ length: 30 }, (_, i) => ({
-    name: `Mar ${i + 1}`,
-    tokens: 35000 + Math.floor(Math.random() * 20000),
-    cost: 8.5 + Math.random() * 5
-  })),
-  '90d': [
-    { name: 'Jan', tokens: 1200000, cost: 345.2 },
-    { name: 'Feb', tokens: 1450000, cost: 412.8 },
-    { name: 'Mar', tokens: 1100000, cost: 320.5 },
-  ]
 };
+
+const generateUsageData = (days: number) => {
+  const data = [];
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const multiplier = isWeekend ? 0.3 + Math.random() * 0.1 : 1.0;
+    
+    const baseTokens = 35000 + Math.floor(Math.random() * 20000);
+    const baseCost = 8.5 + Math.random() * 5;
+    
+    data.push({
+      name: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      tokens: Math.floor(baseTokens * multiplier),
+      cost: Number((baseCost * multiplier).toFixed(2))
+    });
+  }
+  return data;
+};
+
+USAGE_DATA['30d'] = generateUsageData(30);
+USAGE_DATA['90d'] = generateUsageData(90);
 
 const MODEL_USAGE = [
   { name: 'Claude 3.5 Sonnet', tokens: 850000, cost: 255.0, color: '#6366f1' },

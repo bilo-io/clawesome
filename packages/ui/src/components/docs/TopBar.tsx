@@ -37,7 +37,7 @@ export function TopBar({
           <button 
             onClick={onMenuClick}
             className={cn(
-              "p-2 -ml-2 transition-colors block md:!hidden",
+              "flex p-2 -ml-2 transition-colors md:hidden",
               theme === 'dark' ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
             )}
           >

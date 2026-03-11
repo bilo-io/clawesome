@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Search, 
-  ChevronRight, 
-  X, 
-  Hash, 
-  Zap, 
-  Cpu, 
-  Globe, 
-  Share2, 
-  Terminal, 
-  Info, 
+import {
+  Search,
+  ChevronRight,
+  X,
+  Hash,
+  Zap,
+  Cpu,
+  Globe,
+  Share2,
+  Terminal,
+  Info,
   Layout as LayoutIcon,
   Layers
 } from 'lucide-react';
@@ -38,11 +38,11 @@ interface LeftSidebarProps {
   LinkComponent?: React.ComponentType<any>;
 }
 
-export function LeftSidebar({ 
-  isOpen = false, 
-  onClose = () => {}, 
-  pathname = '', 
-  LinkComponent = ({ children, ...props }) => <a {...props}>{children}</a> 
+export function LeftSidebar({
+  isOpen = false,
+  onClose = () => { },
+  pathname = '',
+  LinkComponent = ({ children, ...props }) => <a {...props}>{children}</a>
 }: LeftSidebarProps) {
   const { theme } = useUI();
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,8 +60,8 @@ export function LeftSidebar({
     {
       title: 'AI ENGINE',
       links: [
-        { 
-          href: '/ai', 
+        {
+          href: '/ai',
           label: 'Overview',
           icon: <Cpu size={16} />,
           children: [
@@ -76,8 +76,8 @@ export function LeftSidebar({
     {
       title: 'CORE SYSTEM',
       links: [
-        { 
-          href: '/architecture', 
+        {
+          href: '/architecture',
           label: 'Architecture',
           icon: <Zap size={16} />,
           children: [
@@ -86,14 +86,13 @@ export function LeftSidebar({
             { href: '/architecture/scalability', label: 'Scalability' },
           ]
         },
-        { href: '/components', label: 'UI Components', icon: <LayoutIcon size={16} /> },
       ]
     },
     {
       title: 'INTEGRATIONS',
       links: [
-        { 
-          href: '/connect', 
+        {
+          href: '/connect',
           label: 'Connect',
           icon: <Globe size={16} />,
           children: [
@@ -177,7 +176,7 @@ export function LeftSidebar({
 
     return (
       <div className="flex flex-col">
-        <Link 
+        <Link
           href={link.href}
           onClick={(e: React.MouseEvent) => {
             if (hasChildren) {
@@ -232,8 +231,8 @@ export function LeftSidebar({
     )}>
       {isDrawer && (
         <div className="h-16 flex items-center px-8 shrink-0">
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className={cn(
               "p-2 -ml-2 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95",
               theme === 'dark' ? "text-slate-400 hover:text-white hover:bg-slate-900" : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
@@ -256,16 +255,16 @@ export function LeftSidebar({
               theme === 'dark' ? "bg-slate-950/95" : "bg-white/95"
             )}>
               <div className="flex items-center justify-center p-2 rounded-full transition-colors relative ml-1">
-                <Search 
-                  size={16} 
+                <Search
+                  size={16}
                   className={cn(
                     "transition-colors",
                     theme === 'dark' ? "text-slate-600 group-focus-within:text-white" : "text-slate-400 group-focus-within:text-indigo-600"
-                  )} 
+                  )}
                 />
               </div>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="SEARCH..."
@@ -279,28 +278,30 @@ export function LeftSidebar({
         </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto no-scrollbar p-6 pt-0 pb-10 space-y-8">
-        {filteredSections.map(section => (
-          <div key={section.title} className="space-y-3">
-            <h4 className="px-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
-              {section.title}
-            </h4>
-            <div className="space-y-1">
-              {section.links.map(link => <NavItem key={link.href} link={link} />)}
+      <div className="h-full flex flex-col justify-between">
+        <nav className="flex-1 overflow-y-auto no-scrollbar p-6 pt-0 pb-10 space-y-8">
+          {filteredSections.map(section => (
+            <div key={section.title} className="space-y-3">
+              <h4 className="px-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 dark:text-slate-600">
+                {section.title}
+              </h4>
+              <div className="space-y-1">
+                {section.links.map(link => <NavItem key={link.href} link={link} />)}
+              </div>
             </div>
-          </div>
-        ))}
-      </nav>
+          ))}
+        </nav>
 
-      <div className={cn(
-        "p-6 border-t shrink-0",
-        theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50"
-      )}>
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-[12px] shadow-lg shadow-indigo-600/30">OS</div>
-          <div className="flex flex-col">
-            <span className={cn("text-[11px] font-black uppercase tracking-tight", theme === 'dark' ? "text-white" : "text-slate-900")}>Clawesome Docs</span>
-            <span className="text-[10px] font-bold text-slate-500 tracking-wider">v1.2.4-STABLE</span>
+        <div className={cn(
+          "p-6 border-t shrink-0",
+          theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50"
+        )}>
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-[12px] shadow-lg shadow-indigo-600/30">OS</div>
+            <div className="flex flex-col">
+              <span className={cn("text-[11px] font-black uppercase tracking-tight", theme === 'dark' ? "text-white" : "text-slate-900")}>Clawesome Docs</span>
+              <span className="text-[10px] font-bold text-slate-500 tracking-wider">v1.2.4-STABLE</span>
+            </div>
           </div>
         </div>
       </div>
@@ -310,7 +311,7 @@ export function LeftSidebar({
   return (
     <>
       <aside className={cn(
-        "hidden md:block w-72 shrink-0 h-[calc(100vh-4rem)] sticky top-16 z-20 transition-colors bg-white dark:bg-slate-950",
+        "hidden md:block w-72 shrink-0 h-full z-20 transition-colors bg-white dark:bg-slate-950",
         theme === 'dark' ? "border-r border-slate-900" : "border-r border-slate-200"
       )}>
         <SidebarContent />
@@ -319,7 +320,7 @@ export function LeftSidebar({
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[99999] md:hidden">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

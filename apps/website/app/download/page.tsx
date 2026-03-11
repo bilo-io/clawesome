@@ -40,15 +40,6 @@ export default function DownloadPage() {
       extension: '.dmg'
     },
     {
-      id: 'windows',
-      os: "Windows",
-      iconPath: "/images/org/icon-windows.svg",
-      version: "v2.0.4-stable",
-      size: "92MB",
-      link: "#",
-      extension: '.exe'
-    },
-    {
       id: 'linux',
       os: "Linux",
       iconPath: "/images/org/icon-linux.svg",

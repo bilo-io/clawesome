@@ -22,6 +22,15 @@ export const FloatingTerminal = () => {
     if (lastMessage && lastMessage.type === 'terminal_output') {
       setTerminalHistory(prev => [...prev, lastMessage.payload]);
     }
+
+    const handleLocalLog = (e: CustomEvent<{ type: string; text: string }>) => {
+      setTerminalHistory(prev => [...prev, e.detail]);
+    };
+
+    window.addEventListener('terminal-log', handleLocalLog as EventListener);
+    return () => {
+      window.removeEventListener('terminal-log', handleLocalLog as EventListener);
+    };
   }, [lastMessage]);
 
   if (!isFloatingTerminalOpen) return null;
