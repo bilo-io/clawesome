@@ -8,6 +8,10 @@ node_modules/
 **/*/node_modules
 **/*/dist
 
+# bun
+.bun-cache
+.tmp
+
 .clawesome.json
 .clawesome.pid
 

@@ -61,7 +61,7 @@ export const Hero = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="text-4xl md:text-6xl lg:text-7xl font-black md:max-w-5xl mb-12 leading-[1.3] text-slate-900 dark:text-white px-4 overflow-visible text-center"
-        style={{ fontFamily: "'Newton Howard Font', sans-serif" }}
+        // style={{ fontFamily: "'Newton Howard Font', sans-serif" }}
       >
         <span className="not-italic inline-block mb-2">Scale with custom</span><br /><span className="gradient-text">ai agent swarms</span>
       </motion.h1>
