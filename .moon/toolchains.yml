@@ -14,4 +14,4 @@ node:
 
 typescript:
   syncProjectReferences: true
-  routeOutDirToCache: true
+  routeOutDirToCache: false

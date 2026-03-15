@@ -8,7 +8,7 @@
   "scripts": {
     "cli:install": "bash install-cli.sh",
     "kill:gateway": "lsof -ti :17871 | xargs kill -9 2>/dev/null || echo 'Gateway not running'",
-    "kill:api": "lsof -ti :8080 | xargs kill -9 2>/dev/null || echo 'API not running'",
+    "kill:api": "lsof -ti :9000 | xargs kill -9 2>/dev/null || echo 'API not running'",
     "kill:dashboard": "lsof -ti :3000 | xargs kill -9 2>/dev/null || echo 'Dashboard not running'",
     "kill:website": "lsof -ti :3001 | xargs kill -9 2>/dev/null || echo 'Website not running'",
     "kill:docs": "lsof -ti :3002 | xargs kill -9 2>/dev/null || echo 'Docs not running'",
