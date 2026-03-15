@@ -34,3 +34,9 @@ tasks:
     command: 'bun x tsx src/db/db.seed.ts'
     options:
       runInCI: false
+
+  # Runs Newman tests against the API
+  test:
+    command: 'bun run test:newman'
+    options:
+      runInCI: false

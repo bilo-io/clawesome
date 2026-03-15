@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "c7a8b9e0-d1e2-4f3a-8b4c-5d6e7f8a9b0c",
+		"name": "Clawesome API V1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Agents",
+			"item": [
+				{
+					"name": "Create Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Agent has an ID\", function () {",
+									"    pm.expect(jsonData.id).to.be.a('string');",
+									"    pm.collectionVariables.set(\"agentId\", jsonData.id);",
+									"});",
+									"",
+									"pm.test(\"Name matches\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Test Agent\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test Agent\",\n    \"type\": \"general\",\n    \"content\": \"# Test Soul\\nThis is a test agent content.\",\n    \"config\": {\n        \"model\": \"gpt-4\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/{{apiVersion}}/agents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Agents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/{{apiVersion}}/agents",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"agents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Agent By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Correct Agent returned\", function () {",
+									"    pm.expect(jsonData.id).to.eql(pm.collectionVariables.get(\"agentId\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/{{apiVersion}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"agents",
+								"{{agentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Name updated\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Updated Agent\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Agent\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/{{apiVersion}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"agents",
+								"{{agentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/{{apiVersion}}/agents/{{agentId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"{{apiVersion}}",
+								"agents",
+								"{{agentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9000",
+			"type": "string"
+		},
+		{
+			"key": "apiVersion",
+			"value": "v1",
+			"type": "string"
+		},
+		{
+			"key": "agentId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
