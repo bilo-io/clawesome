@@ -1,4 +1,4 @@
-// apps/dashboard/src/app/workspaces/page.tsx
+// apps/dashboard/src/app/swarms/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -6,9 +6,10 @@ import { Briefcase, Globe, Plus, Search, ChevronRight, Activity, LayoutGrid, Lis
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { WorkspaceGallery, workspaces } from '@/components/WorkspaceGallery';
+import { WorkspaceGallery } from '@/components/WorkspaceGallery';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
+import { useSwarmStore } from '@/store/useSwarmStore';
 
 const HeaderExternalSync = () => {
   const { theme } = useUIStore();
@@ -46,15 +47,20 @@ const HeaderExternalSync = () => {
 export default function SwarmsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
+  const { swarms, fetchSwarms } = useSwarmStore();
   const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/swarms', 'grid') as 'grid' | 'list');
+
+  useEffect(() => {
+    fetchSwarms();
+  }, [fetchSwarms]);
 
   // Clear selection on unmount
   useEffect(() => {
     return () => clearSelection();
   }, [clearSelection]);
 
-  const filteredWorkspaces = workspaces.filter(ws => 
+  const filteredWorkspaces = swarms.filter(ws => 
     ws.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ws.path.toLowerCase().includes(searchQuery.toLowerCase())
   );

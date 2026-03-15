@@ -12,6 +12,15 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'https://clawesome-dashboard.vercel.app',
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   await app.listen(process.env.PORT ?? 9000);
 }
 bootstrap();

@@ -33,4 +33,5 @@ export interface Workflow {
   edges: WorkflowEdge[];
   globalVariables?: Record<string, any>;
   secrets?: string[]; // IDs of secrets
+  isMarketplace?: boolean;
 }

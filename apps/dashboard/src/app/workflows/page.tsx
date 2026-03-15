@@ -31,11 +31,15 @@ import { useRouter } from 'next/navigation';
 export default function WorkflowsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
-  const { workflows, marketplaceWorkflows, addWorkflow, deleteWorkflow, updateWorkflow, installWorkflow } = useWorkflowStore();
+  const { workflows, marketplaceWorkflows, addWorkflow, deleteWorkflow, updateWorkflow, installWorkflow, fetchWorkflows } = useWorkflowStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
   const viewMode = (getViewMode('/workflows', 'grid') as 'grid' | 'list');
+
+  useEffect(() => {
+    fetchWorkflows();
+  }, [fetchWorkflows]);
 
   // Clear selection on unmount
   useEffect(() => {

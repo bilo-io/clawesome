@@ -21,103 +21,32 @@ import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
+import { useProjectStore } from '@/store/useProjectStore';
 
-interface Project {
-  id: string;
-  name: string;
-  type: string;
-  agents: { name: string; avatar?: string }[];
-  status: 'wip' | 'Planned' | 'done';
-  lastUpdated: string;
-  taskCount: number;
-  progress: number;
-}
-
-const PROJECTS: Project[] = [
-  {
-    id: 'p1',
-    name: 'Neural Engine V2',
-    type: 'Content Creation',
-    agents: [
-      { name: 'Apex-01' },
-      { name: 'Core-AI' },
-      { name: 'Synthetix' }
-    ],
-    status: 'wip',
-    lastUpdated: '2h ago',
-    taskCount: 12,
-    progress: 65
-  },
-  {
-    id: 'p2',
-    name: 'Neo-City Chronicles',
-    type: 'Game Design',
-    agents: [
-      { name: 'Lore-Master' },
-      { name: 'World-Builder' }
-    ],
-    status: 'wip',
-    lastUpdated: '5h ago',
-    taskCount: 24,
-    progress: 35
-  },
-  {
-    id: 'p3',
-    name: 'Aether Storefront',
-    type: 'E-commerce',
-    agents: [
-      { name: 'Shop-Bot' },
-      { name: 'Payment-Gate' },
-      { name: 'User-Proxy' }
-    ],
-    status: 'Planned',
-    lastUpdated: '1d ago',
-    taskCount: 8,
-    progress: 0
-  },
-  {
-    id: 'p4',
-    name: 'Digital Concierge',
-    type: 'Personal Admin',
-    agents: [
-      { name: 'Alfred-AI' }
-    ],
-    status: 'done',
-    lastUpdated: '3d ago',
-    taskCount: 45,
-    progress: 100
-  },
-  {
-    id: 'p5',
-    name: 'Quantum Analysis',
-    type: 'Research',
-    agents: [
-      { name: 'Q-Prime' },
-      { name: 'Data-Cruncher' },
-      { name: 'Stat-Bot' }
-    ],
-    status: 'wip',
-    lastUpdated: '15m ago',
-    taskCount: 62,
-    progress: 88
-  }
-];
 
 export default function ProjectsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
+  const { projects, fetchProjects, isLoading } = useProjectStore();
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'wip' | 'Planned' | 'done'>('all');
   const viewMode = (getViewMode('/projects', 'grid') as 'grid' | 'list');
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   // Clear selection on unmount
   useEffect(() => {
     return () => clearSelection();
   }, [clearSelection]);
 
-  const filteredProjects = PROJECTS.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProjects = projects.filter(project => {
+    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         project.type.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || project.status === filterStatus;
+    return matchesSearch && matchesStatus;
+  });
 
   const isAllSelected = filteredProjects.length > 0 && filteredProjects.every(p => selectedIds.includes(p.id));
 

@@ -26,31 +26,42 @@ import { useUIStore } from '@/store/useUIStore';
 export default function AgentSoulEditor({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
-  const { getAgentById, updateAgent } = useAgentStore();
+  const { currentAgent, fetchAgentById, updateAgent, isLoading } = useAgentStore();
   const { theme } = useUIStore();
   
-  const agent = getAgentById(id);
-  const [content, setContent] = useState(agent?.soulMarkdown || '');
-  const [name, setName] = useState(agent?.name || '');
-  const [title, setTitle] = useState(agent?.title || '');
+  const [content, setContent] = useState('');
+  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   
   const [isSaving, setIsSaving] = useState(false);
   const [viewMode, setViewMode] = useState<'split' | 'editor' | 'preview'>('split');
   const [activeTab, setActiveTab] = useState<'soul' | 'logs' | 'config'>('soul');
 
   useEffect(() => {
-    if (!agent) {
-      router.push('/agents');
-    }
-  }, [agent, router]);
+    fetchAgentById(id);
+  }, [id, fetchAgentById]);
 
-  if (!agent) return null;
+  useEffect(() => {
+    if (currentAgent) {
+      setContent(currentAgent.soulMarkdown);
+      setName(currentAgent.name);
+      setTitle(currentAgent.title || '');
+    }
+  }, [currentAgent]);
+
+  if (isLoading && !currentAgent) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <RefreshCw className="animate-spin text-indigo-500" size={48} />
+      </div>
+    );
+  }
+
+  if (!currentAgent && !isLoading) return null;
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate network delay for effect
-    await new Promise(resolve => setTimeout(resolve, 800));
-    updateAgent(id, { soulMarkdown: content, name, title });
+    await updateAgent(id, { soulMarkdown: content, name, title });
     setIsSaving(false);
   };
 
@@ -58,7 +69,7 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
     <div className="flex flex-col h-[calc(100vh-140px)] max-w-[1600px] mx-auto space-y-6">
       <DashboardResourceHeader
         title={`Agent: ${name}`}
-        description={`Detailed configurations, cognitive prompts, and core purpose for agent #${agent.id.slice(0, 8)}.`}
+        description={`Detailed configurations, cognitive prompts, and core purpose for agent #${currentAgent?.id.slice(0, 8)}.`}
         badge="NC-PROFILE"
         statusLabel="Status:"
         statusValue="Active Soul"
@@ -220,7 +231,7 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
                   defaultLanguage="markdown"
                   theme="vs-dark"
                   value={content}
-                  onChange={(val) => setContent(val || '')}
+                  onChange={(val: string | undefined) => setContent(val || '')}
                   options={{
                     minimap: { enabled: false },
                     fontSize: 14,
@@ -233,7 +244,7 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
                     fontFamily: "'Geist Mono', monospace",
                     theme: 'obsidian-dark'
                   }}
-                  beforeMount={(monaco) => {
+                  beforeMount={(monaco: any) => {
                     monaco.editor.defineTheme('obsidian-dark', {
                       base: 'vs-dark',
                       inherit: true,

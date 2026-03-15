@@ -27,6 +27,11 @@ export default function SkillsPage() {
   const setViewMode = (m: 'grid' | 'list') => storeSetView('/skills', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
+  const { fetchSkills } = useSkillStore();
+
+  useEffect(() => {
+    fetchSkills();
+  }, [fetchSkills]);
 
   // Clear selection on unmount
   useEffect(() => {

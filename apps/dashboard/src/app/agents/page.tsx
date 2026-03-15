@@ -15,10 +15,15 @@ import { useRouter } from 'next/navigation';
 
 export default function AgentsPage() {
   const router = useRouter();
-  const { agents, deleteAgent } = useAgentStore();
+  const { agents, fetchAgents, deleteAgent, isLoading } = useAgentStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
   const { selectedIds, toggleSelection, setSelection, clearSelection, isSelected } = useSelectionStore();
   
+  // Fetch agents on mount
+  useEffect(() => {
+    fetchAgents();
+  }, [fetchAgents]);
+
   // agents page uses 'grid' | 'table'; UIStore uses 'grid' | 'list' | 'table'
   const rawMode = getViewMode('/agents', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
@@ -33,7 +38,7 @@ export default function AgentsPage() {
 
   const filteredAgents = agents.filter(agent => 
     agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    agent.title.toLowerCase().includes(searchQuery.toLowerCase())
+    (agent.title && agent.title.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const allFilteredIds = filteredAgents.map(a => a.id);
@@ -139,7 +144,7 @@ export default function AgentsPage() {
                   onDelete={deleteAgent}
                   onClick={() => router.push(`/agents/${agent.id}`)}
                   selected={isSelected(agent.id)}
-                  onToggleSelection={(e) => {
+                  onToggleSelection={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     toggleSelection(agent.id);
                   }}

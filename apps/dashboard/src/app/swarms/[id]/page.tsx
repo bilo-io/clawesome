@@ -8,15 +8,20 @@ import { useUIStore } from '@/store/useUIStore';
 import { useAgentStore } from '@/store/useAgentStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { AgentCard } from '@/components/AgentCard';
-import { workspaces } from '@/components/WorkspaceGallery';
+import { useSwarmStore } from '@/store/useSwarmStore';
 import { ChevronLeft } from 'lucide-react';
 
 export default function SwarmDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
+  const { swarms, fetchSwarms } = useSwarmStore();
+
+  React.useEffect(() => {
+    fetchSwarms();
+  }, [fetchSwarms]);
   
-  const swarm = workspaces.find((w) => w.id === id);
+  const swarm = swarms.find((w) => w.id === id);
   
   const { agents } = useAgentStore();
   // For demo: Use all store agents, or generate fake ones if empty
@@ -25,6 +30,10 @@ export default function SwarmDetailPage() {
   const rawMode = getViewMode('/swarms-detail', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
   const setViewMode = (m: 'grid' | 'list') => storeSetView('/swarms-detail', m === 'list' ? 'table' : 'grid');
+
+  if (!swarms.length) {
+    return <div className="p-20 text-center opacity-40 animate-pulse font-black uppercase tracking-widest text-xs">Syncing Context...</div>;
+  }
 
   if (!swarm) {
     return notFound();

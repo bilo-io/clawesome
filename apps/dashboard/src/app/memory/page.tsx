@@ -25,9 +25,13 @@ import { useSelectionStore } from '@/store/useSelectionStore';
 
 export default function MemoriesPage() {
   const { theme, setViewMode: storeSetViewMode, getViewMode } = useUIStore();
-  const { memories, addMemory } = useMemoryStore();
+  const { memories, addMemory, fetchMemories } = useMemoryStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchMemories();
+  }, [fetchMemories]);
 
   const viewMode = getViewMode('/memory', 'grid');
   const setViewMode = (mode: 'grid' | 'list') => storeSetViewMode('/memory', mode as any);

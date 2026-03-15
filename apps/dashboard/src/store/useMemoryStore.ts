@@ -22,76 +22,70 @@ export interface Memory {
 
 interface MemoryStore {
   memories: Memory[];
-  addMemory: (name: string) => void;
-  addDataPoint: (memoryId: string, type: DataType, name: string, content: string) => void;
-  updateDataPointStatus: (memoryId: string, dataPointId: string, status: 'processing' | 'ready') => void;
+  isLoading: boolean;
+  error: string | null;
+  fetchMemories: () => Promise<void>;
+  addMemory: (name: string) => Promise<void>;
+  addDataPoint: (memoryId: string, type: DataType, name: string, content: string) => Promise<void>;
+  updateDataPointStatus: (memoryId: string, dataPointId: string, status: 'processing' | 'ready') => Promise<void>;
 }
 
-export const useMemoryStore = create<MemoryStore>((set) => ({
-  memories: [
-    {
-      id: '1',
-      name: 'Neural Architecture v2',
-      documents: [
-        { id: 'd1', type: 'pdf', name: 'Specification Doc', content: 'Neural specs...', status: 'ready', timestamp: '2h ago' },
-        { id: 'd2', type: 'link', name: 'Reference Paper', content: 'https://arxiv.org/...', status: 'ready', timestamp: '3h ago' },
-      ],
-      lastUpdated: '2h ago'
-    },
-    {
-      id: '2',
-      name: 'Market Analysis Swarm',
-      documents: [
-        { id: 'd3', type: 'youtube', name: 'Competitor Review', content: 'youtube.com/...', status: 'ready', timestamp: '1d ago' },
-        { id: 'd4', type: 'text', name: 'Raw Notes', content: 'Market trends...', status: 'ready', timestamp: '1d ago' },
-      ],
-      lastUpdated: '1d ago'
-    }
-  ],
-  addMemory: (name: string) => set((state) => {
-    const newMemory: Memory = {
-      id: Math.random().toString(36).substr(2, 9),
-      name,
-      documents: [],
-      lastUpdated: 'just now',
-    };
-    return { memories: [newMemory, ...state.memories] };
-  }),
-  addDataPoint: (memoryId: string, type: DataType, name: string, content: string) => set((state) => {
-    const newId = Math.random().toString(36).substr(2, 9);
-    const newDataPoint: DataPoint = {
-      id: newId,
-      type,
-      name,
-      content,
-      status: 'processing',
-      timestamp: 'just now'
-    };
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api/v1';
 
-    return {
-      memories: state.memories.map((m) => {
-        if (m.id === memoryId) {
-          return {
-            ...m,
-            documents: [newDataPoint, ...m.documents].slice(0, MAX_DOCUMENTS),
-            lastUpdated: 'just now'
-          };
-        }
-        return m;
-      })
-    };
-  }),
-  updateDataPointStatus: (memoryId: string, dataPointId: string, status: 'processing' | 'ready') => set((state) => ({
-    memories: state.memories.map((m) => {
-      if (m.id === memoryId) {
-        return {
-          ...m,
-          documents: m.documents.map((d) => 
-            d.id === dataPointId ? { ...d, status } : d
-          )
-        };
-      }
-      return m;
-    })
-  }))
+export const useMemoryStore = create<MemoryStore>((set, get) => ({
+  memories: [],
+  isLoading: false,
+  error: null,
+
+  fetchMemories: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/memories`);
+      if (!response.ok) throw new Error('Failed to fetch memories');
+      const data = await response.json();
+      set({ memories: data, isLoading: false });
+    } catch (error: any) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+
+  addMemory: async (name: string) => {
+    try {
+      const response = await fetch(`${API_URL}/memories`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (!response.ok) throw new Error('Failed to add memory');
+      await get().fetchMemories();
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
+  addDataPoint: async (memoryId: string, type: DataType, name: string, content: string) => {
+    try {
+      const response = await fetch(`${API_URL}/memories/${memoryId}/data-points`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, name, content }),
+      });
+      if (!response.ok) throw new Error('Failed to add data point');
+      await get().fetchMemories();
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
+  updateDataPointStatus: async (memoryId: string, dataPointId: string, status: 'processing' | 'ready') => {
+    // This might need a specific endpoint if we want real persistence for status updates
+    // For now we'll just refetch if we assume the backend handles it or mock a PATCH
+    try {
+       // Assuming a generic data-point patch might exist or just refetching
+       await get().fetchMemories();
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  }
 }));
+
