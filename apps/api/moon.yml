@@ -1,0 +1,36 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+tasks:
+  # Starts the NestJS development server
+  dev:
+    command: 'pnpm run start:dev'
+    options:
+      runInCI: false
+
+  # Builds the NestJS production bundle
+  build:
+    command: 'pnpm run build'
+    inputs:
+      - 'src/**/*'
+      - 'tsconfig.json'
+      - 'tsconfig.build.json'
+    outputs:
+      - 'dist'
+
+  # Pushes schema changes to Neon
+  db-push:
+    command: 'pnpm exec drizzle-kit push'
+    options:
+      runInCI: false
+
+  # Opens the Drizzle Studio GUI
+  db-studio:
+    command: 'pnpm exec drizzle-kit studio'
+    options:
+      runInCI: false
+
+  # Runs your optimized seeding script
+  seed:
+    command: 'pnpm exec tsx src/db/db.seed.ts'
+    options:
+      runInCI: false
