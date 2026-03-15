@@ -2,11 +2,11 @@
 $schema: 'https://moonrepo.dev/schemas/project.json'
 
 project:
-  name: 'api'
+  name: 'api-go'
 
 tags:
   - 'core'
-  - 'api'
+  - 'api-go'
   - 'backend'
 
 tasks:
@@ -18,5 +18,5 @@ tasks:
       - 'main.go'
       - 'data/**/*'
       - 'go.mod'
-  dev:
+  dev-go:
     command: 'go run main.go'
