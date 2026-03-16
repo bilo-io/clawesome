@@ -168,14 +168,21 @@ export default function WorkflowsPage() {
         }
       />
 
-      <div className={cn(
-        viewMode === 'grid' 
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
-          : "space-y-4"
-      )}>
-        {isLoading ? (
-          <ResourceSkeleton viewMode={viewMode} />
-        ) : (
+      {isLoading ? (
+        <ResourceSkeleton 
+          viewMode={viewMode} 
+          className={cn(
+            viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
+              : "space-y-4"
+          )} 
+        />
+      ) : (
+        <div className={cn(
+          viewMode === 'grid' 
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
+            : "space-y-4"
+        )}>
           <AnimatePresence mode="popLayout">
             {filteredWorkflows.map((workflow, idx) => (
               <motion.div
@@ -202,8 +209,8 @@ export default function WorkflowsPage() {
               </motion.div>
             ))}
           </AnimatePresence>
-        )}
-      </div>
+        </div>
+      )}
 
       {filteredWorkflows.length === 0 && (
          <div className="py-40 text-center flex flex-col items-center gap-6">

@@ -121,12 +121,17 @@ export default function MemoriesPage() {
       />
 
       {/* Memory View Content */}
-      <div className={cn(
-        viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"
-      )}>
-        {isLoading ? (
-          <ResourceSkeleton viewMode={viewMode === 'grid' ? 'grid' : 'list'} />
-        ) : (
+      {isLoading ? (
+        <ResourceSkeleton 
+          viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+          className={cn(
+            viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"
+          )}
+        />
+      ) : (
+        <div className={cn(
+          viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"
+        )}>
           <AnimatePresence mode="popLayout">
             {filteredMemories.map((memory) => (
               <motion.div 
@@ -162,8 +167,6 @@ export default function MemoriesPage() {
             </motion.div>
           ))}
         </AnimatePresence>
-        )}
-
         {filteredMemories.length === 0 && (
           <div className="col-span-full py-20 flex flex-col items-center justify-center text-center opacity-50">
             <Database size={64} className="mb-6 opacity-30" />
@@ -172,6 +175,7 @@ export default function MemoriesPage() {
           </div>
         )}
       </div>
+    )}
     </main>
   );
 }

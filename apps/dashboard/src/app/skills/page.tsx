@@ -137,7 +137,14 @@ export default function SkillsPage() {
 
       <AnimatePresence mode="popLayout" initial={false}>
         {isLoading ? (
-          <ResourceSkeleton viewMode={viewMode === 'table' ? 'list' : 'grid'} />
+          <ResourceSkeleton 
+            viewMode={viewMode === 'table' ? 'list' : 'grid'} 
+            className={cn(
+              viewMode === 'grid' 
+                ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
+                : "space-y-3"
+            )}
+          />
         ) : filteredSkills.length > 0 ? (
           <motion.div
             key={`${activeTab}-list`}

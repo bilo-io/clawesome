@@ -42,7 +42,14 @@ export const WorkspaceGallery = ({
   const router = useRouter();
   const { swarms, isLoading } = useSwarmStore();
 
-  if (isLoading) return <ResourceSkeleton viewMode={viewMode === 'grid' ? 'grid' : 'list'} />;
+  if (isLoading) return (
+    <ResourceSkeleton 
+      viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+      className={cn(
+        viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-3"
+      )}
+    />
+  );
 
   return (
     <div className={cn(

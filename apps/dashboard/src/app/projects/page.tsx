@@ -114,14 +114,21 @@ export default function ProjectsPage() {
         }
       />
 
-      <div className={cn(
-        viewMode === 'grid' 
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
-          : "space-y-4"
-      )}>
-        {isLoading ? (
-          <ResourceSkeleton viewMode={viewMode} />
-        ) : (
+      {isLoading ? (
+        <ResourceSkeleton 
+          viewMode={viewMode} 
+          className={cn(
+            viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
+              : "space-y-4"
+          )} 
+        />
+      ) : (
+        <div className={cn(
+          viewMode === 'grid' 
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
+            : "space-y-4"
+        )}>
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, idx) => (
               <motion.div
@@ -315,20 +322,19 @@ export default function ProjectsPage() {
               </Link>
             </motion.div>
           ))}
-        </AnimatePresence>
-        )}
-      </div>
-
-      {filteredProjects.length === 0 && (
-         <div className="py-40 text-center flex flex-col items-center gap-6">
-            <div className="p-10 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-400 border border-slate-200 dark:border-slate-800 shadow-inner">
-               <Search size={48} className="opacity-20" />
+          </AnimatePresence>
+          {filteredProjects.length === 0 && (
+            <div className="py-40 text-center flex flex-col items-center gap-6">
+               <div className="p-10 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-400 border border-slate-200 dark:border-slate-800 shadow-inner">
+                  <Search size={48} className="opacity-20" />
+               </div>
+               <div>
+                  <h3 className="text-xl font-black dark:text-white uppercase tracking-tight">Empty Project Void</h3>
+                  <p className="text-slate-500 font-medium">No projects found matching your neural signature.</p>
+               </div>
             </div>
-            <div>
-               <h3 className="text-xl font-black dark:text-white uppercase tracking-tight">Empty Project Void</h3>
-               <p className="text-slate-500 font-medium">No projects found matching your neural signature.</p>
-            </div>
-         </div>
+          )}
+        </div>
       )}
     </div>
   );

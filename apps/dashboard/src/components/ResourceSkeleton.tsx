@@ -8,11 +8,13 @@ import { useUIStore } from '@/store/useUIStore';
 interface ResourceSkeletonProps {
   viewMode: 'grid' | 'list' | 'table';
   count?: number;
+  className?: string;
 }
 
 export const ResourceSkeleton: React.FC<ResourceSkeletonProps> = ({ 
   viewMode, 
-  count = 6 
+  count = 6,
+  className
 }) => {
   const { theme } = useUIStore();
   const isDark = theme === 'dark';
@@ -21,7 +23,7 @@ export const ResourceSkeleton: React.FC<ResourceSkeletonProps> = ({
 
   if (viewMode === 'grid') {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8", className)}>
         {skeletons.map((_, i) => (
           <div 
             key={i}
@@ -55,7 +57,7 @@ export const ResourceSkeleton: React.FC<ResourceSkeletonProps> = ({
 
   // List / Table Mode
   return (
-    <div className="space-y-4">
+    <div className={cn("space-y-4", className)}>
       {skeletons.map((_, i) => (
         <div 
           key={i}
