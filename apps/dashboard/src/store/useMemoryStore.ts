@@ -24,6 +24,7 @@ interface MemoryStore {
   memories: Memory[];
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchMemories: () => Promise<void>;
   addMemory: (name: string) => Promise<void>;
   addDataPoint: (memoryId: string, type: DataType, name: string, content: string) => Promise<void>;
@@ -36,15 +37,19 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   memories: [],
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchMemories: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/memories`);
       if (!response.ok) throw new Error('Failed to fetch memories');
       const data = await response.json();
-      set({ memories: data, isLoading: false });
+      set({ memories: data, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }

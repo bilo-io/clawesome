@@ -16,6 +16,7 @@ interface SkillState {
   marketplaceSkills: Skill[];
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchSkills: () => Promise<void>;
   addSkill: (skill: Omit<Skill, 'id'>) => Promise<void>;
   importSkill: (skillId: string) => Promise<void>;
@@ -31,9 +32,13 @@ export const useSkillStore = create<SkillState>((set, get) => ({
   marketplaceSkills: [],
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchSkills: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/skills`);
@@ -43,7 +48,7 @@ export const useSkillStore = create<SkillState>((set, get) => ({
       const mySkills = data.filter((s: any) => !s.isMarketplace);
       const marketplaceSkills = data.filter((s: any) => s.isMarketplace);
       
-      set({ mySkills, marketplaceSkills, isLoading: false });
+      set({ mySkills, marketplaceSkills, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }

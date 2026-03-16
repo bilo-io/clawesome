@@ -17,6 +17,7 @@ interface AgentState {
   currentAgent: Agent | null;
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchAgents: () => Promise<void>;
   fetchAgentById: (id: string) => Promise<void>;
   addAgent: (agent: Omit<Agent, 'id' | 'createdAt' | 'type' | 'config'> & { type?: string; config?: any }) => Promise<void>;
@@ -32,9 +33,13 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   currentAgent: null,
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchAgents: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+
     set({ isLoading: true, error: null });
     console.log(`Fetching agents from: ${API_URL}/agents`);
     try {
@@ -54,7 +59,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
         createdAt: new Date(a.createdAt).getTime(),
       }));
       
-      set({ agents: mappedAgents, isLoading: false });
+      set({ agents: mappedAgents, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }

@@ -15,6 +15,7 @@ interface ProjectState {
   projects: Project[];
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchProjects: () => Promise<void>;
   addProject: (project: Omit<Project, 'id'>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
@@ -26,15 +27,19 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   projects: [],
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchProjects: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/projects`);
       if (!response.ok) throw new Error('Failed to fetch projects');
       const data = await response.json();
-      set({ projects: data, isLoading: false });
+      set({ projects: data, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }

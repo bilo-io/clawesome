@@ -8,6 +8,7 @@ interface WorkflowState {
   marketplaceWorkflows: Workflow[];
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchWorkflows: () => Promise<void>;
   addWorkflow: (workflow: Omit<Workflow, 'id'>) => Promise<string>;
   updateWorkflow: (id: string, updates: Partial<Workflow>) => Promise<void>;
@@ -23,9 +24,13 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   marketplaceWorkflows: [],
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchWorkflows: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/workflows`);
@@ -35,7 +40,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       const workflows = data.filter((w: any) => !w.isMarketplace);
       const marketplaceWorkflows = data.filter((w: any) => w.isMarketplace);
       
-      set({ workflows, marketplaceWorkflows, isLoading: false });
+      set({ workflows, marketplaceWorkflows, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }
