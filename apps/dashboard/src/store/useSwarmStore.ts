@@ -14,6 +14,7 @@ interface SwarmState {
   swarms: Swarm[];
   isLoading: boolean;
   error: string | null;
+  lastFetched: number | null;
   fetchSwarms: () => Promise<void>;
   addSwarm: (swarm: Omit<Swarm, 'id'>) => Promise<void>;
 }
@@ -24,15 +25,19 @@ export const useSwarmStore = create<SwarmState>((set, get) => ({
   swarms: [],
   isLoading: false,
   error: null,
+  lastFetched: null,
 
   fetchSwarms: async () => {
-    if (get().isLoading) return;
+    const { isLoading, lastFetched } = get();
+    const now = Date.now();
+    if (isLoading || (lastFetched && now - lastFetched < 2000)) return;
+    
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/swarms`);
       if (!response.ok) throw new Error('Failed to fetch swarms');
       const data = await response.json();
-      set({ swarms: data, isLoading: false });
+      set({ swarms: data, isLoading: false, lastFetched: Date.now() });
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
     }

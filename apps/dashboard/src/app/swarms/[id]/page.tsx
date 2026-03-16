@@ -18,8 +18,10 @@ export default function SwarmDetailPage() {
   const { swarms, fetchSwarms } = useSwarmStore();
 
   React.useEffect(() => {
-    fetchSwarms();
-  }, [fetchSwarms]);
+    if (swarms.length === 0) {
+      fetchSwarms();
+    }
+  }, [fetchSwarms, swarms.length]);
   
   const swarm = swarms.find((w) => w.id === id);
   
