@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Database
 } from 'lucide-react';
+import { useUI } from '../ThemeContext';
 import { cn } from '../utils';
 import type { Workflow } from '@antigravity/core';
 import { formatDistanceToNow } from 'date-fns';
@@ -46,6 +47,9 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
   onInstall,
   onClick
 }) => {
+  const { theme } = useUI();
+  const isDark = theme === 'dark';
+
   const handleAction = (e: React.MouseEvent, action: (e: React.MouseEvent) => void) => {
     e.preventDefault();
     e.stopPropagation();
@@ -65,17 +69,19 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
   };
 
   const cardBaseClasses = cn(
-    "relative h-full transition-all overflow-hidden group cursor-pointer border",
+    "relative h-full transition-all overflow-hidden group cursor-pointer border uppercase tracking-tight",
     selected
-      ? "bg-indigo-50 border-indigo-500 dark:bg-indigo-500/10 dark:border-indigo-500/50"
-      : "bg-white border-slate-100 shadow-2xl shadow-slate-200/20 hover:border-indigo-200 dark:bg-slate-900/40 dark:border-slate-800/60 dark:hover:bg-slate-900 dark:hover:border-indigo-500/30 dark:shadow-none"
+      ? (isDark ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
+      : (isDark 
+          ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
+          : "bg-white border-slate-100 shadow-2xl shadow-slate-200/20 hover:border-indigo-200")
   );
 
   const selectionIndicatorClasses = cn(
     "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all z-30 cursor-pointer",
     selected
       ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-      : "opacity-0 group-hover:opacity-100 border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-950"
+      : (isDark ? "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100" : "opacity-0 group-hover:opacity-100 border-slate-200 bg-white shadow-sm")
   );
 
   if (viewMode === 'list') {
@@ -90,29 +96,33 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
         >
           {selected && <Check size={12} strokeWidth={4} />}
         </div>
-        <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500">
+        <div className={cn(
+          "w-12 h-12 rounded-xl flex items-center justify-center text-indigo-500 transition-all border",
+          isDark ? "bg-indigo-500/5 border-indigo-500/10" : "bg-indigo-500/10 border-indigo-500/20"
+        )}>
           <WorkflowIcon size={20} />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-1">
-            <h3 className="text-lg font-black uppercase tracking-tight truncate max-w-md text-slate-900 dark:text-white">
+            <h3 className={cn("text-lg font-black uppercase tracking-tight truncate max-w-md transition-colors", isDark ? "text-white" : "text-slate-900")}>
               {workflow.name}
             </h3>
             {!isMarketplace && (
               <span className={cn(
-                "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border",
-                workflow.status === 'active' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                "px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all",
+                workflow.status === 'active' 
+                  ? (isDark ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/10" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20")
+                  : (isDark ? "bg-amber-500/5 text-amber-500 border-amber-500/10" : "bg-amber-500/10 text-amber-500 border-amber-500/20")
               )}>
                 {workflow.status}
               </span>
             )}
           </div>
           <div className="flex items-center gap-3">
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">{isMarketplace ? 'Marketplace Template' : 'Local Automation'}</p>
+            <p className={cn("text-[10px] font-bold uppercase tracking-[0.2em] transition-colors", isDark ? "text-slate-600" : "text-slate-400")}>{isMarketplace ? 'Marketplace Template' : 'Local Automation'}</p>
             <div className="flex gap-1">
               {workflow.nodes.slice(0, 8).map((node, i) => (
-                <div key={i} className="w-4 h-4 rounded flex items-center justify-center bg-slate-100 dark:bg-slate-800/50">
+                <div key={i} className={cn("w-4 h-4 rounded flex items-center justify-center transition-all", isDark ? "bg-slate-800/50" : "bg-slate-100")}>
                   {getNodeIcon(node)}
                 </div>
               ))}
@@ -122,11 +132,11 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
         
         <div className="flex items-center gap-6">
           <div className="flex flex-col items-end min-w-[150px]">
-            <span className="text-base font-black font-mono text-black dark:text-white">
+            <span className={cn("text-base font-black font-mono transition-colors", isDark ? "text-white" : "text-slate-900")}>
               {workflow.nodes.length} NODES
             </span>
             {!isMarketplace && (
-              <span className="text-[9px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
+              <span className={cn("text-[9px] font-bold uppercase tracking-widest transition-colors", isDark ? "text-slate-600" : "text-slate-400")}>
                 LAST RUN: {workflow.lastRun ? formatDistanceToNow(workflow.lastRun!) + ' ago' : 'Never'}
               </span>
             )}
@@ -139,7 +149,7 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
               className={cn(
                 "flex items-center gap-2 px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shadow-xl active:scale-95",
                 isImported 
-                  ? "bg-slate-50 text-slate-300 border border-slate-100 cursor-not-allowed shadow-none dark:bg-slate-900 dark:border-slate-800 dark:text-slate-700" 
+                  ? (isDark ? "bg-slate-900 border border-slate-800 text-slate-700 cursor-not-allowed shadow-none" : "bg-slate-50 text-slate-300 border border-slate-100 cursor-not-allowed shadow-none") 
                   : "bg-indigo-600 text-white shadow-indigo-600/30 hover:bg-indigo-500"
               )}
             >
@@ -151,8 +161,8 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
               className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90",
                 workflow.status === 'active' 
-                  ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
-                  : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                  ? (isDark ? "bg-emerald-500/10 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]" : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20") 
+                  : (isDark ? "bg-amber-500/10 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]" : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20")
               )}
             >
               {workflow.status === 'active' ? <Pause size={16} /> : <Play size={16} />}
@@ -178,10 +188,10 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
 
       <div className="flex justify-between items-start mb-10">
         <div className="flex flex-col gap-1">
-          <span className="text-[10px] font-black tracking-widest uppercase mb-1 text-slate-400 dark:text-slate-600">
+          <span className={cn("text-[10px] font-black tracking-widest uppercase mb-1 transition-colors", isDark ? "text-slate-600" : "text-slate-400")}>
             {isMarketplace ? 'TEMPLATE' : 'AUTOMATION'}
           </span>
-          <h3 className="text-2xl font-black group-hover:text-indigo-500 transition-colors uppercase tracking-tight truncate whitespace-nowrap text-slate-900 dark:text-white">
+          <h3 className={cn("text-2xl font-black group-hover:text-indigo-500 transition-all uppercase tracking-tight truncate whitespace-nowrap", isDark ? "text-white" : "text-slate-900")}>
             {workflow.name}
           </h3>
         </div>
@@ -190,8 +200,9 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
             onClick={(e) => handleAction(e, onToggleStatus!)}
             className={cn(
               "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border transition-all hover:scale-105 active:scale-95",
-              workflow.status === 'active' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-              "bg-amber-500/10 text-amber-500 border-amber-500/20"
+              workflow.status === 'active' 
+                ? (isDark ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/10" : "bg-emerald-500/10 text-emerald-500 border-emerald-500/20")
+                : (isDark ? "bg-amber-500/5 text-amber-500 border-amber-500/10" : "bg-amber-500/10 text-amber-500 border-amber-500/20")
             )}
           >
             {workflow.status}
@@ -206,7 +217,7 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
                   <Zap size={12} className="text-indigo-500" />
                   Nodes Count
                </div>
-               <span className="text-2xl font-black font-mono pl-1 text-black dark:text-white">
+               <span className={cn("text-2xl font-black font-mono pl-1 transition-colors", isDark ? "text-white" : "text-black")}>
                   {workflow.nodes.length}
                </span>
             </div>
@@ -216,7 +227,7 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
                     Last Run
                     <Clock size={12} className="text-indigo-500" />
                  </div>
-                 <span className="text-xs font-bold font-mono text-slate-600 dark:text-slate-400">
+                 <span className={cn("text-xs font-bold font-mono transition-colors", isDark ? "text-slate-500" : "text-slate-600")}>
                     {workflow.lastRun ? formatDistanceToNow(workflow.lastRun!) + ' ago' : 'Never'}
                  </span>
               </div>
@@ -225,18 +236,18 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
 
         <div className="flex gap-2">
           {workflow.nodes.slice(0, 5).map((node, i) => (
-            <div key={i} className="w-8 h-8 rounded-lg border flex items-center justify-center transition-all bg-slate-50 border-slate-200 dark:bg-slate-800 dark:border-slate-700" title={node.data.label}>
+            <div key={i} className={cn("w-8 h-8 rounded-lg border flex items-center justify-center transition-all", isDark ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200")} title={node.data.label}>
               {getNodeIcon(node)}
             </div>
           ))}
           {workflow.nodes.length > 5 && (
-            <div className="w-8 h-8 rounded-lg border flex items-center justify-center text-[10px] font-bold bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400">
+            <div className={cn("w-8 h-8 rounded-lg border flex items-center justify-center text-[10px] font-bold transition-all", isDark ? "bg-slate-800 border-slate-700 text-slate-400" : "bg-slate-50 border-slate-200 text-slate-500")}>
               +{workflow.nodes.length - 5}
             </div>
           )}
         </div>
 
-        <div className="pt-6 border-t flex items-center justify-between border-slate-100 dark:border-slate-800/50">
+        <div className={cn("pt-6 border-t flex items-center justify-between transition-colors", isDark ? "border-slate-800/50" : "border-slate-100")}>
            {isMarketplace ? (
              <button 
                 onClick={(e) => handleAction(e, onInstall!)}
@@ -244,7 +255,7 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
                 className={cn(
                   "flex items-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all relative overflow-hidden active:scale-95 shadow-xl w-full justify-center",
                   isImported 
-                    ? "bg-slate-100 text-slate-300 border border-slate-200 cursor-not-allowed shadow-none dark:bg-slate-900 dark:text-slate-800 dark:border-slate-800" 
+                    ? (isDark ? "bg-slate-900 text-slate-800 border border-slate-800 cursor-not-allowed shadow-none" : "bg-slate-100 text-slate-300 border border-slate-200 cursor-not-allowed shadow-none") 
                     : "bg-indigo-600 text-white shadow-indigo-600/30 hover:bg-indigo-500"
                 )}
               >
@@ -258,8 +269,8 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
                     className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center transition-all",
                       workflow.status === 'active' 
-                        ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
-                        : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                        ? (isDark ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20") 
+                        : (isDark ? "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20" : "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20")
                     )}
                   >
                      {workflow.status === 'active' ? <Pause size={14} /> : <Play size={14} />}
@@ -277,7 +288,7 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
       {/* Industrial background accent */}
       <div className={cn(
         "absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] pointer-events-none group-hover:scale-110 transition-all duration-700",
-        "text-indigo-900 dark:text-white"
+        isDark ? "text-white" : "text-indigo-900"
       )}>
          <WorkflowIcon size={64} />
       </div>

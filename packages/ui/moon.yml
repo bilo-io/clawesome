@@ -44,6 +44,6 @@ tasks:
   #     - 'src/**/*'
 
   test:
-    command: 'bun test' # Bun has a native fast test runner!
+    command: 'bun run test' # Bun has a native fast test runner!
     inputs:
       - 'src/**/*'
