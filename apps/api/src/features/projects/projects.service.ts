@@ -77,14 +77,24 @@ export class ProjectsService {
   constructor(private readonly repository: ProjectsRepository) {}
 
   async findAll() {
-    const dbProjects = await this.repository.findAll();
-    return [...MOCK_PROJECTS, ...dbProjects];
+    try {
+      const dbProjects = await this.repository.findAll();
+      return [...MOCK_PROJECTS, ...dbProjects];
+    } catch (error) {
+      console.error('Failed to fetch projects from DB, returning mocks only:', error.message);
+      return MOCK_PROJECTS;
+    }
   }
 
   async findById(id: string) {
     const mockProject = MOCK_PROJECTS.find(p => p.id === id);
     if (mockProject) return mockProject;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch project ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async create(data: typeof projects.$inferInsert) {

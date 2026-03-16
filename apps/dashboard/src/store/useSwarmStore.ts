@@ -26,6 +26,7 @@ export const useSwarmStore = create<SwarmState>((set, get) => ({
   error: null,
 
   fetchSwarms: async () => {
+    if (get().isLoading) return;
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/swarms`);

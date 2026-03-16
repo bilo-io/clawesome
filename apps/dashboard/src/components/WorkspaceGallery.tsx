@@ -40,11 +40,7 @@ export const WorkspaceGallery = ({
 }) => {
   const { theme } = useUIStore();
   const router = useRouter();
-  const { swarms, fetchSwarms, isLoading } = useSwarmStore();
-
-  React.useEffect(() => {
-    fetchSwarms();
-  }, [fetchSwarms]);
+  const { swarms, isLoading } = useSwarmStore();
 
   if (isLoading) return <div className="p-12 text-center text-[10px] font-black uppercase tracking-widest opacity-40 animate-pulse">Initializing Swarm Nodes...</div>;
 

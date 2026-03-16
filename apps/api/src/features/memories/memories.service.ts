@@ -28,14 +28,24 @@ export class MemoriesService {
   constructor(private readonly repository: MemoriesRepository) {}
 
   async findAll() {
-    const dbMemories = await this.repository.findAll();
-    return [...MOCK_MEMORIES, ...dbMemories];
+    try {
+      const dbMemories = await this.repository.findAll();
+      return [...MOCK_MEMORIES, ...dbMemories];
+    } catch (error) {
+      console.error('Failed to fetch memories from DB, returning mocks only:', error.message);
+      return MOCK_MEMORIES;
+    }
   }
 
   async findById(id: string) {
     const mockMemory = MOCK_MEMORIES.find(m => m.id === id);
     if (mockMemory) return mockMemory;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch memory ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async create(data: typeof memories.$inferInsert) {

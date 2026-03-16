@@ -72,14 +72,24 @@ export class SwarmsService {
   constructor(private readonly repository: SwarmsRepository) {}
 
   async findAll() {
-    const dbSwarms = await this.repository.findAll();
-    return [...MOCK_SWARMS, ...dbSwarms];
+    try {
+      const dbSwarms = await this.repository.findAll();
+      return [...MOCK_SWARMS, ...dbSwarms];
+    } catch (error) {
+      console.error('Failed to fetch swarms from DB, returning mocks only:', error.message);
+      return MOCK_SWARMS;
+    }
   }
 
   async findById(id: string) {
     const mockSwarm = MOCK_SWARMS.find(s => s.id === id);
     if (mockSwarm) return mockSwarm;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch swarm ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async create(data: typeof swarms.$inferInsert) {

@@ -38,6 +38,7 @@ export const useMemoryStore = create<MemoryStore>((set, get) => ({
   error: null,
 
   fetchMemories: async () => {
+    if (get().isLoading) return;
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/memories`);

@@ -150,14 +150,24 @@ export class WorkflowsService {
   constructor(private readonly repository: WorkflowsRepository) {}
 
   async findAll() {
-    const dbWorkflows = await this.repository.findAll();
-    return [...MOCK_WORKFLOWS, ...dbWorkflows];
+    try {
+      const dbWorkflows = await this.repository.findAll();
+      return [...MOCK_WORKFLOWS, ...dbWorkflows];
+    } catch (error) {
+      console.error('Failed to fetch workflows from DB, returning mocks only:', error.message);
+      return MOCK_WORKFLOWS;
+    }
   }
 
   async findById(id: string) {
     const mockWorkflow = MOCK_WORKFLOWS.find(w => w.id === id);
     if (mockWorkflow) return mockWorkflow;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch workflow ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async create(data: typeof workflows.$inferInsert) {

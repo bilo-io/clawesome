@@ -41,14 +41,24 @@ export class AgentsService {
   }
 
   async findAll() {
-    const dbAgents = await this.repository.findAll();
-    return [...MOCK_AGENTS, ...dbAgents];
+    try {
+      const dbAgents = await this.repository.findAll();
+      return [...MOCK_AGENTS, ...dbAgents];
+    } catch (error) {
+      console.error('Failed to fetch agents from DB, returning mocks only:', error.message);
+      return MOCK_AGENTS;
+    }
   }
 
   async findById(id: string) {
     const mockAgent = MOCK_AGENTS.find(a => a.id === id);
     if (mockAgent) return mockAgent;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch agent ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async update(id: string, data: Partial<typeof agents.$inferInsert>) {

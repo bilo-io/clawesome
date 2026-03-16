@@ -25,6 +25,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   error: null,
 
   fetchWorkflows: async () => {
+    if (get().isLoading) return;
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/workflows`);

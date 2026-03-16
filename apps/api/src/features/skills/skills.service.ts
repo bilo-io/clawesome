@@ -129,14 +129,24 @@ export class SkillsService {
   }
 
   async findAll() {
-    const dbSkills = await this.repository.findAll();
-    return [...DEFAULT_MY_SKILLS, ...DEFAULT_MARKETPLACE, ...dbSkills];
+    try {
+      const dbSkills = await this.repository.findAll();
+      return [...DEFAULT_MY_SKILLS, ...DEFAULT_MARKETPLACE, ...dbSkills];
+    } catch (error) {
+      console.error('Failed to fetch skills from DB, returning mocks only:', error.message);
+      return [...DEFAULT_MY_SKILLS, ...DEFAULT_MARKETPLACE];
+    }
   }
 
   async findById(id: string) {
     const mockSkill = [...DEFAULT_MY_SKILLS, ...DEFAULT_MARKETPLACE].find(s => s.id === id);
     if (mockSkill) return mockSkill;
-    return this.repository.findById(id);
+    try {
+      return await this.repository.findById(id);
+    } catch (error) {
+      console.error(`Failed to fetch skill ${id} from DB:`, error.message);
+      return null;
+    }
   }
 
   async update(id: string, data: Partial<typeof skills.$inferInsert>) {

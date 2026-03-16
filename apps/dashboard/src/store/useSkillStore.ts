@@ -33,6 +33,7 @@ export const useSkillStore = create<SkillState>((set, get) => ({
   error: null,
 
   fetchSkills: async () => {
+    if (get().isLoading) return;
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`${API_URL}/skills`);

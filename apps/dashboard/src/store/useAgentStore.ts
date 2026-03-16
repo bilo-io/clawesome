@@ -34,6 +34,7 @@ export const useAgentStore = create<AgentState>((set, get) => ({
   error: null,
 
   fetchAgents: async () => {
+    if (get().isLoading) return;
     set({ isLoading: true, error: null });
     console.log(`Fetching agents from: ${API_URL}/agents`);
     try {
