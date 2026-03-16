@@ -1,4 +1,3 @@
-// apps/dashboard/src/app/skills/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -17,17 +16,19 @@ import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
+import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 
 export default function SkillsPage() {
-  const { mySkills, marketplaceSkills } = useSkillStore();
+  const { mySkills, marketplaceSkills, isLoading, fetchSkills } = useSkillStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
+  
   const rawMode = getViewMode('/skills', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
   const setViewMode = (m: 'grid' | 'list') => storeSetView('/skills', m === 'list' ? 'table' : 'grid');
+  
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
-  const { fetchSkills } = useSkillStore();
 
   useEffect(() => {
     fetchSkills();
@@ -135,7 +136,9 @@ export default function SkillsPage() {
       />
 
       <AnimatePresence mode="popLayout" initial={false}>
-        {filteredSkills.length > 0 ? (
+        {isLoading ? (
+          <ResourceSkeleton viewMode={viewMode === 'table' ? 'list' : 'grid'} />
+        ) : filteredSkills.length > 0 ? (
           <motion.div
             key={`${activeTab}-list`}
             className={cn(

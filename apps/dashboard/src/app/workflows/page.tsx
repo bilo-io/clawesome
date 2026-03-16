@@ -27,11 +27,12 @@ import { useWorkflowStore } from '@/store/useWorkflowStore';
 import { WorkflowCard } from '@clawesome/ui';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 
 export default function WorkflowsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
-  const { workflows, marketplaceWorkflows, addWorkflow, deleteWorkflow, updateWorkflow, installWorkflow, fetchWorkflows } = useWorkflowStore();
+  const { workflows, marketplaceWorkflows, isLoading, addWorkflow, deleteWorkflow, updateWorkflow, installWorkflow, fetchWorkflows } = useWorkflowStore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
@@ -169,35 +170,39 @@ export default function WorkflowsPage() {
 
       <div className={cn(
         viewMode === 'grid' 
-          ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
+          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
           : "space-y-4"
       )}>
-        <AnimatePresence mode="popLayout">
-          {filteredWorkflows.map((workflow, idx) => (
-            <motion.div
-              layout
-              key={workflow.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: idx * 0.05 }}
-            >
-              <WorkflowCard 
-                workflow={workflow}
-                viewMode={viewMode}
-                isMarketplace={activeTab === 'marketplace'}
-                isImported={workflows.some(w => w.name === workflow.name)}
-                selected={selectedIds.includes(workflow.id)}
-                onToggleSelection={() => toggleSelection(workflow.id)}
-                onToggleStatus={(e) => handleToggleStatus(e, workflow.id, workflow.status)}
-                onInstall={() => installWorkflow(workflow)}
-                onClick={() => {
-                  if (activeTab === 'my') router.push(`/workflows/${workflow.id}`);
-                }}
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {isLoading ? (
+          <ResourceSkeleton viewMode={viewMode} />
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredWorkflows.map((workflow, idx) => (
+              <motion.div
+                layout
+                key={workflow.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <WorkflowCard 
+                  workflow={workflow}
+                  viewMode={viewMode}
+                  isMarketplace={activeTab === 'marketplace'}
+                  isImported={workflows.some(w => w.name === workflow.name)}
+                  selected={selectedIds.includes(workflow.id)}
+                  onToggleSelection={() => toggleSelection(workflow.id)}
+                  onToggleStatus={(e) => handleToggleStatus(e, workflow.id, workflow.status)}
+                  onInstall={() => installWorkflow(workflow)}
+                  onClick={() => {
+                    if (activeTab === 'my') router.push(`/workflows/${workflow.id}`);
+                  }}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        )}
       </div>
 
       {filteredWorkflows.length === 0 && (

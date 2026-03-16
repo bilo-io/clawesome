@@ -7,8 +7,8 @@ import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-
 import { useSwarmStore } from '@/store/useSwarmStore';
+import { ResourceSkeleton } from './ResourceSkeleton';
 
 const iconMap: Record<string, any> = {
   Briefcase: Briefcase,
@@ -42,7 +42,7 @@ export const WorkspaceGallery = ({
   const router = useRouter();
   const { swarms, isLoading } = useSwarmStore();
 
-  if (isLoading) return <div className="p-12 text-center text-[10px] font-black uppercase tracking-widest opacity-40 animate-pulse">Initializing Swarm Nodes...</div>;
+  if (isLoading) return <ResourceSkeleton viewMode={viewMode === 'grid' ? 'grid' : 'list'} />;
 
   return (
     <div className={cn(

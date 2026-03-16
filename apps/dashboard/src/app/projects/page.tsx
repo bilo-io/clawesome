@@ -22,6 +22,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useProjectStore } from '@/store/useProjectStore';
+import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 
 
 export default function ProjectsPage() {
@@ -115,19 +116,22 @@ export default function ProjectsPage() {
 
       <div className={cn(
         viewMode === 'grid' 
-          ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
+          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
           : "space-y-4"
       )}>
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project, idx) => (
-            <motion.div
-              layout
-              key={project.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ delay: idx * 0.05 }}
-            >
+        {isLoading ? (
+          <ResourceSkeleton viewMode={viewMode} />
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project, idx) => (
+              <motion.div
+                layout
+                key={project.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ delay: idx * 0.05 }}
+              >
                 <Link href={`/projects/${project.id}`} className="block relative transition-all">
                   {viewMode === 'grid' ? (
                     <div className={cn(
@@ -312,6 +316,7 @@ export default function ProjectsPage() {
             </motion.div>
           ))}
         </AnimatePresence>
+        )}
       </div>
 
       {filteredProjects.length === 0 && (

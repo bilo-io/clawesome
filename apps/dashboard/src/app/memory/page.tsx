@@ -22,10 +22,11 @@ import { FileCode, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSelectionStore } from '@/store/useSelectionStore';
+import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 
 export default function MemoriesPage() {
   const { theme, setViewMode: storeSetViewMode, getViewMode } = useUIStore();
-  const { memories, addMemory, fetchMemories } = useMemoryStore();
+  const { memories, addMemory, fetchMemories, isLoading } = useMemoryStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const router = useRouter();
 
@@ -123,9 +124,12 @@ export default function MemoriesPage() {
       <div className={cn(
         viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"
       )}>
-        <AnimatePresence mode="popLayout">
-          {filteredMemories.map((memory) => (
-            <motion.div 
+        {isLoading ? (
+          <ResourceSkeleton viewMode={viewMode === 'grid' ? 'grid' : 'list'} />
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredMemories.map((memory) => (
+              <motion.div 
               layout 
               key={memory.id}
               initial={{ opacity: 0, y: 20 }}
@@ -158,6 +162,7 @@ export default function MemoriesPage() {
             </motion.div>
           ))}
         </AnimatePresence>
+        )}
 
         {filteredMemories.length === 0 && (
           <div className="col-span-full py-20 flex flex-col items-center justify-center text-center opacity-50">
