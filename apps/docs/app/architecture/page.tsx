@@ -1,4 +1,4 @@
-import { CodePreview } from "@clawesome/ui";
+import { CodeBlock } from "@clawesome/ui";
 
 export default function ArchitecturePage() {
   return (
@@ -33,7 +33,7 @@ export default function ArchitecturePage() {
         <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xl">
            Underneath the hood, React Context distributes the currently active UI configurations, including `ThemeProvider` which handles both theme switching and glow adjustments.
         </p>
-        <CodePreview 
+        <CodeBlock 
           language="typescript"
           code={`// Global Theme Injection in Next.js\nimport { ThemeProvider } from '@clawesome/ui';\n\nexport default function RootLayout({ children }) {\n  return (\n    <ThemeProvider>\n      {children}\n    </ThemeProvider>\n  );\n}`} 
         />

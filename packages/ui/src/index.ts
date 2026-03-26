@@ -24,6 +24,8 @@ export * from './components/CreateAgentModal';
 export * from './components/DashboardResourceHeader';
 export * from './components/DataDisplay';
 export * from './components/DocsWrapper';
+export * from './components/docs/LeftSidebar';
+export * from './components/docs/TopBar';
 export * from './components/FilesystemSandbox';
 export * from './components/FormControls';
 export * from './components/GitHeatmap';

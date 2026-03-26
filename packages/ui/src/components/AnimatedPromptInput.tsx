@@ -1,3 +1,5 @@
+'use client';
+
 import { Send, Mic, Paperclip, Sparkles, Maximize2, Minimize2, ChevronDown, Bot } from 'lucide-react';
 import { cn } from '../utils';
 import { useUI } from '../ThemeContext';
