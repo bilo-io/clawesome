@@ -30,6 +30,7 @@ export * from './components/GitHeatmap';
 export * from './components/Input';
 export * from './components/IntegrationCard';
 export * from './components/IntegrationIcon';
+export * from './components/InitializeCard';
 export * from './components/MasonryGrid';
 export * from './components/Modal';
 export * from './components/Navigation';

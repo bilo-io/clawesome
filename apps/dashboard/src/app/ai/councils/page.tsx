@@ -8,6 +8,7 @@ import {
 } from '@/components/DashboardResourceHeader';
 import { 
   CouncilResourceCard, 
+  InitializeCard,
   Button,
   Surface,
   Badge,
@@ -85,10 +86,12 @@ export default function CouncilsPage() {
                     </button>
                 }
                 bulkActions={
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="xs" icon={<Archive size={12} />}>Archive</Button>
-                        <Button variant="danger" size="xs" icon={<Trash2 size={12} />}>Delete</Button>
-                    </div>
+                    selectedIds.length > 0 && (
+                        <div className="flex items-center gap-2">
+                            <Button variant="outline" size="xs" icon={<Archive size={12} />}>Archive</Button>
+                            <Button variant="danger" size="xs" icon={<Trash2 size={12} />}>Delete</Button>
+                        </div>
+                    )
                 }
             />
 
@@ -96,6 +99,11 @@ export default function CouncilsPage() {
                 "grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700",
                 viewMode === 'grid' ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
             )}>
+                <InitializeCard 
+                    label="Initialize Council" 
+                    onClick={() => {}} 
+                    viewMode={viewMode} 
+                />
                 {filteredCouncils.map((council) => (
                     <div key={council.id} className="relative group/card">
                         <CouncilResourceCard
@@ -111,7 +119,10 @@ export default function CouncilsPage() {
                                 "absolute top-4 left-4 z-20 w-6 h-6 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center",
                                 selectedIds.includes(council.id)
                                     ? "bg-indigo-600 border-indigo-600 text-white"
-                                    : "bg-black/20 border-white/20 opacity-0 group-hover/card:opacity-100"
+                                    : cn(
+                                        "opacity-0 group-hover/card:opacity-100 border-2",
+                                        theme === 'dark' ? "bg-black/20 border-white/20" : "bg-white/40 border-slate-200 shadow-sm"
+                                    )
                             )}
                         >
                             {selectedIds.includes(council.id) && <Plus size={14} className="rotate-45" />}

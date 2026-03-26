@@ -17,6 +17,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { useMemoryStore, MAX_DOCUMENTS } from '@/store/useMemoryStore';
 import { cn } from '@/lib/utils';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { InitializeCard } from '@clawesome/ui';
 import { YoutubeIcon, PDFIcon } from './components';
 import { FileCode, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -133,6 +134,17 @@ export default function MemoriesPage() {
           viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"
         )}>
           <AnimatePresence mode="popLayout">
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <InitializeCard 
+                label="Initialize Memory Vault" 
+                onClick={() => {}} 
+                viewMode={viewMode} 
+              />
+            </motion.div>
             {filteredMemories.map((memory) => (
               <motion.div 
               layout 

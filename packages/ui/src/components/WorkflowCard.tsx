@@ -73,8 +73,8 @@ export const WorkflowCard: React.FC<WorkflowCardProps> = ({
     selected
       ? (isDark ? "bg-indigo-500/10 border-indigo-500/50" : "bg-indigo-50 border-indigo-500")
       : (isDark 
-          ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
-          : "bg-white border-slate-100 shadow-2xl shadow-slate-200/20 hover:border-indigo-200")
+          ? "bg-[#0A0C14] border-slate-800/60 hover:bg-slate-900/60 hover:border-indigo-500/40 shadow-2xl shadow-black/40" 
+          : "bg-white border-slate-100 shadow-xl shadow-slate-200/30 hover:border-indigo-200 hover:shadow-indigo-500/5")
   );
 
   const selectionIndicatorClasses = cn(

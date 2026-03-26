@@ -13,6 +13,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useRouter } from 'next/navigation';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
+import { InitializeCard } from '@clawesome/ui';
 
 export default function AgentsPage() {
   const router = useRouter();
@@ -140,6 +141,18 @@ export default function AgentsPage() {
                 : "space-y-4"
             )}
           >
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <InitializeCard 
+                label="Initialize Agent" 
+                onClick={() => {}} 
+                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+              />
+            </motion.div>
+
             {filteredAgents.map((agent) => (
               <motion.div
                 layout

@@ -18,12 +18,28 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check local storage or system preference
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('clawesome-theme') as Theme;
-      if (savedTheme) {
-        setTheme(savedTheme);
-      } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-        setTheme('light');
-      }
+      const getInitialTheme = (): Theme => {
+        const savedTheme = localStorage.getItem('clawesome-theme') as Theme;
+        if (savedTheme) return savedTheme;
+        if (document.documentElement.classList.contains('dark')) return 'dark';
+        if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+        return 'dark'; // Default to dark
+      };
+
+      setTheme(getInitialTheme());
+
+      // Watch for class changes on document.documentElement (e.g. from the app's toggle)
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(isDark ? 'dark' : 'light');
+          }
+        });
+      });
+
+      observer.observe(document.documentElement, { attributes: true });
+      return () => observer.disconnect();
     }
   }, []);
 
@@ -49,10 +65,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useUI() {
   const context = useContext(ThemeContext);
+  
   if (!context) {
-    // Return a default if not in provider, to avoid breaking in some environments
+    // If no provider is found, try to detect theme from document element (client-side only)
+    let detectedTheme: Theme = 'dark';
+    if (typeof window !== 'undefined') {
+      detectedTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
+    
     return { 
-        theme: 'dark' as Theme, 
+        theme: detectedTheme, 
         setTheme: (_: Theme) => {}, 
         toggleTheme: () => {} 
     };

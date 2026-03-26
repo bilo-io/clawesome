@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useSwarmStore } from '@/store/useSwarmStore';
 import { ResourceSkeleton } from './ResourceSkeleton';
+import { InitializeCard } from '@clawesome/ui';
 
 const iconMap: Record<string, any> = {
   Briefcase: Briefcase,
@@ -57,6 +58,17 @@ export const WorkspaceGallery = ({
       viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "space-y-3"
     )}>
       <AnimatePresence mode="popLayout">
+        <motion.div
+           layout
+           initial={{ opacity: 0, scale: 0.95 }}
+           animate={{ opacity: 1, scale: 1 }}
+        >
+          <InitializeCard 
+            label="Initialize Swarm" 
+            onClick={() => {}} 
+            viewMode={viewMode} 
+          />
+        </motion.div>
         {swarms.map((ws) => {
           const Icon = iconMap[ws.icon] || Briefcase;
           return (
@@ -187,29 +199,7 @@ export const WorkspaceGallery = ({
         })}
       </AnimatePresence>
       
-      <motion.button 
-        layout
-        className={cn(
-          "border-2 border-dashed border-slate-200 dark:border-slate-800/50 hover:border-indigo-500/50 hover:bg-white dark:hover:bg-slate-950/50 transition-all flex group active:scale-95 shadow-inner",
-          viewMode === 'grid' ? "p-8 rounded-[40px] flex-col items-center justify-center gap-4" : "p-4 rounded-[24px] items-center justify-center gap-4",
-          theme === 'light' && "bg-slate-50/50 hover:shadow-2xl hover:shadow-indigo-500/10"
-        )}
-      >
-         <div className={cn(
-           "rounded-full transition-all group-hover:rotate-90 group-hover:scale-110 flex items-center justify-center border",
-           theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-500 group-hover:text-indigo-400" : "bg-white border-slate-100 text-slate-400 group-hover:text-indigo-600 shadow-sm",
-           viewMode === 'grid' ? "p-4" : "p-2"
-         )}>
-            <Plus size={viewMode === 'grid' ? 28 : 18} />
-         </div>
-         <span className={cn(
-           "font-black uppercase tracking-[0.3em]", 
-           theme === 'dark' ? "text-slate-600 group-hover:text-indigo-400" : "text-slate-500 group-hover:text-indigo-600",
-           viewMode === 'grid' ? "text-[11px]" : "text-[10px]"
-          )}>
-           Initialize Swarm
-          </span>
-      </motion.button>
+      
     </div>
   );
 };

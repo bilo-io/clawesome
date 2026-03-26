@@ -96,7 +96,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({
       className={cn(
         "group relative rounded-2xl p-8 transition-all border shadow-xl flex flex-col h-full cursor-pointer",
         theme === 'dark' 
-          ? "bg-slate-900/40 border-slate-800/60 shadow-none hover:bg-slate-900 hover:border-indigo-500/30" 
+          ? "bg-[#0A0C14] border-slate-800/60 shadow-2xl shadow-black/40 hover:border-indigo-500/30" 
           : "bg-white border-slate-100 shadow-slate-200/40 hover:border-indigo-200 hover:shadow-2xl"
       )}
     >

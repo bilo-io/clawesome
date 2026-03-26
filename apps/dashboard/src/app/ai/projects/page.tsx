@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { InitializeCard } from '@clawesome/ui';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useProjectStore } from '@/store/useProjectStore';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
@@ -130,6 +131,17 @@ export default function ProjectsPage() {
             : "space-y-4"
         )}>
           <AnimatePresence mode="popLayout">
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <InitializeCard 
+                label="Initialize Project" 
+                onClick={() => {}} 
+                viewMode={viewMode} 
+              />
+            </motion.div>
             {filteredProjects.map((project, idx) => (
               <motion.div
                 layout

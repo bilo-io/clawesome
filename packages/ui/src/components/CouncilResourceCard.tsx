@@ -55,8 +55,8 @@ export const CouncilResourceCard = ({
         className={cn(
           "group flex items-center justify-between p-5 rounded-3xl border transition-all cursor-pointer",
           isDark 
-            ? "bg-slate-900 border-slate-800 hover:border-indigo-500/30 hover:bg-slate-800/60" 
-            : "bg-white border-slate-200 hover:border-indigo-500 hover:bg-slate-50 shadow-sm"
+            ? "bg-[#0A0C14] border-slate-800/60 hover:bg-slate-900/60 hover:border-indigo-500/40" 
+            : "bg-white border-slate-100 hover:border-indigo-200 hover:bg-slate-50/50 shadow-md shadow-slate-200/20"
         )}
       >
         <div className="flex items-center gap-6 flex-1 min-w-0">
@@ -104,14 +104,14 @@ export const CouncilResourceCard = ({
       className={cn(
         "group h-full flex flex-col p-6 rounded-[32px] border transition-all cursor-pointer relative overflow-hidden",
         isDark 
-          ? "bg-slate-950 border-slate-900 shadow-2xl shadow-indigo-500/5 hover:border-indigo-500/40" 
-          : "bg-white border-slate-200 shadow-xl shadow-slate-200/50 hover:border-indigo-500 hover:bg-slate-50/50"
+          ? "bg-[#0A0C14] border-slate-800/60 shadow-2xl shadow-black/50 hover:border-indigo-500/40" 
+          : "bg-white border-slate-100 shadow-xl shadow-slate-200/40 hover:border-indigo-300 hover:shadow-indigo-500/10"
       )}
     >
       {/* Status Badge */}
       <div className="absolute top-6 right-6 flex items-center gap-2">
          <span className={cn("w-2 h-2 rounded-full", statusColors[status])} />
-         <span className={cn("text-[9px] font-black uppercase tracking-widest", isDark ? "text-slate-600" : "text-slate-400")}>{status}</span>
+         <span className={cn("text-[9px] font-black uppercase tracking-widest", isDark ? "text-slate-600" : "text-slate-500")}>{status}</span>
       </div>
 
       <div className={cn(
@@ -123,12 +123,12 @@ export const CouncilResourceCard = ({
 
       <div className="flex-1">
         <h3 className={cn("text-lg font-black tracking-tight", isDark ? "text-white" : "text-slate-950")}>{title}</h3>
-        <p className={cn("text-xs font-bold mt-2 line-clamp-2", isDark ? "text-slate-500" : "text-slate-400")}>{description}</p>
+        <p className={cn("text-xs font-bold mt-2 line-clamp-2", isDark ? "text-slate-500" : "text-slate-600")}>{description}</p>
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-900 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-           <span className={cn("text-[9px] font-black uppercase tracking-widest", isDark ? "text-slate-700" : "text-slate-300")}>Counselors</span>
+           <span className={cn("text-[9px] font-black uppercase tracking-widest", isDark ? "text-slate-700" : "text-slate-500")}>Counselors</span>
            <AgentAvatarStack agents={agents} size="sm" />
         </div>
 

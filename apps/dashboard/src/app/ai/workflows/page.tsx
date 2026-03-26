@@ -24,7 +24,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useWorkflowStore } from '@/store/useWorkflowStore';
-import { WorkflowCard } from '@clawesome/ui';
+import { WorkflowCard, InitializeCard } from '@clawesome/ui';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
@@ -184,6 +184,17 @@ export default function WorkflowsPage() {
             : "space-y-4"
         )}>
           <AnimatePresence mode="popLayout">
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <InitializeCard 
+                label={activeTab === 'marketplace' ? "Hire Agent with Workflow" : "Initialize Workflow"} 
+                onClick={() => {}} 
+                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+              />
+            </motion.div>
             {filteredWorkflows.map((workflow, idx) => (
               <motion.div
                 layout

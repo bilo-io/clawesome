@@ -17,6 +17,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
+import { InitializeCard } from '@clawesome/ui';
 
 export default function SkillsPage() {
   const { mySkills, marketplaceSkills, isLoading, fetchSkills } = useSkillStore();
@@ -154,6 +155,17 @@ export default function SkillsPage() {
                 : "space-y-3"
             )}
           >
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <InitializeCard 
+                label={activeTab === 'marketplace' ? "Hire Agent with Skill" : "Initialize Skill"} 
+                onClick={() => {}} 
+                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+              />
+            </motion.div>
             {filteredSkills.map((skill, i) => (
               <motion.div
                 layout
