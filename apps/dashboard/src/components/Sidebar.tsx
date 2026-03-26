@@ -69,31 +69,31 @@ export const Sidebar = () => {
     {
       title: 'AI',
       items: [
-        { icon: Bot, label: 'Agents', href: '/agents' },
-        { icon: BrainCircuit, label: 'Swarms', href: '/swarms' },
-        { icon: CirclePile, label: 'Councils', href: '/councils' },
-        { icon: Blocks, label: 'Skills', href: '/skills' },
-        { icon: Brain, label: 'Memories', href: '/memory' },
-        { icon: FolderKanban, label: 'Projects', href: '/projects' },
-        { icon: Workflow, label: 'Workflows', href: '/workflows' },
+        { icon: Bot, label: 'Agents', href: '/ai/agents' },
+        { icon: BrainCircuit, label: 'Swarms', href: '/ai/swarms' },
+        { icon: CirclePile, label: 'Councils', href: '/ai/councils' },
+        { icon: Blocks, label: 'Skills', href: '/ai/skills' },
+        { icon: Brain, label: 'Memories', href: '/ai/memory' },
+        { icon: FolderKanban, label: 'Projects', href: '/ai/projects' },
+        { icon: Workflow, label: 'Workflows', href: '/ai/workflows' },
       ]
     },
     {
       title: 'OPS',
       items: [
-        { icon: MessageCircle, label: 'Chats', status: 'active', href: '/chat' },
-        { icon: ListTodo, label: 'Logs', href: '/logs' },
-        { icon: BarChart3, label: 'Usage', href: '/usage' },
-        { icon: Cpu, label: 'Analytics', href: '/analytics' },
+        { icon: MessageCircle, label: 'Chats', status: 'active', href: '/ops/chat' },
+        { icon: ListTodo, label: 'Logs', href: '/ops/logs' },
+        { icon: BarChart3, label: 'Usage', href: '/ops/usage' },
+        { icon: Cpu, label: 'Analytics', href: '/ops/analytics' },
       ]
     },
     {
       title: 'Sys',
       items: [
-        { icon: Sliders, label: 'Config', href: '/config' },
-        { icon: Plug, label: 'Integrations', href: '/integrations' },
-        { icon: Settings, label: 'Settings', href: '/settings' },
-        { icon: Shield, label: 'Security', href: '/security' },
+        { icon: Sliders, label: 'Config', href: '/sys/config' },
+        { icon: Plug, label: 'Integrations', href: '/sys/integrations' },
+        { icon: Settings, label: 'Settings', href: '/sys/settings' },
+        { icon: Shield, label: 'Security', href: '/sys/security' },
       ]
     }
   ];
