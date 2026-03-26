@@ -50,7 +50,7 @@ export default function SwarmsPage() {
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const { swarms, fetchSwarms } = useSwarmStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const viewMode = (getViewMode('/swarms', 'grid') as 'grid' | 'list');
+  const viewMode = (getViewMode('/ai/swarms', 'grid') as 'grid' | 'list');
 
   useEffect(() => {
     fetchSwarms();
@@ -112,19 +112,18 @@ export default function SwarmsPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         viewMode={viewMode}
-        onViewModeChange={(mode: any) => setViewMode('/swarms', mode)}
+        onViewModeChange={(mode: any) => setViewMode('/ai/swarms', mode)}
         searchPlaceholder="SEARCH SWARM PROTOCOL..."
         renderRight={
           <div className="flex items-center gap-6">
             <HeaderExternalSync />
-            <Button 
-              variant="primary" 
-              size="md" 
-              icon={<Plus size={16} />}
+            <button 
               onClick={() => {}}
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white rounded-full font-bold shadow-xl shadow-purple-600/20 transition-all active:translate-y-1"
             >
-              New Swarm
-            </Button>
+              <Plus size={20} />
+              <span className="text-[10px] font-bold uppercase tracking-widest">New Swarm</span>
+            </button>
           </div>
         }
         allSelected={isAllSelected}

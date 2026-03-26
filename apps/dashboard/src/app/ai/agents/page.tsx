@@ -26,9 +26,9 @@ export default function AgentsPage() {
   }, [fetchAgents]);
 
   // agents page uses 'grid' | 'table'; UIStore uses 'grid' | 'list' | 'table'
-  const rawMode = getViewMode('/agents', 'grid');
+  const rawMode = getViewMode('/ai/agents', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
-  const setViewMode = (m: 'grid' | 'list') => storeSetView('/agents', m === 'list' ? 'table' : 'grid');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/ai/agents', m === 'list' ? 'table' : 'grid');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -152,7 +152,7 @@ export default function AgentsPage() {
                   agent={agent} 
                   viewMode={viewMode === 'grid' ? 'grid' : 'table'}
                   onDelete={deleteAgent}
-                  onClick={() => router.push(`/agents/${agent.id}`)}
+                  onClick={() => router.push(`/ai/agents/${agent.id}`)}
                   selected={isSelected(agent.id)}
                   onToggleSelection={(e: React.MouseEvent) => {
                     e.stopPropagation();

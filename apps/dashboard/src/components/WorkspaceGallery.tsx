@@ -70,7 +70,7 @@ export const WorkspaceGallery = ({
                 layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
                 opacity: { duration: 0.3 }
               }}
-              onClick={() => router.push(`/swarms/${ws.id}`)}
+              onClick={() => router.push(`/ai/swarms/${ws.id}`)}
               className={cn(
                 "group transition-all cursor-pointer relative overflow-hidden border shadow-xl flex flex-col",
                 viewMode === 'grid' ? "p-8 rounded-[40px]" : "p-4 pr-8 rounded-[28px] flex-row items-center justify-between",
@@ -102,7 +102,7 @@ export const WorkspaceGallery = ({
   
               <div 
                 className={cn("flex items-center", viewMode === 'grid' ? "flex-col items-start" : "gap-6 pl-12")}
-                onClick={() => router.push(`/swarms/${ws.id}`)}
+                onClick={() => router.push(`/ai/swarms/${ws.id}`)}
               >
                 <div className={cn(
                   "rounded-2xl shadow-inner border transition-transform group-hover:scale-110", 

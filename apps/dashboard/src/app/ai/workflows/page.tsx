@@ -159,9 +159,9 @@ export default function WorkflowsPage() {
             <div className="w-[1px] h-6 bg-slate-800 mx-2" />
             <button
               onClick={handleCreateWorkflow}
-              className="flex items-center gap-3 px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-bold transition-all active:scale-95"
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white rounded-full font-bold shadow-xl shadow-purple-600/20 transition-all active:translate-y-1"
             >
-              <Plus size={18} />
+              <Plus size={20} />
               <span className="text-[10px] font-bold uppercase tracking-widest">Create</span>
             </button>
           </div>

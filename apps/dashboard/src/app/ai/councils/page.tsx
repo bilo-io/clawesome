@@ -76,14 +76,13 @@ export default function CouncilsPage() {
                 someSelected={selectedIds.length > 0 && selectedIds.length < filteredCouncils.length}
                 onSelectAll={handleSelectAll}
                 renderRight={
-                    <Button 
-                        variant="primary" 
-                        size="md" 
-                        icon={<Plus size={16} />}
-                        onClick={() => router.push('/councils/new')}
+                    <button 
+                        onClick={() => router.push('/ai/councils/new')}
+                        className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white rounded-full font-bold shadow-xl shadow-purple-600/20 transition-all active:translate-y-1"
                     >
-                        New Council
-                    </Button>
+                        <Plus size={20} />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">New Council</span>
+                    </button>
                 }
                 bulkActions={
                     <div className="flex items-center gap-2">
@@ -102,7 +101,7 @@ export default function CouncilsPage() {
                         <CouncilResourceCard
                             {...council}
                             viewMode={viewMode}
-                            onClick={(id) => router.push(`/councils/${id}`)}
+                            onClick={(id) => router.push(`/ai/councils/${id}`)}
                         />
                         
                         {/* Custom selection absolute overlay for the card component */}

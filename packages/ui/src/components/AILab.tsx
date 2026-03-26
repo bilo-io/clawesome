@@ -1,5 +1,7 @@
 'use client';
 
+// NC-R1-TRACE: Refreshing interface context
+
 import { useState } from 'react';
 import { 
   MessageCircle, 

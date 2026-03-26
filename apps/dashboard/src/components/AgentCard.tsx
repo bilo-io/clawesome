@@ -41,7 +41,10 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete,
             "w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 cursor-pointer",
             selected 
               ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-              : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+              : cn(
+                  "opacity-0 group-hover:opacity-100",
+                  theme === 'dark' ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-white shadow-sm"
+                )
           )}>
             {selected && <Check size={12} strokeWidth={4} />}
           </div>
@@ -121,7 +124,10 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, viewMode, onDelete,
           "w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all absolute top-6 left-6 z-20 cursor-pointer",
           selected 
             ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-            : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+            : cn(
+                "opacity-0 group-hover:opacity-100",
+                theme === 'dark' ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-white shadow-sm"
+              )
         )}>
           {selected && <Check size={14} strokeWidth={4} />}
         </div>

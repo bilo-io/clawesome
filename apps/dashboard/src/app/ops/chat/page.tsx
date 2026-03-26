@@ -25,7 +25,7 @@ export default function ChatsPage() {
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [exitingId, setExitingId] = useState<string | null>(null);
-  const viewMode = (getViewMode('/chat', 'grid') as 'grid' | 'list');
+  const viewMode = (getViewMode('/ops/chat', 'grid') as 'grid' | 'list');
 
   // Clear selection on unmount
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function ChatsPage() {
 
   const handleListExitComplete = () => {
     if (exitingId) {
-      router.push(`/chat/${exitingId}`);
+      router.push(`/ops/chat/${exitingId}`);
     }
   };
 
@@ -100,11 +100,11 @@ export default function ChatsPage() {
         onSelectAll={handleSelectAll}
         bulkActions={bulkActions}
         viewMode={viewMode}
-        onViewModeChange={(mode: any) => setViewMode('/chat', mode)}
+        setViewMode={(mode: any) => setViewMode('/ops/chat', mode)}
         searchPlaceholder="SEARCH THREADS..."
         renderRight={
           <button
-            onClick={() => router.push('/chat/new')}
+            onClick={() => router.push('/ops/chat/new')}
             className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#8C00FF] to-[#008FD6] text-white rounded-full font-bold shadow-xl shadow-purple-600/20 transition-all active:translate-y-1"
           >
             <Plus size={20} />
@@ -131,6 +131,7 @@ export default function ChatsPage() {
               {filteredChats.map((chat) => (
                 <motion.div
                   layout
+                  transition={{ layout: { duration: 0.4, ease: [0.32, 0.72, 0, 1] }, opacity: { duration: 0.3 } }}
                   key={chat.id}
                   onClick={() => handleSelectChat(chat.id)}
                   className={cn(
@@ -146,7 +147,7 @@ export default function ChatsPage() {
                   )}
                 >
                   {/* Selection Indicator */}
-                  <div 
+                  <div
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -157,7 +158,10 @@ export default function ChatsPage() {
                     viewMode === 'grid' ? "w-7 h-7 top-5 left-5" : "w-6 h-6 left-4 top-1/2 -translate-y-1/2",
                     selectedIds.includes(chat.id)
                       ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-                      : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                      : cn(
+                          "opacity-0 group-hover:opacity-100",
+                          theme === 'dark' ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-white shadow-sm"
+                        )
                   )}>
                     {selectedIds.includes(chat.id) && <Check size={viewMode === 'grid' ? 14 : 12} strokeWidth={4} />}
                   </div>
