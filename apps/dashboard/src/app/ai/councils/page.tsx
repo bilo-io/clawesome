@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, BrainCircuit, Search, List as ListIcon, LayoutGrid, Filter, MoreVertical, Archive, Trash2 } from 'lucide-react';
+import { Plus, Check, BrainCircuit, Search, List as ListIcon, LayoutGrid, Filter, MoreVertical, Archive, Trash2 } from 'lucide-react';
 import { 
   DashboardResourceHeader, 
 } from '@/components/DashboardResourceHeader';
@@ -125,7 +125,7 @@ export default function CouncilsPage() {
                                     )
                             )}
                         >
-                            {selectedIds.includes(council.id) && <Plus size={14} className="rotate-45" />}
+                            {selectedIds.includes(council.id) && <Check size={14} strokeWidth={4} />}
                         </div>
                     </div>
                 ))}
