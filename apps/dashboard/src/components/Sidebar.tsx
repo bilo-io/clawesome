@@ -13,6 +13,7 @@ import {
   Bot,
   BrainCircuit,
   MessageCircle,
+  CirclePile,
   Shield,
   Cpu,
   BarChart3,
@@ -70,6 +71,7 @@ export const Sidebar = () => {
       items: [
         { icon: Bot, label: 'Agents', href: '/agents' },
         { icon: BrainCircuit, label: 'Swarms', href: '/swarms' },
+        { icon: CirclePile, label: 'Councils', href: '/councils' },
         { icon: Blocks, label: 'Skills', href: '/skills' },
         { icon: Brain, label: 'Memories', href: '/memory' },
         { icon: FolderKanban, label: 'Projects', href: '/projects' },
@@ -121,7 +123,7 @@ export const Sidebar = () => {
         )}
       >
       <div className={cn(
-        "p-6 border-b",
+        "p-3 border-b",
         theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50/50"
       )}>
         <Link href="/" className="flex items-center overflow-hidden">

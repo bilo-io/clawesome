@@ -54,6 +54,10 @@ export * from './components/DocsWrapper';
 
 // Communication
 export * from './components/ChatInterface';
+export * from './components/CouncilChatInterface';
+export * from './components/AnimatedPromptInput';
+export * from './components/AgentAvatarStack';
+export * from './components/CouncilResourceCard';
 
 // Charts & Data Visualization
 export * from './components/Charts';

@@ -450,7 +450,7 @@ export default function ChatDetailPage() {
                   onClick={handleSend}
                   disabled={!inputValue.trim()}
                   className={cn(
-                    "p-4 rounded-xl transition-all duration-500 flex items-center justify-center shadow-xl active:scale-90 disabled:opacity-30 disabled:grayscale",
+                    "p-4 rounded-full transition-all duration-500 flex items-center justify-center shadow-xl active:scale-90 disabled:opacity-30 disabled:grayscale",
                     "bg-indigo-600 text-white shadow-indigo-500/30 hover:bg-indigo-500 group-focus-within:rotate-[-5deg]"
                   )}
                 >

@@ -64,7 +64,11 @@ import {
   ProfileActionCard,
   ProfileInfoRow,
   Carousel,
-  MasonryGrid
+  MasonryGrid,
+  CouncilChatInterface,
+  CouncilResourceCard,
+  AnimatedPromptInput,
+  AgentAvatarStack
 } from './index';
 
 import logo from './assets/clawesome-logo.svg';
@@ -72,7 +76,7 @@ import {
   Settings, Globe, Shield, HelpCircle, Terminal as TerminalIcon, Bot, User,
   BrainCircuit, Blocks, Brain, FolderKanban, MessageCircle, ListTodo, BarChart3, Cpu, Sliders, Plug, Sparkles, Home, Layout,
   ChartPieIcon, Zap, Layers, Activity, Lock, Star, Database, Server, Code2, LayoutGrid, TrendingUp, GitBranch, MessageSquare, Search, Plus, List, Mail,
-  ChevronDown, ChevronRight, File, Image as ImageIcon, FileText
+  ChevronDown, ChevronRight, File, Image as ImageIcon, FileText, Check
 } from 'lucide-react';
 
 const mockCommandResults = [
@@ -107,6 +111,7 @@ const categories = [
     items: [
       { icon: Sparkles, label: 'Lab & Sandbox', href: '/ai/lab' },
       { icon: Bot, label: 'Agents', href: '/ai/agents' },
+      { icon: BrainCircuit, label: 'Councils', href: '/ai/councils' },
     ]
   },
   {
@@ -1709,6 +1714,113 @@ const LayoutsPage = () => {
   );
 };
 
+const CouncilsShowcase = () => {
+  const { theme } = useUI();
+  const isDark = theme === 'dark';
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showChat, setShowChat] = useState(false);
+
+  const mockAgents = [
+    { id: 'a1', name: 'Architect', role: 'System Design', color: '#6366f1' },
+    { id: 'a2', name: 'Security', role: 'Risk Mitigation', color: '#f43f5e' },
+    { id: 'a3', name: 'Ethics', role: 'Alignment Guard', color: '#10b981' },
+    { id: 'a4', name: 'Analyst', role: 'Data Intelligence', color: '#f59e0b' },
+  ];
+
+  const [messages, setMessages] = useState<any[]>([
+    {
+      id: 'm1',
+      role: 'system',
+      isInitialRecommendation: true,
+      content: "I've analyzed your request: 'How should we handle decentralized data sovereignty?'. I recommend a Council of 4 agents to reach a consensus.",
+      actions: [
+        { label: 'Approve & Start', variant: 'primary', icon: <Check size={14} />, onClick: () => console.log('Approved') },
+        { label: 'Edit Counselors', variant: 'secondary', onClick: () => console.log('Edit') },
+      ]
+    }
+  ]);
+
+  const councils = [
+    { id: 'c1', title: 'Data Sovereignty Protocol', description: 'Discussion on decentralizing data ownership for S3 clearance users.', agents: mockAgents.slice(0, 3), lastActive: '2m ago', messageCount: 24, status: 'active' as const },
+    { id: 'c2', title: 'Ethical Guardrail Review', description: 'Reviewing the latest alignment benchmarks for Swarm-09.', agents: [mockAgents[2], mockAgents[0]], lastActive: '1h ago', messageCount: 12, status: 'concluded' as const },
+    { id: 'c3', title: 'Security Mesh Architecture', description: 'Internal deliberation on the new firewall-less neural sync.', agents: [mockAgents[1], mockAgents[0], mockAgents[3]], lastActive: 'Yesterday', messageCount: 56, status: 'archived' as const },
+  ];
+
+  if (showChat) {
+    return (
+      <div className="h-[85vh] animate-in fade-in zoom-in-95 duration-500">
+        <CouncilChatInterface
+          title="Data Sovereignty Protocol"
+          agents={mockAgents}
+          messages={messages}
+          onSendMessage={(content) => {
+            const userMsg = { id: Date.now().toString(), role: 'user', content, timestamp: 'Just now' };
+            setMessages(prev => [...prev, userMsg]);
+            
+            setTimeout(() => {
+              const agentMsg = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                agent: mockAgents[0],
+                content: "From an architectural perspective, we need to ensure the decryption keys are geographically sharded across multiple validator nodes.",
+                timestamp: 'Just now'
+              };
+              setMessages(prev => [...prev, agentMsg]);
+            }, 1000);
+          }}
+          onClearChat={() => setMessages([])}
+        />
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="mt-4" 
+          onClick={() => setShowChat(false)}
+        >
+          Back to List
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <PageWrapper title="Councils" description="Orchestrate collaborative AI deliberations. Councils allow multiple specialized agents to discuss complex topics and reach a consensus through multi-perspective reasoning." icon={BrainCircuit}>
+       <div className="space-y-8">
+          <div className="flex items-center justify-between">
+             <div className="flex items-center gap-4 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl w-fit">
+               <button onClick={() => setViewMode('grid')} className={cn("px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all", viewMode === 'grid' ? "bg-white dark:bg-slate-800 text-indigo-500 shadow-xl" : "text-slate-500")}>Grid View</button>
+               <button onClick={() => setViewMode('list')} className={cn("px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all", viewMode === 'list' ? "bg-white dark:bg-slate-800 text-indigo-500 shadow-xl" : "text-slate-500")}>List View</button>
+             </div>
+             
+             <Button variant="primary" icon={<Plus size={14} />} onClick={() => setShowChat(true)}>New Council</Button>
+          </div>
+
+          <div className={cn(
+            "grid gap-6",
+            viewMode === 'grid' ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+          )}>
+             {councils.map(c => (
+               <CouncilResourceCard
+                 key={c.id}
+                 {...c}
+                 viewMode={viewMode}
+                 onClick={() => setShowChat(true)}
+               />
+             ))}
+          </div>
+
+          <DocsWrapper label="Animated Prompt Component" description="Standalone premium input used in council chats.">
+             <div className="p-12 bg-slate-100 dark:bg-slate-950/50 rounded-[40px] border border-dashed border-slate-200 dark:border-slate-800">
+                <AnimatedPromptInput 
+                  value="" 
+                  onChange={() => {}} 
+                  placeholder="Test the animated gradient border..."
+                />
+             </div>
+          </DocsWrapper>
+       </div>
+    </PageWrapper>
+  );
+};
 
 function Showcase() {
   const { theme } = useUI();
@@ -1791,13 +1903,13 @@ function Showcase() {
               <Route path="/foundation/layouts" element={<LayoutsPage />} />
               <Route path="/ai/lab" element={<AILabPage historySearch={historySearch} setHistorySearch={setHistorySearch} />} />
               <Route path="/ai/agents" element={<AgentsPage setIsCreateAgentModalOpen={setIsCreateAgentModalOpen} setIsAILabOpen={setIsAILabOpen} />} />
+              <Route path="/ai/councils" element={<CouncilsShowcase />} />
               <Route path="/portals/docs" element={<DocsPortalPage />} />
               <Route path="/portals/website" element={<WebsitePage />} />
               <Route path="/portals/dashboard" element={<DashboardPage />} />
               <Route path="/charts" element={<ChartsPage />} />
               <Route path="/system/terminal" element={<SystemPage mode="terminal" />} />
               <Route path="/system/identity" element={<SystemPage mode="identity" />} />
-
               <Route path="*" element={<div className="h-[60vh] flex items-center justify-center font-black text-slate-500 italic uppercase">Module Pending Integration</div>} />
             </Routes>
           </div>
