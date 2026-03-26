@@ -192,12 +192,20 @@ export const Sidebar = () => {
           </Link>
         </div>
 
-        {categories.map((category) => {
+        {categories.map((category, index) => {
           const isOpen = openCategories.includes(category.title);
           
           return (
-            <div key={category.title} className="flex flex-col">
-              {/* Category Header */}
+            <React.Fragment key={category.title}>
+              {/* Subtle divider when collapsed */}
+              {!isSidebarExpanded && (
+                <div className={cn(
+                  "mx-4 h-px shrink-0 transition-colors",
+                  theme === 'dark' ? "bg-slate-800/50" : "bg-slate-200/50"
+                )} />
+              )}
+              <div className="flex flex-col">
+                {/* Category Header */}
               {isSidebarExpanded && (
                 <button
                   onClick={() => toggleCategory(category.title)}
@@ -286,6 +294,7 @@ export const Sidebar = () => {
                 )}
               </AnimatePresence>
             </div>
+          </React.Fragment>
           );
         })}
       </nav>

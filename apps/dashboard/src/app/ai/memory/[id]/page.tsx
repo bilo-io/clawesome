@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { 
   Plus, 
@@ -12,7 +12,10 @@ import {
   Video,
   Network,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Trash2,
+  Copy,
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
@@ -23,6 +26,7 @@ import { YoutubeIcon, PDFIcon, AddDataModal } from '../components/AddDataModal';
 import { FileCode, Link as LinkIcon } from 'lucide-react';
 import { DocumentCard } from '../components/DocumentCard';
 import { DocumentListItem } from '../components/DocumentListItem';
+import { useSelectionStore } from '@/store/useSelectionStore';
 
 export default function MemoryDetailPage() {
   const { theme } = useUIStore();
@@ -32,11 +36,17 @@ export default function MemoryDetailPage() {
   const { memories, addDataPoint, updateDataPointStatus } = useMemoryStore();
   const memory = memories.find((m) => m.id === id);
 
+  const { selectedIds, toggleSelection, clearSelection, setSelection, isSelected } = useSelectionStore();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<DataType | null>(null);
   const [previewDoc, setPreviewDoc] = useState<any>(null);
+
+  // Clear selection on unmount
+  useEffect(() => {
+    return () => clearSelection();
+  }, [clearSelection]);
 
   if (!memory) {
     return (
@@ -65,6 +75,39 @@ export default function MemoryDetailPage() {
     setActiveModal(null);
   };
 
+  const isAllSelected = filteredDocs.length > 0 && filteredDocs.every(d => selectedIds.includes(d.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      clearSelection();
+    } else {
+      setSelection(filteredDocs.map(d => d.id));
+    }
+  };
+
+  const bulkActions = selectedIds.length > 0 ? (
+    <>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-rose-50 border-rose-200 text-rose-600 shadow-sm"
+      )}>
+        <Trash2 size={14} /> Purge ({selectedIds.length})
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Copy size={14} /> Replicate
+      </button>
+      <button className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95",
+        theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-600 shadow-sm"
+      )}>
+        <Download size={14} /> Export JSON
+      </button>
+    </>
+  ) : null;
+
   return (
     <main className="space-y-12 pb-20 max-w-[1600px] mx-auto transition-colors duration-300">
       <DashboardResourceHeader
@@ -79,93 +122,97 @@ export default function MemoryDetailPage() {
         searchPlaceholder="Search data points..."
         viewMode={viewMode}
         onViewModeChange={(v: any) => setViewMode(v)}
+        isCollection={true}
+        allSelected={isAllSelected}
+        someSelected={selectedIds.length > 0 && !isAllSelected}
+        onSelectAll={handleSelectAll}
+        bulkActions={bulkActions}
         renderRight={
-           <div className="relative">
-              <button
-                disabled={memory.documents.length >= MAX_DOCUMENTS}
-                onClick={() => setIsAddDropdownOpen(!isAddDropdownOpen)}
+           <div className="flex items-center gap-4">
+              <button 
+                onClick={() => router.push('/ai/memory')}
                 className={cn(
-                  "flex items-center gap-3 px-8 py-4 rounded-full font-bold shadow-xl transition-all active:translate-y-1",
-                  memory.documents.length >= MAX_DOCUMENTS 
-                   ? "bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed opacity-50" 
-                   : "bg-gradient-to-r from-[#8C00FF] to-[#008FD6] hover:opacity-90 text-white shadow-purple-600/20"
+                   "flex items-center gap-2 px-6 py-4 rounded-full border transition-all font-bold text-[10px] uppercase tracking-widest active:scale-95 shadow-lg shadow-slate-900/5",
+                   theme === 'dark' ? "bg-slate-900 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-100 text-slate-500 hover:text-slate-900"
                 )}
               >
-                <Plus size={20} />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Add to Memory</span>
-                <ChevronDown className={cn("transition-transform", isAddDropdownOpen && "rotate-180")} size={16} />
+                <ChevronLeft size={16} /> <span className="hidden sm:inline">Clusters</span>
               </button>
 
-              <AnimatePresence>
-                {isAddDropdownOpen && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-40"
-                      onClick={() => setIsAddDropdownOpen(false)}
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className={cn(
-                        "absolute right-0 mt-4 w-72 rounded-xl border p-2 shadow-2xl z-50 overflow-hidden",
-                        theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
-                      )}
-                    >
-                      <div className="grid grid-cols-1 gap-2">
-                        {[
-                          { type: 'link', icon: <LinkIcon size={18} />, label: 'Web URL', desc: 'Sync live research data', color: '#3B82F6', bgColor: 'rgba(59, 130, 246, 0.1)' },
-                          { type: 'youtube', icon: <YoutubeIcon size={18} />, label: 'YouTube Video', desc: 'Ingest visual logic', color: '#FF0000', bgColor: 'rgba(255, 0, 0, 0.1)' },
-                          { type: 'pdf', icon: <PDFIcon size={18} />, label: 'PDF Document', desc: 'Parse technical specs', color: '#EF4444', bgColor: 'rgba(239, 68, 68, 0.1)' },
-                          { type: 'text', icon: <FileCode size={18} />, label: 'Raw Script', desc: 'Direct code injection', color: '#10B981', bgColor: 'rgba(16, 185, 129, 0.1)' },
-                        ].map((item) => (
-                          <button
-                            key={item.type}
-                            onClick={() => {
-                              setActiveModal(item.type as DataType);
-                              setIsAddDropdownOpen(false);
-                            }}
-                            className={cn(
-                              "flex items-center gap-4 p-3 rounded-lg transition-all text-left group",
-                              theme === 'dark' ? "hover:bg-slate-800" : "hover:bg-slate-50"
-                            )}
-                          >
-                            <div 
-                              className="p-2.5 rounded-lg transition-all flex items-center justify-center"
-                              style={{ 
-                                backgroundColor: item.bgColor, 
-                                color: item.color 
+              <div className="relative">
+                <button
+                  disabled={memory.documents.length >= MAX_DOCUMENTS}
+                  onClick={() => setIsAddDropdownOpen(!isAddDropdownOpen)}
+                  className={cn(
+                    "flex items-center gap-3 px-8 py-4 rounded-full font-bold shadow-xl transition-all active:translate-y-1",
+                    memory.documents.length >= MAX_DOCUMENTS 
+                    ? "bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed opacity-50" 
+                    : "bg-gradient-to-r from-[#8C00FF] to-[#008FD6] hover:opacity-90 text-white shadow-purple-600/20"
+                  )}
+                >
+                  <Plus size={20} />
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Add to Memory</span>
+                  <ChevronDown className={cn("transition-transform", isAddDropdownOpen && "rotate-180")} size={16} />
+                </button>
+
+                <AnimatePresence>
+                  {isAddDropdownOpen && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-40"
+                        onClick={() => setIsAddDropdownOpen(false)}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className={cn(
+                          "absolute right-0 mt-4 w-72 rounded-xl border p-2 shadow-2xl z-50 overflow-hidden",
+                          theme === 'dark' ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
+                        )}
+                      >
+                        <div className="grid grid-cols-1 gap-2">
+                          {[
+                            { type: 'link', icon: <LinkIcon size={18} />, label: 'Web URL', desc: 'Sync live research data', color: '#3B82F6', bgColor: 'rgba(59, 130, 246, 0.1)' },
+                            { type: 'youtube', icon: <YoutubeIcon size={18} />, label: 'YouTube Video', desc: 'Ingest visual logic', color: '#FF0000', bgColor: 'rgba(255, 0, 0, 0.1)' },
+                            { type: 'pdf', icon: <PDFIcon size={18} />, label: 'PDF Document', desc: 'Parse technical specs', color: '#EF4444', bgColor: 'rgba(239, 68, 68, 0.1)' },
+                            { type: 'text', icon: <FileCode size={18} />, label: 'Raw Script', desc: 'Direct code injection', color: '#10B981', bgColor: 'rgba(16, 185, 129, 0.1)' },
+                          ].map((item) => (
+                            <button
+                              key={item.type}
+                              onClick={() => {
+                                setActiveModal(item.type as DataType);
+                                setIsAddDropdownOpen(false);
                               }}
+                              className={cn(
+                                "flex items-center gap-4 p-3 rounded-lg transition-all text-left group",
+                                theme === 'dark' ? "hover:bg-slate-800" : "hover:bg-slate-50"
+                              )}
                             >
-                              {item.icon}
-                            </div>
-                            <div>
-                              <p className={cn("text-xs font-black uppercase tracking-widest", theme === 'dark' ? "text-white" : "text-slate-900")}>{item.label}</p>
-                              <p className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">{item.desc}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
+                              <div 
+                                className="p-2.5 rounded-lg transition-all flex items-center justify-center"
+                                style={{ 
+                                  backgroundColor: item.bgColor, 
+                                  color: item.color 
+                                }}
+                              >
+                                {item.icon}
+                              </div>
+                              <div>
+                                <p className={cn("text-xs font-black uppercase tracking-widest", theme === 'dark' ? "text-white" : "text-slate-900")}>{item.label}</p>
+                                <p className="text-[10px] text-slate-500 font-medium leading-tight mt-0.5">{item.desc}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
            </div>
         }
       />
-
-      <div className="flex px-4 items-center gap-4 -mt-6">
-        <button 
-          onClick={() => router.push('/ai/memory')}
-          className={cn(
-             "flex items-center gap-2 p-2 rounded-xl transition-colors font-bold text-xs uppercase tracking-widest",
-             theme === 'dark' ? "text-slate-400 hover:bg-slate-900 hover:text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-          )}
-        >
-          <ChevronLeft size={16} /> Back to Clusters
-        </button>
-      </div>
-
       {/* Memory Sources Content */}
       <div className={cn(
         viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "space-y-4"
@@ -180,9 +227,27 @@ export default function MemoryDetailPage() {
               exit={{ opacity: 0, scale: 0.95 }}
             >
               {viewMode === 'grid' ? (
-                <DocumentCard doc={doc} theme={theme} onClick={() => setPreviewDoc(doc)} />
+                <DocumentCard 
+                  doc={doc} 
+                  theme={theme} 
+                  onClick={() => setPreviewDoc(doc)} 
+                  selected={isSelected(doc.id)}
+                  onToggleSelection={(e) => {
+                    e.stopPropagation();
+                    toggleSelection(doc.id);
+                  }}
+                />
               ) : (
-                <DocumentListItem doc={doc} theme={theme} onClick={() => setPreviewDoc(doc)} />
+                <DocumentListItem 
+                  doc={doc} 
+                  theme={theme} 
+                  onClick={() => setPreviewDoc(doc)} 
+                  selected={isSelected(doc.id)}
+                  onToggleSelection={(e) => {
+                    e.stopPropagation();
+                    toggleSelection(doc.id);
+                  }}
+                />
               )}
             </motion.div>
           ))}
