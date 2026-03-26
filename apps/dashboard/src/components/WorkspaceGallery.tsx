@@ -92,7 +92,10 @@ export const WorkspaceGallery = ({
                 viewMode === 'grid' ? "w-7 h-7 top-6 right-6" : "w-6 h-6 left-4 top-1/2 -translate-y-1/2",
                 selectedIds.includes(ws.id)
                   ? "bg-indigo-500 border-indigo-500 text-white scale-110 shadow-lg shadow-indigo-500/20" 
-                  : "border-slate-700 bg-slate-950 opacity-0 group-hover:opacity-100"
+                  : cn(
+                      "opacity-0 group-hover:opacity-100",
+                      theme === 'dark' ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-white shadow-sm"
+                    )
               )}>
                 {selectedIds.includes(ws.id) && <Check size={viewMode === 'grid' ? 14 : 12} strokeWidth={4} />}
               </div>

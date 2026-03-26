@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../utils';
 import { useUI } from '../ThemeContext';
-import { AnimatedPromptInput } from './AnimatedPromptInput';
+import { ChatInput } from './ChatInput';
 import { AgentAvatarStack, type CouncilAgent } from './AgentAvatarStack';
 
 export interface CouncilMessage {
@@ -51,6 +51,7 @@ export interface CouncilChatInterfaceProps {
   isLoading?: boolean;
   className?: string;
   title?: string;
+  theme?: 'light' | 'dark';
 }
 
 export const CouncilChatInterface = ({
@@ -61,9 +62,11 @@ export const CouncilChatInterface = ({
   onAddAgent,
   isLoading = false,
   className,
-  title = "New Council Deliberation"
+  title = "New Council Deliberation",
+  theme: themeProp
 }: CouncilChatInterfaceProps) => {
-  const { theme } = useUI();
+  const { theme: uiTheme } = useUI();
+  const theme = themeProp || uiTheme;
   const isDark = theme === 'dark';
   const [inputValue, setInputValue] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -88,9 +91,12 @@ export const CouncilChatInterface = ({
       className
     )}>
       {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05] grayscale">
-         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500 blur-[150px]" />
-         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500 blur-[150px]" />
+      <div className={cn(
+        "absolute inset-0 pointer-events-none",
+        isDark ? "opacity-[0.05] grayscale" : "opacity-[0.08]"
+      )}>
+         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500 blur-[150px] animate-pulse" />
+         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500 blur-[150px] animate-pulse" />
       </div>
 
       {/* Main Chat Area */}
@@ -307,7 +313,7 @@ export const CouncilChatInterface = ({
         "px-10 pt-8 pb-14 transition-all duration-700 z-40 relative",
         isDark ? "bg-gradient-to-t from-slate-950 via-slate-950 to-slate-950/0" : "bg-gradient-to-t from-white via-white to-white/0"
       )}>
-        <AnimatedPromptInput 
+        <ChatInput 
           value={inputValue}
           onChange={setInputValue}
           onSend={() => {
@@ -315,18 +321,13 @@ export const CouncilChatInterface = ({
             setInputValue('');
           }}
           isLoading={isLoading}
+          placeholder="Ask the Council anything..."
+          features={[
+            { icon: ShieldCheck, label: 'Security Policy: Level 4', color: isDark ? 'text-emerald-500/40 group-hover:text-emerald-500' : 'text-emerald-600/40 group-hover:text-emerald-600' },
+            { icon: Zap, label: 'Neural Sync: 99.8%', color: isDark ? 'text-amber-500/40 group-hover:text-amber-500' : 'text-amber-600/40 group-hover:text-amber-600' },
+          ]}
+          theme={theme}
         />
-        
-        <div className="mt-6 flex items-center justify-center gap-8">
-           <div className="flex items-center gap-2.5 cursor-help group">
-              <ShieldCheck size={14} className={cn("transition-colors", isDark ? "text-slate-800 group-hover:text-emerald-500" : "text-slate-200 group-hover:text-emerald-500")} />
-              <span className={cn("text-[9px] font-black uppercase tracking-[0.3em]", isDark ? "text-slate-800" : "text-slate-300")}>Security Policy: Level 4</span>
-           </div>
-           <div className="flex items-center gap-2.5 cursor-help group">
-              <Zap size={14} className={cn("transition-colors", isDark ? "text-slate-800 group-hover:text-amber-500" : "text-slate-200 group-hover:text-amber-500")} />
-              <span className={cn("text-[9px] font-black uppercase tracking-[0.3em]", isDark ? "text-slate-800" : "text-slate-300")}>Neural Sync: 99.8%</span>
-           </div>
-        </div>
       </div>
     </div>
   );

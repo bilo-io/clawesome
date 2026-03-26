@@ -68,6 +68,7 @@ import {
   CouncilChatInterface,
   CouncilResourceCard,
   AnimatedPromptInput,
+  ChatInput,
   AgentAvatarStack
 } from './index';
 
@@ -1807,6 +1808,25 @@ const CouncilsShowcase = () => {
                />
              ))}
           </div>
+
+          <DocsWrapper label="Chat Input" description="The new standard for agentic communication, featuring action pills and feature labels. extracted from the mission terminal.">
+             <div className="p-12 bg-slate-100 dark:bg-slate-950/50 rounded-[40px] border border-dashed border-slate-200 dark:border-slate-800">
+                <ChatInput 
+                  value="" 
+                  onChange={() => {}} 
+                  onSend={() => {}}
+                  placeholder="Ask anything..."
+                  actions={[
+                    { icon: Activity, label: 'Health Check', onClick: () => {} },
+                    { icon: TerminalIcon, label: 'CLI Info', onClick: () => {} },
+                  ]}
+                  features={[
+                    { icon: Brain, label: 'Deep Reasoning', color: 'text-indigo-400' },
+                    { icon: Globe, label: 'Search Trace', color: 'text-blue-400' },
+                  ]}
+                />
+             </div>
+          </DocsWrapper>
 
           <DocsWrapper label="Animated Prompt Component" description="Standalone premium input used in council chats.">
              <div className="p-12 bg-slate-100 dark:bg-slate-950/50 rounded-[40px] border border-dashed border-slate-200 dark:border-slate-800">

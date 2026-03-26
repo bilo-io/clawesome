@@ -133,6 +133,7 @@ export default function CouncilDetailPage() {
                     isLoading={isLoading}
                     onClearChat={() => {}}
                     onAddAgent={() => {}}
+                    theme={theme}
                 />
             </div>
         </div>

@@ -15,6 +15,7 @@ import {
   Activity,
   Terminal,
 } from 'lucide-react';
+import { ChatInput } from '@clawesome/ui';
 import { useUIStore } from '@/store/useUIStore';
 import { DEFAULT_PORT } from '@antigravity/core';
 import { cn } from '@/lib/utils';
@@ -379,99 +380,24 @@ export default function ChatDetailPage() {
 
       {/* Floating Input */}
       <div className="absolute bottom-10 left-0 right-0 px-4 flex justify-center pointer-events-none">
-        <div className="w-full max-w-[760px] pointer-events-auto">
-          {/* Quick Action Pills */}
-          <div className="flex justify-center mb-6 gap-3">
-            <button 
-              onClick={handleHealthCheck}
-              className={cn(
-                "px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-2 backdrop-blur-md",
-                theme === 'dark' ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-emerald-400" : "bg-white/80 border-slate-200 text-slate-500 hover:text-emerald-600 shadow-lg"
-              )}
-            >
-              <Activity size={12} /> Health Check
-            </button>
-            <button 
-              onClick={handleVersionCheck}
-              className={cn(
-                "px-5 py-2.5 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 flex items-center gap-2 backdrop-blur-md",
-                theme === 'dark' ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-indigo-400" : "bg-white/80 border-slate-200 text-slate-500 hover:text-indigo-600 shadow-lg"
-              )}
-            >
-              <Terminal size={12} /> CLI Info
-            </button>
-          </div>
-          
-          <div className="relative group perspective-1000">
-            <div className={cn(
-              "relative p-[2px] rounded-3xl transition-all duration-700 shadow-[0_32px_80px_rgba(0,0,0,0.2)] dark:shadow-[0_48px_100px_rgba(0,0,0,0.5)]",
-              "bg-gradient-to-tr from-[#8C00FF]/20 to-[#008FD6]/20 focus-within:from-[#8C00FF] focus-within:to-[#008FD6] focus-within:scale-[1.01] focus-within:shadow-[0_48px_100px_rgba(140,0,255,0.15)]"
-            )}>
-              <div className={cn(
-                "flex items-center gap-4 bg-white dark:bg-slate-950 rounded-3xl px-8 py-5 transition-all duration-700 overflow-hidden",
-                "bg-white/95 dark:bg-slate-950/95"
-              )}>
-                <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-                    <div 
-                      className={cn("w-6 h-6", theme === 'dark' ? "bg-slate-500" : "bg-slate-400", "group-focus-within:bg-indigo-500 transition-colors")} 
-                      style={{ 
-                        maskImage: 'url(/clawesome-icon.svg)', 
-                        maskSize: 'contain', 
-                        maskRepeat: 'no-repeat', 
-                        maskPosition: 'center',
-                        WebkitMaskImage: 'url(/clawesome-icon.svg)',
-                        WebkitMaskSize: 'contain',
-                        WebkitMaskRepeat: 'no-repeat',
-                        WebkitMaskPosition: 'center'
-                      }}
-                    />
-                </div>
-                <textarea
-                  rows={1}
-                  value={inputValue}
-                  onChange={(e) => {
-                    setInputValue(e.target.value);
-                    (e.target as HTMLTextAreaElement).style.height = 'auto';
-                    (e.target as HTMLTextAreaElement).style.height = `${(e.target as HTMLTextAreaElement).scrollHeight}px`;
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSend();
-                    }
-                  }}
-                  placeholder="Ask NC-01 anything..."
-                  className={cn(
-                    "flex-1 bg-transparent text-lg font-bold outline-none resize-none no-scrollbar max-h-40 placeholder:font-bold",
-                    theme === 'dark' ? "text-white placeholder:text-slate-700" : "text-black placeholder:text-slate-300"
-                  )}
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={!inputValue.trim()}
-                  className={cn(
-                    "p-4 rounded-full transition-all duration-500 flex items-center justify-center shadow-xl active:scale-90 disabled:opacity-30 disabled:grayscale",
-                    "bg-indigo-600 text-white shadow-indigo-500/30 hover:bg-indigo-500 group-focus-within:rotate-[-5deg]"
-                  )}
-                >
-                  <Send size={24} />
-                </button>
-              </div>
-            </div>
-            <div className="flex justify-center mt-6 gap-8">
-              {[
-                { icon: Brain, label: 'Deep Reasoning', color: 'text-indigo-400' },
-                { icon: Globe, label: 'Search Trace', color: 'text-blue-400' },
-                { icon: Cpu, label: 'Local Compute', color: 'text-emerald-400' },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity cursor-help group/item">
-                  <item.icon size={12} className={cn("transition-all group-hover/item:scale-125", item.color)} />
-                  <span className={cn("text-[9px] font-black uppercase tracking-[0.2em]", theme === 'dark' ? "text-slate-500" : "text-slate-700")}>{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <ChatInput 
+          className="pointer-events-auto"
+          value={inputValue}
+          onChange={setInputValue}
+          onSend={handleSend}
+          isLoading={isThinking}
+          placeholder="Ask NC-01 anything..."
+          actions={[
+            { icon: Activity, label: 'Health Check', onClick: handleHealthCheck },
+            { icon: Terminal, label: 'CLI Info', onClick: handleVersionCheck },
+          ]}
+          features={[
+            { icon: Brain, label: 'Deep Reasoning', color: 'text-indigo-400' },
+            { icon: Globe, label: 'Search Trace', color: 'text-blue-400' },
+            { icon: Cpu, label: 'Local Compute', color: 'text-emerald-400' },
+          ]}
+          theme={theme}
+        />
       </div>
     </main>
   );

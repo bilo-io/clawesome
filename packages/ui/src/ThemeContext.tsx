@@ -101,9 +101,25 @@ export function ThemeProvider({
 export function useUI() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    // Return a safe default when used outside a provider (e.g. in SSR or tests)
+    // Return a safe default when used outside a provider (e.g. in Next.js apps with own store)
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+      if (typeof document !== 'undefined') {
+        setIsDark(document.documentElement.classList.contains('dark'));
+        
+        // Listen for changes to the dark class on html element
+        const observer = new MutationObserver(() => {
+          setIsDark(document.documentElement.classList.contains('dark'));
+        });
+        
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
+      }
+    }, []);
+
     return {
-      theme: 'dark' as const, // The resolved string for styling parity
+      theme: (isDark ? 'dark' : 'light') as 'light' | 'dark', // The resolved string for styling parity
       themePreference: 'system' as const, // The logical toggle state
       setTheme: () => {},
       glowIntensity: 50,

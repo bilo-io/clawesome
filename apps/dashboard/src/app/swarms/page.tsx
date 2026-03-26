@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { WorkspaceGallery } from '@/components/WorkspaceGallery';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { Button } from '@clawesome/ui';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useSwarmStore } from '@/store/useSwarmStore';
 
@@ -113,7 +114,19 @@ export default function SwarmsPage() {
         viewMode={viewMode}
         onViewModeChange={(mode: any) => setViewMode('/swarms', mode)}
         searchPlaceholder="SEARCH SWARM PROTOCOL..."
-        renderRight={<HeaderExternalSync />}
+        renderRight={
+          <div className="flex items-center gap-6">
+            <HeaderExternalSync />
+            <Button 
+              variant="primary" 
+              size="md" 
+              icon={<Plus size={16} />}
+              onClick={() => {}}
+            >
+              New Swarm
+            </Button>
+          </div>
+        }
         allSelected={isAllSelected}
         someSelected={selectedIds.length > 0 && !isAllSelected}
         onSelectAll={handleSelectAll}
