@@ -18,6 +18,7 @@ import {
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
+import { DesktopSettings } from '@/components/DesktopSettings';
 import { TestComponent } from "@clawesome/ui";
 
 export default function SettingsPage() {
@@ -138,6 +139,7 @@ export default function SettingsPage() {
 
         {/* Content Area */}
         <div className="md:col-span-3 space-y-10">
+           <DesktopSettings />
            {sections.map(section => (
              <section key={section.id} className="space-y-8">
                 <div className="space-y-2">

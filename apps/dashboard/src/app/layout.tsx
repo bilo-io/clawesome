@@ -15,6 +15,7 @@ import { FloatingTerminal } from "@/components/FloatingTerminal";
 import { useUIStore } from "@/store/useUIStore";
 import { cn } from "@/lib/utils";
 import { AnimatePresence } from 'framer-motion';
+import { DesktopProvider } from '@/providers/DesktopManager';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,21 +95,23 @@ export default function RootLayout({
         "antialiased flex h-screen overflow-hidden transition-colors duration-300",
         theme === 'dark' ? "bg-slate-950 text-slate-50" : "bg-slate-50 text-slate-900"
       )}>
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0 relative">
-          <WorkspaceTabs />
-          <main className="flex-1 overflow-auto p-8 no-scrollbar">
-            {children}
-          </main>
-          <AILab />
-          <AnimatePresence>
-            <InstanceWizard />
-          </AnimatePresence>
-          <CommandModal />
-          <BottomDock />
-          <FloatingActionHub />
-          <FloatingTerminal />
-        </div>
+        <DesktopProvider>
+          <Sidebar />
+          <div className="flex-1 flex flex-col min-w-0 relative">
+            <WorkspaceTabs />
+            <main className="flex-1 overflow-auto p-8 no-scrollbar">
+              {children}
+            </main>
+            <AILab />
+            <AnimatePresence>
+              <InstanceWizard />
+            </AnimatePresence>
+            <CommandModal />
+            <BottomDock />
+            <FloatingActionHub />
+            <FloatingTerminal />
+          </div>
+        </DesktopProvider>
       </body>
     </html>
   );

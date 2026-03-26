@@ -1,0 +1,22 @@
+# apps/cli/moon.yml
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+project:
+  name: 'clawesome-cli'
+
+dependsOn:
+  - 'core'
+
+tags:
+  - 'cli'
+  - 'core'
+
+tasks:
+  dev:
+    command: 'bun src/index.ts'
+  build:
+    command: 'bun build --target node --outfile dist/index.js src/index.ts && bun build --compile --outfile clawesome-cli dist/index.js'
+    inputs:
+      - 'src/**/*'
+    outputs:
+      - 'clawesome-cli'

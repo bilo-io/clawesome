@@ -30,6 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '@/store/useUIStore';
 import { useProfileStore } from '@/store/useProfileStore';
 import { cn } from '@/lib/utils';
+import { DesktopStatus } from './DesktopStatus';
 
 interface SidebarItem {
   icon: React.ElementType;
@@ -303,6 +304,7 @@ export const Sidebar = () => {
         "p-4 border-t",
         theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50/50"
       )}>
+        <DesktopStatus />
         <Link 
           href="/profile"
           className={cn(

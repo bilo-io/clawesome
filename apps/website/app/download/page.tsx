@@ -35,7 +35,7 @@ export default function DownloadPage() {
       iconPath: "/images/org/icon-apple.svg",
       version: "v2.0.4-stable",
       size: "84MB",
-      link: "#",
+      link: "/downloads/Clawesome-Mac.dmg",
       featured: true,
       extension: '.dmg'
     },
@@ -45,16 +45,25 @@ export default function DownloadPage() {
       iconPath: "/images/org/icon-linux.svg",
       version: "v2.0.4-beta",
       size: "76MB",
-      link: "#",
-      extension: '.pkg'
+      link: "/downloads/Clawesome-Linux.AppImage",
+      extension: '.AppImage'
+    },
+    {
+      id: 'windows',
+      os: "Windows",
+      iconPath: "/images/org/icon-windows.svg",
+      version: "v2.0.4-beta",
+      size: "92MB",
+      link: "/downloads/Clawesome-Windows.exe",
+      extension: '.exe'
     }
   ];
 
   // Reorder so detected OS is in center (index 1)
   const versions = useMemo(() => {
     if (!detectedOs) return allVersions;
-    const detected = allVersions.find(v => v.id === detectedOs);
-    const others = allVersions.filter(v => v.id !== detectedOs);
+    const detected = allVersions.find(v => v?.id === detectedOs);
+    const others = allVersions.filter(v => v?.id !== detectedOs);
     if (!detected) return allVersions;
     
     // Put detected in center, others on sides
@@ -100,7 +109,7 @@ export default function DownloadPage() {
                 transition={{ delay: i * 0.1 }}
                 className={cn(
                   "p-10 rounded-2xl border transition-all flex flex-col items-center text-center",
-                  v.featured 
+                  v?.featured 
                     ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xl z-10 scale-105' 
                     : 'glass-panel bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-white/20 dark:border-slate-800 shadow-2xl scale-95 opacity-80 hover:opacity-100 hover:scale-100'
                 )}
@@ -109,11 +118,11 @@ export default function DownloadPage() {
                    <div 
                      className={cn(
                        "w-16 h-16 transition-transform group-hover:scale-110",
-                       v.featured ? "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]" : "bg-slate-400 dark:bg-slate-600"
+                       v?.featured ? "bg-gradient-to-tr from-[#8C00FF] to-[#008FD6]" : "bg-slate-400 dark:bg-slate-600"
                      )}
                      style={{
-                        maskImage: `url(${v.iconPath})`,
-                        WebkitMaskImage: `url(${v.iconPath})`,
+                        maskImage: `url(${v?.iconPath})`,
+                        WebkitMaskImage: `url(${v?.iconPath})`,
                         maskSize: 'contain',
                         WebkitMaskSize: 'contain',
                         maskRepeat: 'no-repeat',
@@ -123,21 +132,23 @@ export default function DownloadPage() {
                      }}
                    />
                  </div>
-                 <h2 className="mt-8 text-2xl font-black text-slate-900 dark:text-white">{v.os}</h2>
-                 <p className="mt-2 text-slate-500 font-bold uppercase text-[10px] tracking-widest">{v.version} — {v.size}</p>
-                 {v.featured ? (
-                   <PrimaryButton 
-                     className="mt-10 w-full"
-                     icon={<DownloadIcon size={20} />}
-                   >
-                     Download ({v.extension})
-                   </PrimaryButton>
-                 ) : (
-                   <button className="mt-10 px-6 py-4 w-full rounded-xl font-semibold whitespace-nowrap text-sm flex flex-row items-center justify-center transition-all shadow-lg bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-800">
-                      <DownloadIcon size={20} className="mr-2" />
-                      <span>Download ({v.extension})</span>
-                   </button>
-                 )}
+                 <h2 className="mt-8 text-2xl font-black text-slate-900 dark:text-white">{v?.os}</h2>
+                 <p className="mt-2 text-slate-500 font-bold uppercase text-[10px] tracking-widest">{v?.version} — {v?.size}</p>
+                 <a href={v?.link} download className="w-full mt-10 block">
+                   {v?.featured ? (
+                     <PrimaryButton 
+                       className="w-full"
+                       icon={<DownloadIcon size={20} />}
+                     >
+                       Download ({v?.extension})
+                     </PrimaryButton>
+                   ) : (
+                     <button className="px-6 py-4 w-full rounded-xl font-semibold whitespace-nowrap text-sm flex flex-row items-center justify-center transition-all shadow-lg bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-800">
+                        <DownloadIcon size={20} className="mr-2" />
+                        <span>Download ({v?.extension})</span>
+                     </button>
+                   )}
+                 </a>
               </motion.div>
             ))}
          </div>

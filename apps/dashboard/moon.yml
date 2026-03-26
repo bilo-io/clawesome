@@ -5,9 +5,12 @@ stack: 'frontend'
 project:
   name: 'Clawesome Dashboard'
   description: 'Clawesome Dashboard to manage your AI swarm'
+
 dependsOn:
   - 'core'
   - 'ui'
+  - 'clawesome-cli'
+  - 'wss-gateway'
 
 tags:
   - 'core'
@@ -23,9 +26,33 @@ tasks:
     inputs:
       - 'src/**/*'
       - 'public/**/*'
+  
+  # Desktop Forge Tasks
+  sync-sidecars:
+    command: 'mkdir -p src-tauri/binaries && cp ../gateway/clawesome-gateway src-tauri/binaries/clawesome-gateway-aarch64-apple-darwin && cp ../cli/clawesome-cli src-tauri/binaries/clawesome-cli-aarch64-apple-darwin'
+    deps:
+      - 'clawesome-cli:build'
+      - 'wss-gateway:build'
+    inputs:
+      - '../gateway/clawesome-gateway'
+      - '../cli/clawesome-cli'
+    outputs:
+      - 'src-tauri/binaries/*'
+
+  tauri-dev:
+    command: 'bun tauri dev'
+    deps:
+      - 'sync-sidecars'
+  
+  tauri-build:
+    command: 'bun tauri build'
+    deps:
+      - 'build'
+      - 'sync-sidecars'
+    outputs:
+      - 'src-tauri/target/release/bundle/**/*'
 
   storybook:
     command: 'bun run storybook'
-
   chromatic:
     command: 'bun run chromatic'

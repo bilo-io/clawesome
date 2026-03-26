@@ -1,8 +1,28 @@
 import { DEFAULT_PORT } from '@antigravity/core';
 import { Server, ServerWebSocket } from "bun";
+import path from "path";
+import fs from "fs";
 
 export function startServer(port = DEFAULT_PORT) {
-  console.log(`Gateway (Bun) listening on ws://localhost:${port}`);
+  // Base path detection for sidecar mode
+  const isBinary = !!process.env.BUN_BINARY_TARGET;
+  const exePath = process.execPath;
+  const baseDir = isBinary ? path.dirname(exePath) : process.cwd();
+  
+  // Look for agents in potential locations
+  const potentialAgentPaths = [
+    path.join(baseDir, 'agents'),
+    path.join(baseDir, '../Resources/agents'), // macOS Bundle
+    path.join(process.cwd(), 'agents'),
+    path.join(process.cwd(), '../../../agents'), // Dev workspace
+  ];
+
+  let agentsPath = potentialAgentPaths.find(p => fs.existsSync(p));
+
+  console.log(`[SYS] Clawesome Gateway ${isBinary ? '(Binary)' : '(Source)'} mode`);
+  console.log(`[SYS] Executing from: ${exePath}`);
+  console.log(`[SYS] Agents Path: ${agentsPath || 'NOT FOUND'}`);
+  console.log(`[SYS] Listening on ws://localhost:${port}`);
   
   return Bun.serve({
     port,
@@ -12,7 +32,12 @@ export function startServer(port = DEFAULT_PORT) {
       
       // Handle HTTP endpoints for the "Vertical Slice"
       if (url.pathname === '/health') {
-        return new Response(JSON.stringify({ status: 'ok', timestamp: Date.now() }), {
+        return new Response(JSON.stringify({ 
+          status: 'ok', 
+          timestamp: Date.now(),
+          mode: isBinary ? 'binary' : 'source',
+          agents: agentsPath || 'none'
+        }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
       }
