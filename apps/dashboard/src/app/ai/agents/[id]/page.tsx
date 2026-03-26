@@ -78,7 +78,7 @@ export default function AgentSoulEditor({ params }: { params: Promise<{ id: stri
         renderRight={
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => router.push('/agents')}
+              onClick={() => router.push('/ai/agents')}
               className={cn(
                  "flex items-center gap-2 p-3 px-6 rounded-2xl transition-all border",
                  theme === 'dark' ? "bg-slate-800/50 border-slate-800 text-slate-400 hover:text-white" : "bg-white border-slate-200 text-slate-500 hover:text-slate-900"

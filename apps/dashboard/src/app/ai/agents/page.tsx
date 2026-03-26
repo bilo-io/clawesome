@@ -14,6 +14,8 @@ import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useRouter } from 'next/navigation';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 import { InitializeCard } from '@clawesome/ui';
+import { AgentsGridView } from './components/AgentsGridView';
+import { AgentsListView } from './components/AgentsListView';
 
 export default function AgentsPage() {
   const router = useRouter();
@@ -133,48 +135,25 @@ export default function AgentsPage() {
             )}
           />
         ) : filteredAgents.length > 0 ? (
-          <motion.div
-            key="list"
-            className={cn(
-              viewMode === 'grid' 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" 
-                : "space-y-4"
-            )}
-          >
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <InitializeCard 
-                label="Initialize Agent" 
-                onClick={() => {}} 
-                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+          <div className="relative">
+            {viewMode === 'grid' ? (
+              <AgentsGridView 
+                agents={filteredAgents}
+                onDelete={deleteAgent}
+                onAgentClick={(agent) => router.push(`/ai/agents/${agent.id}`)}
+                isSelected={isSelected}
+                onToggleSelection={toggleSelection}
               />
-            </motion.div>
-
-            {filteredAgents.map((agent) => (
-              <motion.div
-                layout
-                key={agent.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-              >
-                <AgentCard 
-                  agent={agent} 
-                  viewMode={viewMode === 'grid' ? 'grid' : 'table'}
-                  onDelete={deleteAgent}
-                  onClick={() => router.push(`/ai/agents/${agent.id}`)}
-                  selected={isSelected(agent.id)}
-                  onToggleSelection={(e: React.MouseEvent) => {
-                    e.stopPropagation();
-                    toggleSelection(agent.id);
-                  }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+            ) : (
+              <AgentsListView 
+                agents={filteredAgents}
+                onDelete={deleteAgent}
+                onAgentClick={(agent) => router.push(`/ai/agents/${agent.id}`)}
+                isSelected={isSelected}
+                onToggleSelection={toggleSelection}
+              />
+            )}
+          </div>
         ) : (
           <motion.div
             key="empty"

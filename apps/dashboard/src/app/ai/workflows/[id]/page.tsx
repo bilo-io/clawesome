@@ -22,7 +22,7 @@ export default function WorkflowDetailPage() {
       <div className="h-full flex flex-col items-center justify-center gap-6">
         <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Mission Record Not Found</h2>
         <button 
-          onClick={() => router.push('/workflows')}
+          onClick={() => router.push('/ai/workflows')}
           className="px-8 py-3 bg-indigo-600 text-white rounded-full font-bold uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-600/20 active:scale-95 transition-all"
         >
           Return to Hub
@@ -34,7 +34,7 @@ export default function WorkflowDetailPage() {
   const handleDelete = () => {
     if (confirm('Are you sure you want to terminate this workflow?')) {
       deleteWorkflow(workflow.id);
-      router.push('/workflows');
+      router.push('/ai/workflows');
     }
   };
 
@@ -55,7 +55,7 @@ export default function WorkflowDetailPage() {
         isCollection={false}
         backLink={{
           label: 'Back to Workflows',
-          href: '/workflows'
+          href: '/ai/workflows'
         }}
         renderRight={
           <div className="flex items-center gap-3">

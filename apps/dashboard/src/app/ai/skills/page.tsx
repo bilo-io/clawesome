@@ -18,15 +18,17 @@ import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
 import { InitializeCard } from '@clawesome/ui';
+import { SkillsGridView } from './components/SkillsGridView';
+import { SkillsListView } from './components/SkillsListView';
 
 export default function SkillsPage() {
   const { mySkills, marketplaceSkills, isLoading, fetchSkills } = useSkillStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
   
-  const rawMode = getViewMode('/skills', 'grid');
+  const rawMode = getViewMode('/ai/skills', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
-  const setViewMode = (m: 'grid' | 'list') => storeSetView('/skills', m === 'list' ? 'table' : 'grid');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/ai/skills', m === 'list' ? 'table' : 'grid');
   
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
@@ -147,48 +149,25 @@ export default function SkillsPage() {
             )}
           />
         ) : filteredSkills.length > 0 ? (
-          <motion.div
-            key={`${activeTab}-list`}
-            className={cn(
-              viewMode === 'grid' 
-                ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" 
-                : "space-y-3"
-            )}
-          >
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <InitializeCard 
-                label={activeTab === 'marketplace' ? "Hire Agent with Skill" : "Initialize Skill"} 
-                onClick={() => {}} 
-                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
+          <div className="relative">
+            {viewMode === 'grid' ? (
+              <SkillsGridView 
+                skills={filteredSkills}
+                isSkillImported={isSkillImported}
+                selectedIds={selectedIds}
+                onToggleSelection={toggleSelection}
+                initializeLabel={activeTab === 'marketplace' ? "Hire Agent with Skill" : "Initialize Skill"}
               />
-            </motion.div>
-            {filteredSkills.map((skill, i) => (
-              <motion.div
-                layout
-                key={skill.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SkillCard 
-                  skill={skill} 
-                  viewMode={viewMode === 'grid' ? 'grid' : 'table'} 
-                  isImported={isSkillImported(skill.name)}
-                  selected={selectedIds.includes(skill.id)}
-                  onToggleSelection={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleSelection(skill.id);
-                  }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+            ) : (
+              <SkillsListView 
+                skills={filteredSkills}
+                isSkillImported={isSkillImported}
+                selectedIds={selectedIds}
+                onToggleSelection={toggleSelection}
+                initializeLabel={activeTab === 'marketplace' ? "Hire Agent with Skill" : "Initialize Skill"}
+              />
+            )}
+          </div>
         ) : (
           <motion.div
             key={`${activeTab}-empty`}

@@ -25,9 +25,9 @@ export default function IntegrationsPage() {
   const { providers, setPreferredModel, setApiKey, getApiKey } = useProviderStore();
   const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
   const { selectedIds, toggleSelection, clearSelection, setSelection } = useSelectionStore();
-  const rawMode = getViewMode('/integrations', 'grid');
+  const rawMode = getViewMode('/sys/integrations', 'grid');
   const viewMode: 'grid' | 'table' = rawMode === 'list' ? 'grid' : (rawMode as 'grid' | 'table');
-  const setViewMode = (m: 'grid' | 'list') => storeSetView('/integrations', m === 'list' ? 'table' : 'grid');
+  const setViewMode = (m: 'grid' | 'list') => storeSetView('/sys/integrations', m === 'list' ? 'table' : 'grid');
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
 

@@ -53,7 +53,7 @@ export const AILab = () => {
             theme === 'dark' ? "border-slate-800 bg-black/40" : "border-slate-100 bg-slate-50/50"
           )}>
             <header className={cn(
-              "p-4 border-b flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]",
+              "h-20 border-b flex items-center gap-2 px-6 text-[10px] font-bold uppercase tracking-[0.2em] shrink-0",
               theme === 'dark' ? "border-slate-800 text-slate-500" : "border-slate-100 text-slate-400"
             )}>
                <Brain size={14} className="text-indigo-500" />
@@ -86,10 +86,10 @@ export const AILab = () => {
         {/* Chat Panel */}
         <div className="w-[400px] flex flex-col h-full shrink-0">
           <header className={cn(
-            "p-6 border-b space-y-4 backdrop-blur-md",
+            "h-20 border-b flex items-center px-6 backdrop-blur-md shrink-0",
             theme === 'dark' ? "border-slate-800 bg-slate-950/50" : "border-slate-100 bg-white/50"
           )}>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                   <Sparkles size={20} className="animate-pulse" />
@@ -123,34 +123,37 @@ export const AILab = () => {
                 </button>
               </div>
             </div>
+          </header>
 
-            {/* Tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1">
-              {tabs.map((tab, idx) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(idx)}
-                  className={cn(
-                    "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap",
-                    activeTab === idx 
-                      ? 'bg-indigo-600 text-white shadow-md' 
-                      : (theme === 'dark' ? 'bg-slate-900 text-slate-500 hover:text-slate-300' : 'bg-slate-100 text-slate-400 hover:text-slate-600')
-                  )}
-                >
-                  {tab.title}
-                </button>
-              ))}
-              <button 
-                onClick={addTab}
+          {/* Tighter Tabs Row */}
+          <div className={cn(
+            "h-12 border-b flex items-center gap-1 overflow-x-auto no-scrollbar px-6 shrink-0",
+            theme === 'dark' ? "bg-slate-900/50 border-slate-800" : "bg-slate-50 border-slate-100"
+          )}>
+            {tabs.map((tab, idx) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(idx)}
                 className={cn(
-                  "p-2 transition-colors",
-                  theme === 'dark' ? "text-slate-600 hover:text-indigo-400" : "text-slate-400 hover:text-indigo-500"
+                  "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap",
+                  activeTab === idx 
+                    ? 'bg-indigo-600 text-white shadow-md' 
+                    : (theme === 'dark' ? 'bg-slate-900 text-slate-500 hover:text-slate-300' : 'bg-slate-100 text-slate-400 hover:text-slate-600')
                 )}
               >
-                <Plus size={16} />
+                {tab.title}
               </button>
-            </div>
-          </header>
+            ))}
+            <button 
+              onClick={addTab}
+              className={cn(
+                "p-2 transition-colors",
+                theme === 'dark' ? "text-slate-600 hover:text-indigo-400" : "text-slate-400 hover:text-indigo-500"
+              )}
+            >
+              <Plus size={16} />
+            </button>
+          </div>
 
           <div className={cn(
             "flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar",

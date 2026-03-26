@@ -5,11 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { 
   Plus, 
   ChevronDown,
-  Loader2,
   ChevronLeft,
   Search,
-  LayoutGrid,
-  List,
   AudioLines,
   Presentation,
   Video,
@@ -22,8 +19,10 @@ import { useUIStore } from '@/store/useUIStore';
 import { useMemoryStore, MAX_DOCUMENTS, DataType } from '@/store/useMemoryStore';
 import { cn } from '@/lib/utils';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
-import { YoutubeIcon, PDFIcon, AddDataModal } from '../components';
+import { YoutubeIcon, PDFIcon, AddDataModal } from '../components/AddDataModal';
 import { FileCode, Link as LinkIcon } from 'lucide-react';
+import { DocumentCard } from '../components/DocumentCard';
+import { DocumentListItem } from '../components/DocumentListItem';
 
 export default function MemoryDetailPage() {
   const { theme } = useUIStore();
@@ -43,13 +42,13 @@ export default function MemoryDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center p-20 gap-4">
         <h1 className="text-2xl font-bold">Memory Not Found</h1>
-        <button onClick={() => router.push('/memory')} className="px-6 py-2 rounded-full border border-slate-200">Go Back</button>
+        <button onClick={() => router.push('/ai/memory')} className="px-6 py-2 rounded-full border border-slate-200">Go Back</button>
       </div>
     );
   }
 
   const filteredDocs = useMemo(() => {
-    return memory.documents.filter((d) => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return memory.documents.filter((d: any) => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [memory.documents, searchQuery]);
 
   const handleAddDataPoint = (type: DataType, name: string, content: string) => {
@@ -79,7 +78,7 @@ export default function MemoryDetailPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search data points..."
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={(v: any) => setViewMode(v)}
         renderRight={
            <div className="relative">
               <button
@@ -157,7 +156,7 @@ export default function MemoryDetailPage() {
 
       <div className="flex px-4 items-center gap-4 -mt-6">
         <button 
-          onClick={() => router.push('/memory')}
+          onClick={() => router.push('/ai/memory')}
           className={cn(
              "flex items-center gap-2 p-2 rounded-xl transition-colors font-bold text-xs uppercase tracking-widest",
              theme === 'dark' ? "text-slate-400 hover:bg-slate-900 hover:text-white" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
@@ -172,7 +171,7 @@ export default function MemoryDetailPage() {
         viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" : "space-y-4"
       )}>
         <AnimatePresence mode="popLayout">
-          {filteredDocs.map((doc) => (
+          {filteredDocs.map((doc: any) => (
             <motion.div 
               layout 
               key={doc.id}
@@ -274,11 +273,8 @@ export default function MemoryDetailPage() {
                   onClick={() => setPreviewDoc(null)}
                   className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors pointer-events-auto"
                 >
-                  <Search size={20} className="opacity-0" /> {/* Spacer */}
-                  <div className="absolute top-6 right-8">
-                    <div className={cn("p-2 rounded-full border transition-colors", theme === 'dark' ? "bg-slate-900 border-slate-800 hover:text-white" : "bg-slate-50 border-slate-200 hover:text-slate-900")}>
-                      <ChevronDown size={20} className="rotate-45" />
-                    </div>
+                  <div className={cn("p-2 rounded-full border transition-colors", theme === 'dark' ? "bg-slate-900 border-slate-800 hover:text-white" : "bg-slate-50 border-slate-200 hover:text-slate-900")}>
+                    <ChevronDown size={20} className="rotate-45" />
                   </div>
                 </button>
               </div>
@@ -352,113 +348,5 @@ export default function MemoryDetailPage() {
         </div>
       </div>
     </main>
-  );
-}
-
-// Sub-components
-function DocumentCard({ doc, theme, onClick }: { doc: any, theme: 'light' | 'dark', onClick?: () => void }) {
-  return (
-    <div
-      onClick={onClick}
-      className={cn(
-        "group p-6 rounded-[32px] border shadow-xl relative overflow-hidden transition-all h-full cursor-pointer",
-        theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 shadow-black/40 hover:border-slate-700" : "bg-white border-slate-100 shadow-slate-200/50 hover:border-slate-300"
-      )}
-    >
-      <div className="flex justify-between items-start mb-6 relative z-10">
-        <div className={cn(
-          "w-12 h-12 rounded-2xl flex items-center justify-center shadow-md",
-          doc.type === 'youtube' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-          doc.type === 'pdf' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
-          doc.type === 'link' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-        )}>
-           {doc.type === 'youtube' && <YoutubeIcon size={24} />}
-           {doc.type === 'pdf' && <PDFIcon size={24} />}
-           {doc.type === 'link' && <LinkIcon size={24} />}
-           {doc.type === 'text' && <FileCode size={24} />}
-        </div>
-        
-        {doc.status === 'processing' ? (
-          <div className={cn("px-3 py-1.5 rounded-full flex items-center gap-2", theme === 'dark' ? "bg-indigo-500/20 text-indigo-400" : "bg-indigo-100 text-indigo-600")}>
-             <Loader2 size={12} className="animate-spin" />
-             <span className="text-[9px] font-black uppercase tracking-widest">Processing</span>
-          </div>
-        ) : (
-          <div className={cn("px-3 py-1.5 rounded-full flex items-center gap-2", theme === 'dark' ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-600")}>
-             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-             <span className="text-[9px] font-black uppercase tracking-widest">Ready</span>
-          </div>
-        )}
-      </div>
-
-      <div className="relative z-10">
-        <h3 className={cn("text-lg font-black tracking-tight mb-2 truncate", theme === 'dark' ? "text-white" : "text-slate-900")}>
-          {doc.name}
-        </h3>
-        <p className={cn("text-[10px] font-bold uppercase tracking-widest mb-6", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>
-          Ingested {doc.timestamp}
-        </p>
-        
-        {/* Content Snippet */}
-        <div className={cn(
-           "p-4 rounded-2xl text-xs font-mono truncate border shadow-inner",
-           theme === 'dark' ? "bg-slate-950 border-slate-800 text-slate-400" : "bg-slate-50 border-slate-200 text-slate-600"
-        )}>
-          {doc.content}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DocumentListItem({ doc, theme, onClick }: { doc: any, theme: 'light' | 'dark', onClick?: () => void }) {
-  return (
-    <div
-      onClick={onClick}
-      className={cn(
-        "p-4 md:p-6 rounded-[32px] border transition-all flex flex-col md:flex-row md:items-center justify-between group gap-4 cursor-pointer",
-        theme === 'dark' ? "bg-slate-900/40 border-slate-800/60 hover:bg-slate-900 hover:border-slate-700" : "bg-white border-slate-100 hover:shadow-xl shadow-slate-200/50 hover:border-slate-300"
-      )}
-    >
-      <div className="flex items-center gap-6">
-        <div className={cn(
-          "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md transition-transform group-hover:scale-105",
-          doc.type === 'youtube' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-          doc.type === 'pdf' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
-          doc.type === 'link' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-        )}>
-           {doc.type === 'youtube' && <YoutubeIcon size={24} />}
-           {doc.type === 'pdf' && <PDFIcon size={24} />}
-           {doc.type === 'link' && <LinkIcon size={24} />}
-           {doc.type === 'text' && <FileCode size={24} />}
-        </div>
-        <div className="min-w-0">
-          <h3 className={cn("text-lg font-black tracking-tight truncate", theme === 'dark' ? "text-white" : "text-slate-900")}>
-            {doc.name}
-          </h3>
-          <p className={cn("text-[10px] font-bold uppercase tracking-widest mt-1 truncate", theme === 'dark' ? "text-slate-500" : "text-slate-400")}>
-            {doc.content}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto mt-2 md:mt-0 pl-18 md:pl-0">
-        <span className={cn("text-xs font-medium whitespace-nowrap", theme === 'dark' ? "text-slate-600" : "text-slate-400")}>
-           {doc.timestamp}
-        </span>
-        
-        {doc.status === 'processing' ? (
-          <div className={cn("px-3 py-1.5 rounded-full flex items-center gap-2", theme === 'dark' ? "bg-indigo-500/20 text-indigo-400" : "bg-indigo-100 text-indigo-600")}>
-             <Loader2 size={12} className="animate-spin" />
-             <span className="text-[9px] font-black uppercase tracking-widest hidden sm:inline">Processing</span>
-          </div>
-        ) : (
-          <div className={cn("px-3 py-1.5 rounded-full flex items-center gap-2", theme === 'dark' ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-600")}>
-             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-             <span className="text-[9px] font-black uppercase tracking-widest hidden sm:inline">Ready</span>
-          </div>
-        )}
-      </div>
-    </div>
   );
 }

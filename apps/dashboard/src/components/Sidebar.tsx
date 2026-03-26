@@ -123,7 +123,7 @@ export const Sidebar = () => {
         )}
       >
       <div className={cn(
-        "p-3 border-b",
+        "h-20 flex items-center px-6 border-b shrink-0",
         theme === 'dark' ? "border-slate-900 bg-black/20" : "border-slate-100 bg-slate-50/50"
       )}>
         <Link href="/" className="flex items-center overflow-hidden">

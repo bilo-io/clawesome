@@ -81,7 +81,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         statusValue="ACTIVE"
         statusColor="emerald"
         isCollection={false}
-        backLink={{ label: 'Back to Projects', href: '/projects' }}
+        backLink={{ label: 'Back to Projects', href: '/ai/projects' }}
         renderRight={
           <div className={cn(
             "flex p-1.5 rounded-[24px] border transition-all shadow-xl",

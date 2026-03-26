@@ -2,20 +2,16 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Check, BrainCircuit, Search, List as ListIcon, LayoutGrid, Filter, MoreVertical, Archive, Trash2 } from 'lucide-react';
+import { Plus, BrainCircuit, Archive, Trash2 } from 'lucide-react';
 import { 
   DashboardResourceHeader, 
 } from '@/components/DashboardResourceHeader';
 import { 
-  CouncilResourceCard, 
-  InitializeCard,
-  Button,
-  Surface,
-  Badge,
-  AgentAvatarStack
+  Button
 } from '@clawesome/ui';
 import { useUIStore } from '@/store/useUIStore';
-import { cn } from '@/lib/utils';
+import { CouncilGridView } from './components/CouncilGridView';
+import { CouncilListView } from './components/CouncilListView';
 
 // Mock Data
 const mockAgents = [
@@ -33,9 +29,10 @@ const mockCouncils = [
 ];
 
 export default function CouncilsPage() {
-    const { theme } = useUIStore();
+    const { theme, getViewMode, setViewMode: storeSetView } = useUIStore();
     const router = useRouter();
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const viewMode = (getViewMode('/ai/councils', 'grid') as 'grid' | 'list');
+    const setViewMode = (m: 'grid' | 'list') => storeSetView('/ai/councils', m);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -70,7 +67,7 @@ export default function CouncilsPage() {
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
                 viewMode={viewMode}
-                onViewModeChange={setViewMode}
+                onViewModeChange={(v: any) => setViewMode(v)}
                 showFilter={true}
                 onFilterClick={() => {}}
                 allSelected={selectedIds.length === filteredCouncils.length && filteredCouncils.length > 0}
@@ -95,40 +92,22 @@ export default function CouncilsPage() {
                 }
             />
 
-            <div className={cn(
-                "grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700",
-                viewMode === 'grid' ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
-            )}>
-                <InitializeCard 
-                    label="Initialize Council" 
-                    onClick={() => {}} 
-                    viewMode={viewMode} 
-                />
-                {filteredCouncils.map((council) => (
-                    <div key={council.id} className="relative group/card">
-                        <CouncilResourceCard
-                            {...council}
-                            viewMode={viewMode}
-                            onClick={(id) => router.push(`/ai/councils/${id}`)}
-                        />
-                        
-                        {/* Custom selection absolute overlay for the card component */}
-                        <div 
-                            onClick={(e) => toggleSelect(council.id, e)}
-                            className={cn(
-                                "absolute top-4 left-4 z-20 w-6 h-6 rounded-full border-2 transition-all cursor-pointer flex items-center justify-center",
-                                selectedIds.includes(council.id)
-                                    ? "bg-indigo-600 border-indigo-600 text-white"
-                                    : cn(
-                                        "opacity-0 group-hover/card:opacity-100 border-2",
-                                        theme === 'dark' ? "bg-black/20 border-white/20" : "bg-white/40 border-slate-200 shadow-sm"
-                                    )
-                            )}
-                        >
-                            {selectedIds.includes(council.id) && <Check size={14} strokeWidth={4} />}
-                        </div>
-                    </div>
-                ))}
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {viewMode === 'grid' ? (
+                  <CouncilGridView 
+                    councils={filteredCouncils}
+                    selectedIds={selectedIds}
+                    theme={theme}
+                    onToggleSelection={toggleSelect}
+                  />
+                ) : (
+                  <CouncilListView 
+                    councils={filteredCouncils}
+                    selectedIds={selectedIds}
+                    theme={theme}
+                    onToggleSelection={toggleSelect}
+                  />
+                )}
             </div>
 
             {filteredCouncils.length === 0 && (

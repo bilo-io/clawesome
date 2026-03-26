@@ -27,7 +27,7 @@ export const WorkspaceTabs = () => {
 
   return (
     <div className={cn(
-      "flex items-center gap-1 border-b transition-colors px-4 pb-0 items-end overflow-x-auto no-scrollbar min-h-[56px]",
+      "flex items-center gap-1 border-b transition-colors px-4 pb-0 items-end overflow-x-auto no-scrollbar h-20 shrink-0",
       theme === 'dark' ? "bg-slate-950 border-slate-900 shadow-xl" : "bg-slate-50/50 border-slate-200 shadow-sm"
     )}>
       <button 

@@ -28,6 +28,8 @@ import { WorkflowCard, InitializeCard } from '@clawesome/ui';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { ResourceSkeleton } from '@/components/ResourceSkeleton';
+import { WorkflowsGridView } from './components/WorkflowsGridView';
+import { WorkflowsListView } from './components/WorkflowsListView';
 
 export default function WorkflowsPage() {
   const { theme, getViewMode, setViewMode } = useUIStore();
@@ -36,7 +38,7 @@ export default function WorkflowsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'my' | 'marketplace'>('my');
   const [searchQuery, setSearchQuery] = useState('');
-  const viewMode = (getViewMode('/workflows', 'grid') as 'grid' | 'list');
+  const viewMode = (getViewMode('/ai/workflows', 'grid') as 'grid' | 'list');
 
   useEffect(() => {
     fetchWorkflows();
@@ -88,7 +90,7 @@ export default function WorkflowsPage() {
       ],
       edges: [],
     });
-    router.push(`/workflows/${id}`);
+    router.push(`/ai/workflows/${id}`);
   };
 
   const bulkActions = selectedIds.length > 0 ? (
@@ -121,7 +123,7 @@ export default function WorkflowsPage() {
         onSearchChange={setSearchQuery}
         searchPlaceholder="SEARCH WORKFLOWS..."
         viewMode={viewMode}
-        onViewModeChange={(mode: any) => setViewMode('/workflows', mode)}
+        onViewModeChange={(mode: any) => setViewMode('/ai/workflows', mode)}
         isCollection={true}
         allSelected={isAllSelected}
         someSelected={selectedIds.length > 0 && !isAllSelected}
@@ -178,49 +180,37 @@ export default function WorkflowsPage() {
           )} 
         />
       ) : (
-        <div className={cn(
-          viewMode === 'grid' 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" 
-            : "space-y-4"
-        )}>
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
-              <InitializeCard 
-                label={activeTab === 'marketplace' ? "Hire Agent with Workflow" : "Initialize Workflow"} 
-                onClick={() => {}} 
-                viewMode={viewMode === 'grid' ? 'grid' : 'list'} 
-              />
-            </motion.div>
-            {filteredWorkflows.map((workflow, idx) => (
-              <motion.div
-                layout
-                key={workflow.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: idx * 0.05 }}
-              >
-                <WorkflowCard 
-                  workflow={workflow}
-                  viewMode={viewMode}
-                  isMarketplace={activeTab === 'marketplace'}
-                  isImported={workflows.some(w => w.name === workflow.name)}
-                  selected={selectedIds.includes(workflow.id)}
-                  onToggleSelection={() => toggleSelection(workflow.id)}
-                  onToggleStatus={(e) => handleToggleStatus(e, workflow.id, workflow.status)}
-                  onInstall={() => installWorkflow(workflow)}
-                  onClick={() => {
-                    if (activeTab === 'my') router.push(`/workflows/${workflow.id}`);
+          <div className="relative">
+            <AnimatePresence mode="popLayout">
+              {viewMode === 'grid' ? (
+                <WorkflowsGridView 
+                  workflows={filteredWorkflows}
+                  myWorkflows={workflows}
+                  activeTab={activeTab}
+                  selectedIds={selectedIds}
+                  onToggleSelection={toggleSelection}
+                  onToggleStatus={handleToggleStatus}
+                  onInstall={installWorkflow}
+                  onClick={(w) => {
+                    if (activeTab === 'my') router.push(`/ai/workflows/${w.id}`);
                   }}
                 />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+              ) : (
+                <WorkflowsListView 
+                  workflows={filteredWorkflows}
+                  myWorkflows={workflows}
+                  activeTab={activeTab}
+                  selectedIds={selectedIds}
+                  onToggleSelection={toggleSelection}
+                  onToggleStatus={handleToggleStatus}
+                  onInstall={installWorkflow}
+                  onClick={(w) => {
+                    if (activeTab === 'my') router.push(`/ai/workflows/${w.id}`);
+                  }}
+                />
+              )}
+            </AnimatePresence>
+          </div>
       )}
 
       {filteredWorkflows.length === 0 && (

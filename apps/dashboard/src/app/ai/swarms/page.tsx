@@ -6,11 +6,12 @@ import { Briefcase, Globe, Plus, Search, ChevronRight, Activity, LayoutGrid, Lis
 import { useUIStore } from '@/store/useUIStore';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { WorkspaceGallery } from '@/components/WorkspaceGallery';
 import { DashboardResourceHeader } from '@/components/DashboardResourceHeader';
 import { Button } from '@clawesome/ui';
 import { useSelectionStore } from '@/store/useSelectionStore';
 import { useSwarmStore } from '@/store/useSwarmStore';
+import { SwarmGridView } from './components/SwarmGridView';
+import { SwarmListView } from './components/SwarmListView';
 
 const HeaderExternalSync = () => {
   const { theme } = useUIStore();
@@ -139,11 +140,23 @@ export default function SwarmsPage() {
             </div>
             <h2 className={cn("text-[11px] font-black uppercase tracking-[0.3em]", theme === 'dark' ? "text-slate-500" : "text-slate-600")}>Active Swarm Nodes</h2>
         </div>
-        <WorkspaceGallery 
-          viewMode={viewMode} 
-          selectedIds={selectedIds}
-          onToggleSelection={(id) => toggleSelection(id)}
-        />
+        <div className="relative">
+          {viewMode === 'grid' ? (
+            <SwarmGridView 
+              swarms={filteredWorkspaces}
+              selectedIds={selectedIds}
+              theme={theme}
+              onToggleSelection={toggleSelection}
+            />
+          ) : (
+            <SwarmListView 
+              swarms={filteredWorkspaces}
+              selectedIds={selectedIds}
+              theme={theme}
+              onToggleSelection={toggleSelection}
+            />
+          )}
+        </div>
       </section>
     </main>
   );

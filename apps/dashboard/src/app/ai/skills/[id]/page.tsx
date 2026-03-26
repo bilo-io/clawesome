@@ -58,7 +58,7 @@ export default function SkillDetailView({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     if (!skill) {
-      router.push('/skills');
+      router.push('/ai/skills');
     }
   }, [skill, router]);
 
@@ -89,7 +89,7 @@ export default function SkillDetailView({ params }: { params: Promise<{ id: stri
         statusValue="Active"
         statusColor="emerald"
         isCollection={false}
-        backLink={{ label: 'Back to Skills', href: '/skills' }}
+        backLink={{ label: 'Back to Skills', href: '/ai/skills' }}
         renderRight={
           <div className="flex items-center gap-4">
             <div className={cn(
