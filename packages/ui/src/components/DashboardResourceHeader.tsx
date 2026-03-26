@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, List, Filter, LayoutGrid, ChevronLeft, Home, ChevronRight } from 'lucide-react';
+import { Search, List, Filter, LayoutGrid, ChevronLeft, Home, ChevronRight, Check } from 'lucide-react';
 import { PageHeader, type PageHeaderStatusColor } from './PageHeader';
 import { useUI } from '../ThemeContext';
 import { cn } from '../utils';
@@ -30,6 +30,10 @@ export interface DashboardResourceHeaderProps {
   pathname?: string; // Passed from parent (e.g. usePathname())
   LinkComponent?: any; // e.g. next/link
   hideBreadcrumbs?: boolean;
+  allSelected?: boolean;
+  someSelected?: boolean;
+  onSelectAll?: () => void;
+  bulkActions?: React.ReactNode;
 }
 
 export function DashboardResourceHeader({
@@ -53,7 +57,11 @@ export function DashboardResourceHeader({
   toolbarActions,
   pathname = '/',
   LinkComponent = 'a',
-  hideBreadcrumbs = false
+  hideBreadcrumbs = false,
+  allSelected = false,
+  someSelected = false,
+  onSelectAll,
+  bulkActions
 }: DashboardResourceHeaderProps) {
   const { theme } = useUI();
   const Link = LinkComponent;
@@ -129,6 +137,40 @@ export function DashboardResourceHeader({
 
       {isCollection && (
         <div className="flex flex-col md:flex-row gap-6 items-center">
+          {onSelectAll && (
+            <div className={cn(
+              "flex items-center gap-4 px-6 py-2 rounded-full border transition-all h-full",
+              theme === 'dark' ? "bg-slate-900/60 border-slate-800" : "bg-slate-50 border-slate-200"
+            )}>
+              <button
+                onClick={onSelectAll}
+                className={cn(
+                  "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                  allSelected 
+                    ? "bg-indigo-500 border-indigo-500 text-white" 
+                    : (someSelected 
+                        ? "border-indigo-500 text-indigo-500" 
+                        : (theme === 'dark' ? "border-slate-700 bg-slate-950" : "border-slate-300 bg-white shadow-sm"))
+                )}
+              >
+                {allSelected && <Check size={14} strokeWidth={4} />}
+                {someSelected && !allSelected && <div className="w-2.5 h-0.5 bg-current rounded-full" />}
+              </button>
+              <span className={cn(
+                "text-[10px] font-black uppercase tracking-widest min-w-[100px]",
+                theme === 'dark' ? "text-slate-500" : "text-slate-400"
+              )}>
+                {allSelected ? 'All Selected' : someSelected ? 'Partial Selection' : 'Select All'}
+              </span>
+            </div>
+          )}
+
+          {bulkActions && (
+            <div className="flex items-center gap-3 animate-in fade-in slide-in-from-left-4 h-full">
+              {bulkActions}
+            </div>
+          )}
+
           <div className="relative flex-1 group w-full perspective-1000">
             <div className={cn(
               "relative p-[1px] rounded-full transition-all duration-500 shadow-sm",

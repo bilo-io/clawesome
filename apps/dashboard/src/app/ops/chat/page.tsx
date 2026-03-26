@@ -100,7 +100,7 @@ export default function ChatsPage() {
         onSelectAll={handleSelectAll}
         bulkActions={bulkActions}
         viewMode={viewMode}
-        setViewMode={(mode: any) => setViewMode('/ops/chat', mode)}
+        onViewModeChange={(mode: any) => setViewMode('/ops/chat', mode)}
         searchPlaceholder="SEARCH THREADS..."
         renderRight={
           <button
