@@ -11,7 +11,6 @@ import {
 import Link from 'next/link';
 import { AnimatedDownload } from '@/components/AnimatedDownload';
 import { cn } from '@/lib/utils';
-import { PrimaryButton } from '@/components/PrimaryButton';
 import { useTheme } from 'next-themes';
 import BackgroundVideo from '@/components/BackgroundVideo';
 
@@ -134,21 +133,22 @@ export default function DownloadPage() {
                  </div>
                  <h2 className="mt-8 text-2xl font-black text-slate-900 dark:text-white">{v?.os}</h2>
                  <p className="mt-2 text-slate-500 font-bold uppercase text-[10px] tracking-widest">{v?.version} — {v?.size}</p>
-                 <a href={v?.link} download className="w-full mt-10 block">
+                 <div className="w-full mt-10 block">
                    {v?.featured ? (
-                     <PrimaryButton 
-                       className="w-full"
-                       icon={<DownloadIcon size={20} />}
-                     >
-                       Download ({v?.extension})
-                     </PrimaryButton>
+                     <a href={v?.link} download className="relative w-full inline-flex items-center justify-center font-bold overflow-hidden transition-all shadow-xl group px-8 py-4 text-base rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900">
+                        <span className="relative z-10 flex items-center">
+                          <DownloadIcon size={20} className="mr-2 transition-transform group-hover:rotate-12" />
+                          Download ({v?.extension})
+                        </span>
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition-opacity duration-300" />
+                     </a>
                    ) : (
-                     <button className="px-6 py-4 w-full rounded-xl font-semibold whitespace-nowrap text-sm flex flex-row items-center justify-center transition-all shadow-lg bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-800">
+                     <a href={v?.link} download className="px-6 py-4 w-full rounded-xl font-semibold whitespace-nowrap text-sm flex flex-row items-center justify-center transition-all shadow-lg bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-800">
                         <DownloadIcon size={20} className="mr-2" />
                         <span>Download ({v?.extension})</span>
-                     </button>
+                     </a>
                    )}
-                 </a>
+                 </div>
               </motion.div>
             ))}
          </div>

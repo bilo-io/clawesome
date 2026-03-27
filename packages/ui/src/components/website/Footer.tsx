@@ -28,7 +28,7 @@ const useTheme = () => ({ theme: 'dark', setTheme: () => {} });
 
 import React from 'react';
 
-import { Zap, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Zap, GitBranch as Github, MessageCircle as Twitter, Network as Linkedin, Heart } from 'lucide-react';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();

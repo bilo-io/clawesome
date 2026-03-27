@@ -5,7 +5,7 @@ import {
   MessageSquare,
   MessageCircle,
   Send,
-  Github,
+  GitBranch as Github,
   LayoutList,
   FileText,
   Plus,

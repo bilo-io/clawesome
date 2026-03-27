@@ -25,7 +25,7 @@ export function DesktopProvider({ children }: { children: React.ReactNode }) {
     async function initTauri() {
       if (typeof window === 'undefined') return;
       
-      const isTauri = cd /Users/bilolwabona/BiloDev/clawesome/apps/dashboard(window as any).__TAURI_INTERNALS__;
+      const isTauri = !!(window as any).__TAURI_INTERNALS__;
       setIsDesktop(isTauri);
 
       if (isTauri) {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Zap, Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Zap, GitBranch as Github, MessageCircle as Twitter, Network as Linkedin, Heart } from 'lucide-react';
 import { IntegrationIcon } from '@clawesome/ui';
 
 export const Footer = () => {

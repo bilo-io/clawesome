@@ -60,6 +60,25 @@ Or use moon to run all at once:
 moon run :dev
 ```
 
+### 3. Build the macOS Desktop App
+
+To compile the entire workspace (Gateway, CLI, and Dashboard) and package it into a distributable Tauri `.dmg` for macOS:
+
+```bash
+./scripts/forge-bundle.sh
+```
+
+This will automatically output the `.dmg` into `apps/website/public/downloads/Clawesome-Mac.dmg` to be served by the website.
+
+This script will seamlessly execute the entire updated Moonrepo graph, stringing together:
+
+- `moon run gateway:build` (compiles the standalone Node.js API binaries)
+- `moon run cli:build` (compiles the standalone CLI binaries)
+- `moon run dashboard:build` (runs the clean Next.js static export we fixed)
+- `moon run dashboard:tauri-build` (finally uses the correct Rust/Tauri wrapper)
+
+Copies all artifacts into your macOS .dmg file and routes it correctly to your Next.js Website public folder (apps/website/public/downloads/Clawesome-Mac.dmg).
+
 ---
 
 ## CLI (`clawesome`)

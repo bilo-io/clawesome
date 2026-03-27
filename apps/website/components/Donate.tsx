@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Coffee, Star, Github } from 'lucide-react';
+import { Heart, Coffee, Star, GitBranch as Github } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const Donate = () => {

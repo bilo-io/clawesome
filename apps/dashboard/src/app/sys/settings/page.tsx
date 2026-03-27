@@ -10,7 +10,7 @@ import {
   Zap, 
   Bell, 
   Cloud, 
-  Github, 
+  GitBranch as Github, 
   Database,
   Eye,
   Volume2

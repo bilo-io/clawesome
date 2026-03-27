@@ -4,7 +4,7 @@ import {
   MessageSquare,
   MessageCircle,
   Send,
-  Github,
+  GitBranch,
   LayoutList,
   FileText,
   Plus,
@@ -31,7 +31,7 @@ const iconMap: Record<string, any> = {
   MessageSquare,
   MessageCircle,
   Send,
-  Github,
+  Github: GitBranch,
   LayoutList,
   FileText,
 };

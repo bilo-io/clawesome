@@ -9,8 +9,8 @@ project:
 dependsOn:
   - 'core'
   - 'ui'
-  - 'clawesome-cli'
-  - 'wss-gateway'
+  - 'cli'
+  - 'gateway'
 
 tags:
   - 'core'
@@ -29,23 +29,23 @@ tasks:
   
   # Desktop Forge Tasks
   sync-sidecars:
-    command: 'mkdir -p src-tauri/binaries && cp ../gateway/clawesome-gateway src-tauri/binaries/clawesome-gateway-aarch64-apple-darwin && cp ../cli/clawesome-cli src-tauri/binaries/clawesome-cli-aarch64-apple-darwin'
+    script: 'mkdir -p src-tauri/binaries && cp ../gateway/clawesome-gateway src-tauri/binaries/clawesome-gateway-aarch64-apple-darwin && cp ../cli/clawesome-cli src-tauri/binaries/clawesome-cli-aarch64-apple-darwin'
     deps:
-      - 'clawesome-cli:build'
-      - 'wss-gateway:build'
+      - 'cli:build'
+      - 'gateway:build'
     inputs:
-      - '../gateway/clawesome-gateway'
-      - '../cli/clawesome-cli'
+      - '/apps/gateway/clawesome-gateway'
+      - '/apps/cli/clawesome-cli'
     outputs:
       - 'src-tauri/binaries/*'
 
   tauri-dev:
-    command: 'bun tauri dev'
+    command: 'bunx @tauri-apps/cli dev'
     deps:
       - 'sync-sidecars'
   
   tauri-build:
-    command: 'bun tauri build'
+    script: 'export PATH="$HOME/.cargo/bin:$PATH" && bunx @tauri-apps/cli build'
     deps:
       - 'build'
       - 'sync-sidecars'

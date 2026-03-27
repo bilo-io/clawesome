@@ -19,7 +19,7 @@ tasks:
   dev:
     command: 'bun run src/index.ts dev'
   build:
-    command: 'bun build --target node --outfile dist/index.js src/index.ts && bun build --compile --outfile clawesome-gateway dist/index.js'
+    script: 'bun build --target node --outfile dist/index.js src/index.ts && bun build --compile --outfile clawesome-gateway dist/index.js'
     inputs:
       - 'src/**/*'
     outputs:

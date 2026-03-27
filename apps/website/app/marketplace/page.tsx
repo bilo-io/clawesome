@@ -7,7 +7,7 @@ import {
   Puzzle, 
   Cpu, 
   Zap, 
-  Github, 
+  GitBranch as Github, 
   MessageSquare, 
   Cloud, 
   Database, 
@@ -50,7 +50,7 @@ import {
   PenTool,
   Workflow,
   ShieldCheck,
-  Chrome,
+  Globe as Chrome,
   Mic,
   Mail,
   Clock,
@@ -63,7 +63,7 @@ import {
   Home,
   Bot,
   Smile,
-  Apple
+  Laptop as Apple
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BackgroundVideo from '@/components/BackgroundVideo';

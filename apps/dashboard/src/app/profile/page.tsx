@@ -10,8 +10,8 @@ import {
   Shield, 
   Check, 
   Settings,
-  Apple,
-  Github,
+  Laptop as Apple,
+  GitBranch as Github,
   ExternalLink
 } from 'lucide-react';
 import { 

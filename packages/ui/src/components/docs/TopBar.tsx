@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useUI } from '../../ThemeContext';
-import { Github, Moon, Sun, Menu } from 'lucide-react';
+import { GitBranch as Github, Moon, Sun, Menu } from 'lucide-react';
 import { cn } from '../../utils';
 
 interface TopBarProps {

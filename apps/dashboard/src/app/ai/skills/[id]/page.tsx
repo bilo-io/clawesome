@@ -20,8 +20,8 @@ import {
   ShieldCheck,
   Zap,
   MessageCircle,
-  Github,
-  Twitter
+  GitBranch as Github,
+  MessageCircle as Twitter
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import ReactMarkdown from 'react-markdown';
